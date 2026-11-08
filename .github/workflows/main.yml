@@ -1,4 +1,4 @@
-name: Deploy NHẬU ONLINE 3D
+name: Deploy NHAU ONLINE 3D
 
 on:
   push:
@@ -27,6 +27,8 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload website
         uses: actions/upload-pages-artifact@v3
