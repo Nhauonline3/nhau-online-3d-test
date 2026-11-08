@@ -28,7 +28,58 @@ scene.add(new THREE.HemisphereLight(0xc9ddff,0x332044,2.1));const moon=new THREE
 const mat=(c,em=0,int=0)=>new THREE.MeshStandardMaterial({color:c,roughness:.72,emissive:em,emissiveIntensity:int});
 const ground=new THREE.Mesh(new THREE.PlaneGeometry(150,150),mat(0x202944));ground.rotation.x=-Math.PI/2;ground.position.y=-.08;ground.receiveShadow=true;scene.add(ground);
 // road and sidewalks
-const road=new THREE.Mesh(new THREE.PlaneGeometry(15,100),mat(0x34364b));road.rotation.x=-Math.PI/2;road.position.set(0,0,-34);road.receiveShadow=true;scene.add(road);
+const roadCanvas=document.createElement('canvas');
+roadCanvas.width=512;
+roadCanvas.height=4096;
+const rctx=roadCanvas.getContext('2d');
+rctx.fillStyle='#777b80';
+rctx.fillRect(0,0,512,4096);
+let seed=12345;
+function rand(){
+ seed=(seed*16807)%2147483647;
+ return (seed-1)/2147483646;
+}
+for(let row=0;row<34;row++){
+ const y=row*121;
+ const offset=row%2? -51:0;
+ for(let col=-1;col<6;col++){
+  const x=col*102+offset;
+  const w=96+rand()*9;
+  const h=113+rand()*12;
+  const shade=75+Math.floor(rand()*32);
+  const c=rctx.createLinearGradient(x,y,x+w,y+h);
+  c.addColorStop(0,`rgb(${shade+10},${shade+16},${shade+24})`);
+  c.addColorStop(.5,`rgb(${shade},${shade+7},${shade+15})`);
+  c.addColorStop(1,`rgb(${shade-12},${shade-8},${shade})`);
+  rctx.beginPath();
+  rctx.moveTo(x+3,y+3);
+  rctx.lineTo(x+w-4,y+rand()*5+2);
+  rctx.lineTo(x+w-2,y+h-4);
+  rctx.lineTo(x+rand()*5+3,y+h-2);
+  rctx.closePath();
+  rctx.fillStyle=c;
+  rctx.fill();
+  rctx.strokeStyle='rgba(205,210,215,.28)';
+  rctx.lineWidth=2;
+  rctx.stroke();
+  for(let k=0;k<9;k++){
+   const sx=x+rand()*w;
+   const sy=y+rand()*h;
+   rctx.strokeStyle='rgba(220,225,230,.10)';
+   rctx.beginPath();
+   rctx.moveTo(sx,sy);
+   rctx.lineTo(sx+rand()*18,sy+rand()*10);
+   rctx.stroke();
+  }
+ }
+}
+const roadTexture=new THREE.CanvasTexture(roadCanvas);
+roadTexture.colorSpace=THREE.SRGBColorSpace;
+roadTexture.anisotropy=renderer.capabilities.getMaxAnisotropy();
+const road=new THREE.Mesh(
+ new THREE.PlaneGeometry(15,100),
+ new THREE.MeshStandardMaterial({map:roadTexture,roughness:.96})
+);road.rotation.x=-Math.PI/2;road.position.set(0,0,-34);road.receiveShadow=true;scene.add(road);
 const sidewalkMat=mat(0x77758b),tileMat=mat(0xaaa0ad);for(const x of [-9.2,9.2]){let s=new THREE.Mesh(new THREE.BoxGeometry(3.4,.22,100),sidewalkMat);s.position.set(x,.04,-34);s.receiveShadow=true;scene.add(s)}
 for(let z=12;z>-82;z-=5){let stripe=new THREE.Mesh(new THREE.BoxGeometry(.12,.025,2.5),mat(0xf2d78a));stripe.position.set(0,.03,z);scene.add(stripe)}
 // buildings
