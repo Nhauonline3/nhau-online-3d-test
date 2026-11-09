@@ -5,10 +5,12 @@
 <title>369 – Thành phố Neon V19</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090b20;font-family:system-ui,-apple-system,Arial;color:#fff;touch-action:none}#game{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}.top{position:fixed;top:env(safe-area-inset-top,10px);left:10px;right:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none}.brand,.status,.hint,.panel{background:#101a3bdc;border:1px solid #8aa7ff;border-radius:15px;box-shadow:0 0 16px #5b55ff55;padding:9px 12px;backdrop-filter:blur(8px)}.brand{font-weight:900;font-size:14px}.brand button{pointer-events:auto;position:relative;z-index:30;cursor:pointer}.status{font-size:11px;text-align:right}.hint{position:fixed;top:76px;left:50%;transform:translateX(-50%);font-size:12px;white-space:nowrap;pointer-events:none}.controls{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:16px;right:16px;display:flex;justify-content:space-between;align-items:flex-end;pointer-events:none}.joy{width:140px;height:140px;border-radius:50%;background:#18234ca8;border:2px solid #b5c6ff;box-shadow:0 0 16px #777bff66;position:relative;pointer-events:auto;touch-action:none}.knob{position:absolute;width:56px;height:56px;left:40px;top:40px;border-radius:50%;background:linear-gradient(#fff,#aab9ff);border:2px solid #fff;box-shadow:0 4px 12px #0008}.actions{display:flex;gap:10px;pointer-events:auto}.action{border:2px solid #d2dcff;border-radius:50%;width:60px;height:60px;background:#222e62dd;color:white;font-weight:800;font-size:12px;box-shadow:0 0 14px #7e70ff88}.action.primary{background:linear-gradient(#ffdb56,#ff9e22);color:#301a37;border-color:#fff0b5}.panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,360px);display:none;text-align:center;padding:20px;pointer-events:auto}.panel h2{margin:4px 0 8px}.panel p{font-size:14px;color:#dce4ff;line-height:1.5}.panel button{border:0;border-radius:12px;background:linear-gradient(#ffe16a,#ff9e24);padding:12px 18px;font-weight:900;color:#281b34}.bottomnote{position:fixed;bottom:calc(145px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);font-size:11px;color:#eef1ff;background:#111936b8;padding:7px 11px;border-radius:20px;white-space:nowrap;pointer-events:none}.profileActions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.chatbox{position:fixed;left:12px;right:12px;bottom:calc(150px + env(safe-area-inset-bottom,0px));max-width:420px;margin:auto;display:none;background:#101a3bf2;border:1px solid #8aa7ff;border-radius:16px;padding:12px;z-index:8;pointer-events:auto;box-shadow:0 8px 28px #0009}.chatlog{height:130px;overflow:auto;text-align:left;font-size:13px;color:#eef1ff;margin:8px 0}.chatrow{display:flex;gap:6px}.chatrow input{min-width:0;flex:1;border-radius:9px;border:1px solid #8aa7ff;background:#080d24;color:white;padding:10px}.chatrow button{border:0;border-radius:9px;background:#ffb52e;padding:0 13px;font-weight:800}.nameTag{font: bold 42px Arial;fill:white;stroke:#11152c;stroke-width:5px;paint-order:stroke;text-anchor:middle}@media(min-width:700px){.joy{width:132px;height:132px}.knob{left:38px;top:38px}.controls{max-width:900px;margin:auto;left:0;right:0}.hint{top:88px}.brand{font-size:17px}}
+
+#exitShopBtn{display:none;position:fixed;top:78px;left:50%;transform:translateX(-50%);z-index:40;border:1px solid #a8fff0;border-radius:12px;background:#123d4aee;color:#d8fff8;padding:10px 16px;font-weight:900;box-shadow:0 0 18px #00eaff66;pointer-events:auto}.shopToast{position:fixed;left:50%;top:122px;transform:translateX(-50%);z-index:39;background:#101a3bf2;border:1px solid #71f4df;border-radius:12px;padding:9px 13px;color:#eaffff;font-size:12px;display:none;max-width:88vw;text-align:center;pointer-events:none}
 </style>
 </head>
 <body>
-<div id="game"></div><div id="loaderror" style="display:none;position:fixed;left:18px;right:18px;top:45%;padding:18px;border:1px solid #ff9b9b;border-radius:16px;background:#25152beF;color:white;text-align:center;z-index:20">Không tải được thư viện đồ họa 3D. Hãy mở file bằng Safari và kiểm tra kết nối Internet, sau đó tải lại trang.</div>
+<div id="game"></div><button id="exitShopBtn" type="button">← TRỞ RA PHỐ MUA SẮM</button><div id="shopToast" class="shopToast"></div><div id="loaderror" style="display:none;position:fixed;left:18px;right:18px;top:45%;padding:18px;border:1px solid #ff9b9b;border-radius:16px;background:#25152beF;color:white;text-align:center;z-index:20">Không tải được thư viện đồ họa 3D. Hãy mở file bằng Safari và kiểm tra kết nối Internet, sau đó tải lại trang.</div>
 <div class="top"><div class="brand">🌃 369<br><span style="font-size:10px;font-weight:500">NEON CITY · V30</span><button id="myProfileBtn" style="display:block;margin-top:7px;border:1px solid #9cb5ff;border-radius:9px;background:#202b55;color:white;padding:6px 9px;font-size:11px">HỒ SƠ / BẠN BÈ</button><button id="walletBtn" style="display:block;margin-top:5px;border:1px solid #ffe08a;border-radius:9px;background:#47321c;color:#fff0b5;padding:6px 9px;font-size:11px">VÍ XU 369</button><button id="coinBtn" style="display:block;margin-top:5px;border:1px solid #9d8cff;border-radius:9px;background:#29204d;color:#e6ddff;padding:6px 9px;font-size:11px">VÍ COIN THỬ NGHIỆM</button><button id="mallBtn" style="display:block;margin-top:5px;border:1px solid #71f4df;border-radius:9px;background:#123d4a;color:#d8fff8;padding:6px 9px;font-size:11px">MALL 369</button><button id="mgBtn" style="display:block;margin-top:5px;border:1px solid #ffe08a;border-radius:9px;background:#4a3154;color:#fff0b5;padding:6px 9px;font-size:11px">⭐ CHƠI GAME</button><button id="snakeBtn" style="display:block;margin-top:5px;border:1px solid #79f5d8;border-radius:9px;background:#123d4a;color:#d8fff8;padding:6px 9px;font-size:11px">🐍 RẮN SĂN MỒI</button></div><div class="status" id="onlineStatus">🐧 Đang kết nối...<br>Phố thử nghiệm 01</div></div>
 <div class="bottomnote">369 V30 · Ví XU &amp; COIN</div>
 <div class="controls"><div class="joy" id="joy"><div class="knob" id="knob"></div></div><div class="actions"><button class="action" id="jump">NHẢY</button><button class="action primary" id="interact">TƯƠNG<br>TÁC</button></div></div>
@@ -167,10 +169,107 @@ function building(v){
   for(let x of [-4,4]){boxMesh(g,1.2,2.6,3,0x303b62,x,1.3,-2);for(let y=1;y<3;y+=.8)boxMesh(g,.8,.12,3,0xff5a70,x,y,-.3,0xff3150)}
   sign3d(g,'DOG RACING ARENA',c,0,4.4,3.9,6);glow(g,0,2,0,c,2.5,15);
  }
- const plaque=new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.35,.16,32),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.55}));plaque.position.set(0,.38,5);g.add(plaque);
+ const plaque=new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.35,.16,32),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.55}));plaque.position.set(0,.38,5);g.add(plaque);
  interactables.push({x:v.x,z:v.z,name:v.name,desc:v.desc});
 }
 venues.forEach(building);
+
+// V30.1: dãy cửa hàng 3D thật trên phố mua sắm, có cửa, kính, bảng hiệu và quầy.
+const shopCatalog=[
+ {id:'food',name:'ẨM THỰC 369',desc:'Nhà hàng, sushi và đồ uống.',emoji:'🍣',side:-1,z:-59,color:0x00d9ed},
+ {id:'fashion',name:'FASHION 369',desc:'Thời trang và phụ kiện.',emoji:'👕',side:1,z:-59,color:0xff4fa3},
+ {id:'tech',name:'TECH ZONE',desc:'Thiết bị công nghệ và phụ kiện.',emoji:'🎧',side:-1,z:-71,color:0x9b83ff},
+ {id:'home',name:'HOME & LIVING',desc:'Đồ gia dụng và trang trí.',emoji:'🏡',side:1,z:-71,color:0xffc45c},
+ {id:'game',name:'GAME STORE',desc:'Vật phẩm và phụ kiện trong thế giới 369.',emoji:'🎮',side:-1,z:-83,color:0x58e6a7},
+ {id:'gift',name:'GIFT & SOUVENIR',desc:'Quà tặng và đồ lưu niệm.',emoji:'🎁',side:1,z:-83,color:0xff765f}
+];
+function createShop3D(shop){
+ const g=new THREE.Group();g.position.set(shop.side*10.15,0,shop.z);scene.add(g);
+ const wall=new THREE.MeshStandardMaterial({color:0x17213b,metalness:.32,roughness:.58});
+ const trim=new THREE.MeshStandardMaterial({color:shop.color,emissive:shop.color,emissiveIntensity:.42,metalness:.4,roughness:.3});
+ const glassMat=new THREE.MeshStandardMaterial({color:0x75d8f2,emissive:shop.color,emissiveIntensity:.12,transparent:true,opacity:.36,metalness:.25,roughness:.16});
+ // Khối nhà 7m x 9m, mặt tiền quay vào lòng phố.
+ boxMesh(g,7,.35,9,wall,0,.18,0);
+ boxMesh(g,7.35,.22,9.3,trim,0,.43,0);
+ boxMesh(g,.35,4.5,9,wall,-shop.side*3.35,2.7,0);
+ boxMesh(g,.35,4.5,9,wall,shop.side*3.35,2.7,0);
+ boxMesh(g,7,4.5,.35,wall,0,2.7,shop.side*4.32);
+ // Mặt tiền có hai ô kính và lối cửa ở giữa.
+ const front=-shop.side*3.38;
+ for(const z of [-3.05,3.05]){
+  const pane=new THREE.Mesh(new THREE.BoxGeometry(.12,2.85,2.45),glassMat);pane.position.set(front,2.45,z);g.add(pane);
+  boxMesh(g,.16,.12,2.55,trim,front,1.0,z);boxMesh(g,.16,.12,2.55,trim,front,3.9,z);
+ }
+ const door=new THREE.Mesh(new THREE.BoxGeometry(.13,3.65,2.25),glassMat);door.position.set(front,2.25,0);g.add(door);
+ for(const z of [-1.2,1.2])boxMesh(g,.2,3.9,.18,trim,front,2.25,z);
+ boxMesh(g,.22,.2,2.65,trim,front,4.25,0);
+ // Mái che và bảng hiệu phát sáng riêng cho từng thương hiệu.
+ boxMesh(g,.9,.22,7.5,trim,front-shop.side*.45,4.55,0);
+ const sign=new THREE.Mesh(new THREE.PlaneGeometry(5.9,1.15),new THREE.MeshBasicMaterial({map:labelTexture(shop.name,'#'+shop.color.toString(16)),transparent:true,side:THREE.DoubleSide}));
+ sign.position.set(front,5.55,0);sign.rotation.y=shop.side<0?Math.PI/2:-Math.PI/2;g.add(sign);
+ const emblem=new THREE.Mesh(new THREE.OctahedronGeometry(.55,0),trim);emblem.position.set(0,5.9,0);g.add(emblem);
+ // Kệ và quầy trưng bày nhìn thấy qua lớp kính.
+ boxMesh(g,2.8,1.0,1.1,wall,-shop.side*1.1,.8,-2.3);
+ for(let i=0;i<3;i++){
+  boxMesh(g,.55,1.9,.75,wall,-shop.side*2.15,1.2,-3+i*2.2);
+  boxMesh(g,.65,.13,.85,trim,-shop.side*2.15,2.15,-3+i*2.2);
+  const item=new THREE.Mesh(new THREE.DodecahedronGeometry(.42,0),new THREE.MeshStandardMaterial({color:[0xffd36b,0x79dfff,0xf58bd4][i],emissive:shop.color,emissiveIntensity:.22}));
+  item.position.set(-shop.side*2.15,2.65,-3+i*2.2);g.add(item);
+ }
+ glow(g,front,3.2,0,shop.color,2.2,14);
+ colliders.push({x:shop.side*10.15,z:shop.z,w:6.8,d:8.8});
+ interactables.push({kind:'shop',shop,x:shop.side*6.55,z:shop.z});
+}
+shopCatalog.forEach(createShop3D);
+
+// Không gian nội thất riêng: người chơi được đưa vào bằng cơ chế tương tác ở cửa.
+const shopInterior=new THREE.Group();shopInterior.visible=false;scene.add(shopInterior);
+const interiorWall=new THREE.MeshStandardMaterial({color:0x111a32,metalness:.25,roughness:.58});
+const interiorFloor=new THREE.Mesh(new THREE.BoxGeometry(18,.3,22),new THREE.MeshStandardMaterial({color:0x1b294b,metalness:.2,roughness:.7}));
+interiorFloor.position.set(0,.05,-107);shopInterior.add(interiorFloor);
+for(const x of [-9,9])boxMesh(shopInterior,.35,6,22,interiorWall,x,3,-107);
+boxMesh(shopInterior,18,6,.35,interiorWall,0,3,-118);
+const ceiling=new THREE.Mesh(new THREE.BoxGeometry(18,.2,22),new THREE.MeshStandardMaterial({color:0x202d50,emissive:0x17295a,emissiveIntensity:.25}));
+ceiling.position.set(0,6.1,-107);shopInterior.add(ceiling);
+const displayMat=new THREE.MeshStandardMaterial({color:0x2a3d64,metalness:.4,roughness:.32});
+const displayAccent=new THREE.MeshStandardMaterial({color:0x00d9ed,emissive:0x00d9ed,emissiveIntensity:.55});
+for(const side of [-1,1])for(let i=0;i<3;i++){
+ const x=side*6.1,z=-100-i*5.2;
+ boxMesh(shopInterior,1.25,3.1,3.1,displayMat,x,1.65,z);
+ boxMesh(shopInterior,1.4,.15,3.25,displayAccent,x,3.25,z);
+ for(let j=0;j<3;j++){
+  const product=new THREE.Mesh(new THREE.DodecahedronGeometry(.48,0),new THREE.MeshStandardMaterial({color:[0xffca65,0x79dfff,0xf58bd4][j],emissive:0x34204f,emissiveIntensity:.35}));
+  product.position.set(x,3.75,z-1+j);shopInterior.add(product);
+ }
+}
+boxMesh(shopInterior,7,1.25,1.6,displayMat,0,.8,-113.1);
+boxMesh(shopInterior,7.2,.15,1.75,displayAccent,0,1.5,-113.1);
+const signCanvas=document.createElement('canvas');signCanvas.width=1024;signCanvas.height=180;const signCtx=signCanvas.getContext('2d');
+const roomSign=new THREE.Mesh(new THREE.PlaneGeometry(12,2),new THREE.MeshBasicMaterial({side:THREE.DoubleSide}));
+roomSign.position.set(0,4.8,-117.7);shopInterior.add(roomSign);
+function updateRoomSign(shop){
+ signCtx.clearRect(0,0,1024,180);signCtx.fillStyle='#071126';signCtx.fillRect(0,0,1024,180);
+ signCtx.font='bold 72px Arial';signCtx.textAlign='center';signCtx.fillStyle='#fff';signCtx.shadowColor='#'+shop.color.toString(16);signCtx.shadowBlur=26;signCtx.fillText(shop.name,512,112);
+ const tex=new THREE.CanvasTexture(signCanvas);tex.colorSpace=THREE.SRGBColorSpace;
+ if(roomSign.material.map)roomSign.material.map.dispose();roomSign.material.map=tex;roomSign.material.needsUpdate=true;
+ displayAccent.color.setHex(shop.color);displayAccent.emissive.setHex(shop.color);
+}
+const roomLight=new THREE.PointLight(0x79dfff,2.5,30);roomLight.position.set(0,5,-107);shopInterior.add(roomLight);
+let activeShop=null,shopReturnPosition=null,shopReturnYaw=0;
+function shopToast(message){const el=document.getElementById('shopToast');el.textContent=message;el.style.display='block';clearTimeout(shopToast.timer);shopToast.timer=setTimeout(()=>el.style.display='none',2800)}
+function enterShop(shop){
+ shopReturnPosition=player.position.clone();shopReturnYaw=cameraYaw;activeShop=shop;
+ player.position.set(0,0,-98.5);player.rotation.y=Math.PI;cameraYaw=0;shopInterior.visible=true;updateRoomSign(shop);
+ document.getElementById('exitShopBtn').style.display='block';
+ shopToast(shop.emoji+' Bạn đã vào '+shop.name+'. Đi đến quầy ở giữa phòng và nhấn TƯƠNG TÁC để xem hàng.');
+}
+function leaveShop(){
+ if(!activeShop||!shopReturnPosition)return;
+ shopInterior.visible=false;player.position.copy(shopReturnPosition);cameraYaw=shopReturnYaw;
+ activeShop=null;shopReturnPosition=null;document.getElementById('exitShopBtn').style.display='none';
+ shopToast('Bạn đã trở lại phố mua sắm 369.');
+}
+document.getElementById('exitShopBtn').onclick=leaveShop;
 // Distant neon skyline: decorative only, outside the playable boulevard
 for(let i=0;i<22;i++){const side=i%2?1:-1;const z=10-Math.floor(i/2)*5.2;const h=8+(i*7%13);const w=2.5+(i%3)*.7;const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,3),mat(0x111a37,side<0?0x073b70:0x45134e,.28));b.position.set(side*(17+(i%4)*3),h/2,z);scene.add(b);for(let y=2;y<h;y+=3){const win=new THREE.Mesh(new THREE.BoxGeometry(w*.62,.12,.08),new THREE.MeshBasicMaterial({color:side<0?0x00bde8:0xff3bba}));win.position.set(b.position.x,y,z-1.55);scene.add(win)}}
 function labelTexture(text,color){const c=document.createElement('canvas');c.width=512;c.height=128;const ctx=c.getContext('2d');ctx.clearRect(0,0,512,128);ctx.font='bold 48px Arial';ctx.textAlign='center';ctx.lineWidth=12;ctx.strokeStyle='#080d25';ctx.strokeText(text,256,82);ctx.fillStyle='#fff';ctx.shadowColor=color;ctx.shadowBlur=28;ctx.fillText(text,256,82);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t}
@@ -193,7 +292,7 @@ joy.addEventListener('pointerdown',e=>{e.preventDefault();active=true;joyId=e.po
 const keys={};addEventListener('keydown',e=>keys[e.key.toLowerCase()]=true);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 document.getElementById('jump').onclick=()=>{if(!isJump){velocityY=8.2;isJump=true}};
 function showPanel(title,desc){document.getElementById('ptitle').textContent=title;document.getElementById('pdesc').textContent=desc;document.getElementById('panel').style.display='block'}document.getElementById('close').onclick=()=>document.getElementById('panel').style.display='none';
-document.getElementById('interact').onclick=()=>{let nearest=null,dist=1e9;for(const v of interactables){let d=Math.hypot(player.position.x-v.x,player.position.z-v.z);if(d<dist){dist=d;nearest=v}}if(nearest&&dist<9){if(nearest.name==='MALL'&&typeof openMallPanel==='function'){openMallPanel()}else showPanel(nearest.name,nearest.desc)}else showPanel('Thành phố 369','Đi đến gần một cổng neon rồi nhấn TƯƠNG TÁC để khám phá khu vực nhé!')};
+document.getElementById('interact').onclick=()=>{if(activeShop){if(Math.hypot(player.position.x,player.position.z+113.1)<4.8){openMallPanel()}else shopToast('Đi đến quầy giữa cửa hàng để xem sản phẩm và mua hàng.');return}let nearest=null,dist=1e9;for(const v of interactables){const d=Math.hypot(player.position.x-v.x,player.position.z-v.z);if(d<dist){dist=d;nearest=v}}if(nearest&&nearest.kind==='shop'&&dist<3.8){enterShop(nearest.shop)}else if(nearest&&dist<9){if(nearest.name==='MALL'&&typeof openMallPanel==='function')openMallPanel();else showPanel(nearest.name,nearest.desc)}else showPanel('Phố mua sắm 369','Điều khiển chim cánh cụt đến sát cửa một cửa hàng 3D rồi nhấn TƯƠNG TÁC để bước vào.');};
 // MULTIPLAYER: Supabase Realtime Presence + Broadcast (prototype)
 const SUPABASE_URL='https://pazfwdgmojkdblfgikwg.supabase.co';
 const SUPABASE_KEY='sb_publishable__2bDRA8f4ar1Q7O1u9jqCw_j9sA5MNv';
@@ -554,7 +653,7 @@ function sendChat(){const msg=chatInput.value.trim();if(!msg||!selectedPlayer||!
 document.getElementById('chatSend').onclick=sendChat;chatInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
 // decorative crowd penguins placed along sidewalks
 for(let i=0;i<22;i++){let p=new THREE.Group();ball(p,.38,black,0,.58,0,.9,1.2,.75,8);ball(p,.29,white,0,.58,.12,.9,1.1,.55,8);ball(p,.31,black,0,1.25,0,.9,.85,.8,8);ball(p,.25,white,0,1.22,.12,.9,.8,.55,8);ball(p,.07,orange,0,1.12,.38,1.2,.6,1,6);for(let x of [-.1,.1])ball(p,.035,eye,x,1.31,.34,1,1,.4,6);p.position.set((i%2?1:-1)*(5.5+Math.random()*1.2),0,2-Math.floor(i/2)*5.2);scene.add(p)}
-function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.04);let ix=moveX+(keys['d']?1:0)-(keys['a']?1:0),iz=moveY+(keys['s']?1:0)-(keys['w']?1:0);let l=Math.hypot(ix,iz);if(l>1){ix/=l;iz/=l}const speed=6.2;const forward=new THREE.Vector3(Math.sin(cameraYaw),0,-Math.cos(cameraYaw));const right=new THREE.Vector3(Math.cos(cameraYaw),0,Math.sin(cameraYaw));const delta=forward.multiplyScalar(-iz*speed*dt).add(right.multiplyScalar(ix*speed*dt));const nx=player.position.x+delta.x,nz=player.position.z+delta.z;if(!collides(nx,player.position.z))player.position.x=THREE.MathUtils.clamp(nx,-6.2,6.2);if(!collides(player.position.x,nz))player.position.z=THREE.MathUtils.clamp(nz,-76,13);if(l>.08){player.rotation.y=Math.atan2(delta.x,delta.z);if(!isJump)player.position.y=Math.abs(Math.sin(clock.elapsedTime*11))*.045}else if(!isJump)player.position.y=0;
+function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.04);let ix=moveX+(keys['d']?1:0)-(keys['a']?1:0),iz=moveY+(keys['s']?1:0)-(keys['w']?1:0);let l=Math.hypot(ix,iz);if(l>1){ix/=l;iz/=l}const speed=6.2;const forward=new THREE.Vector3(Math.sin(cameraYaw),0,-Math.cos(cameraYaw));const right=new THREE.Vector3(Math.cos(cameraYaw),0,Math.sin(cameraYaw));const delta=forward.multiplyScalar(-iz*speed*dt).add(right.multiplyScalar(ix*speed*dt));const nx=player.position.x+delta.x,nz=player.position.z+delta.z;const boundX=activeShop?7.5:6.2,minZ=activeShop?-116:-90,maxZ=activeShop?-96:13;if(!collides(nx,player.position.z))player.position.x=THREE.MathUtils.clamp(nx,-boundX,boundX);if(!collides(player.position.x,nz))player.position.z=THREE.MathUtils.clamp(nz,minZ,maxZ);if(l>.08){player.rotation.y=Math.atan2(delta.x,delta.z);if(!isJump)player.position.y=Math.abs(Math.sin(clock.elapsedTime*11))*.045}else if(!isJump)player.position.y=0;
 if(isJump){velocityY-=18*dt;player.position.y+=velocityY*dt;if(player.position.y<=0){player.position.y=0;velocityY=0;isJump=false}}
 const now=performance.now();if(mpReady&&mpChannel){const payload={id:guestId,name:guestName,x:player.position.x,z:player.position.z,y:player.position.y,rot:player.rotation.y};if(now-lastBroadcast>250){lastBroadcast=now;mpChannel.send({type:'broadcast',event:'move',payload}).then(result=>{if(result==='error')console.warn('Move broadcast failed')}).catch(err=>console.warn('Move broadcast:',err))}if(now-lastPresence>10000){lastPresence=now;mpChannel.track({...payload,heartbeat:Date.now()}).catch(err=>console.warn('Presence update:',err))}}
 for(const obj of remotePlayers.values()){if(obj.userData.hasPosition){obj.position.lerp(obj.userData.target,Math.min(1,dt*14));if(Number.isFinite(obj.userData.targetRot)){let d=((obj.userData.targetRot-obj.rotation.y+Math.PI*3)%(Math.PI*2))-Math.PI;obj.rotation.y+=d*Math.min(1,dt*12)}}}
