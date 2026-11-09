@@ -339,7 +339,7 @@ function createShop3D(shop){
 }
 shopCatalog.forEach(createShop3D);
 // Lối vào từng quảng trường; nhấn TƯƠNG TÁC khi đứng trước cổng để bước vào khu vực riêng.
-venues.forEach((v,i)=>interactables.push({kind:'district',districtIndex:i,x:(v.x<0?-14:14),z:v.z+4.5,name:districtRoomThemes[i].title,desc:districtRoomThemes[i].desc}));
+venues.forEach((v,i)=>interactables.push({kind:'district',districtIndex:i,x:(v.x<0?-14:14),z:v.z+4.5,name:v.name,desc:v.desc}));
 
 // Không gian nội thất riêng: người chơi được đưa vào bằng cơ chế tương tác ở cửa.
 const shopInterior=new THREE.Group();shopInterior.visible=false;scene.add(shopInterior);
