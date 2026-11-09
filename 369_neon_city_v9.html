@@ -145,6 +145,15 @@ async function startMultiplayer(){
 }
 startMultiplayer();
 
+// iPhone Safari may suspend realtime while the page is backgrounded.
+function resumeMultiplayer(reason){
+ if(document.visibilityState==='hidden')return;
+ if(!mpReady&&!mpRetryTimer&&!mpStarting)scheduleMultiplayerReconnect(reason||'RESUME');
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')resumeMultiplayer('RESUME')});
+window.addEventListener('online',()=>resumeMultiplayer('NETWORK_ONLINE'));
+window.addEventListener('pageshow',()=>resumeMultiplayer('PAGE_SHOW'));
+
 // V8: player profile stored on this device; online name is shared through presence.
 const profilePanel=document.getElementById('profilePanel');
 document.getElementById('myProfileBtn').onclick=()=>{document.getElementById('profileName').value=guestName;renderFriends();profilePanel.style.display='block'};
