@@ -28,6 +28,7 @@
  </div>
  <div style="font-size:11px;color:#cbd7ff;margin:10px 0">Tỷ lệ: 1.000 XU kiếm được = 1 COIN. XU mua bằng tiền không được đổi. COIN chỉ dùng trong hệ sinh thái game 369.</div>
  <div id="coinPolicyStatus" style="font-size:12px;color:#ffcf91;margin:8px 0">Đang kiểm tra trạng thái tính năng...</div>
+ <h3 style="font-size:14px;margin:12px 0 5px">LỊCH SỬ COIN</h3><div id="coinHistory" style="max-height:120px;overflow:auto;font-size:12px;color:#e8edff;background:#111936;padding:8px;border-radius:9px">Đang tải lịch sử...</div>
  <button id="coinRefresh" style="margin:5px 4px 5px 0">LÀM MỚI VÍ</button>
  <button id="coinExchange" disabled style="opacity:.5">ĐỔI XU SANG COIN (ĐANG KHÓA)</button>
  <p style="font-size:10px;color:#b9c4e8">Phần thưởng trong game chưa được kết nối vào ví XU kiếm được. Khi có XU kiếm được, bạn có thể đổi theo tỷ lệ 1.000 XU = 1 COIN.</p>
@@ -287,7 +288,8 @@ async function coinLoad(){
   const exchange=document.getElementById('coinExchange');
   exchange.disabled=!b.conversion_enabled;exchange.style.opacity=b.conversion_enabled?'1':'.5';
   exchange.textContent=b.conversion_enabled?'ĐỔI XU SANG COIN':'ĐỔI XU SANG COIN (ĐANG KHÓA)';
-  coinMsg('Đã kết nối ví COIN thử nghiệm.');
+  const historyBox=document.getElementById('coinHistory');const {data:history,error:historyError}=await mpClient.rpc('currency_get_my_history',{p_limit:20});if(historyError)throw historyError;historyBox.textContent='';(Array.isArray(history)?history:[]).forEach(row=>{const line=document.createElement('div');line.style.cssText='padding:5px 0;border-bottom:1px solid #34436d';const n=Number(row.amount||0);line.textContent=(row.reason||row.currency)+' · '+(n>0?'+':'')+n.toLocaleString('vi-VN')+' '+row.currency+' · '+new Date(row.created_at).toLocaleString('vi-VN');historyBox.appendChild(line)});if(!historyBox.childNodes.length)historyBox.textContent='Chưa có giao dịch COIN.';
+  coinMsg('Đã kết nối ví COIN và lịch sử giao dịch.');
  }catch(e){coinMsg('Chưa tải được ví COIN: '+(e.message||'Lỗi máy chủ'))}
 }
 document.getElementById('coinBtn').onclick=()=>{document.getElementById('panel').style.display='none';coinPanel.style.display='block';coinLoad()};
