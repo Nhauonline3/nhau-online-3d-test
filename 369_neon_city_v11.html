@@ -104,7 +104,7 @@ joy.addEventListener('pointerdown',e=>{e.preventDefault();active=true;joyId=e.po
 const keys={};addEventListener('keydown',e=>keys[e.key.toLowerCase()]=true);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 document.getElementById('jump').onclick=()=>{if(!isJump){velocityY=8.2;isJump=true}};
 function showPanel(title,desc){document.getElementById('ptitle').textContent=title;document.getElementById('pdesc').textContent=desc;document.getElementById('panel').style.display='block'}document.getElementById('close').onclick=()=>document.getElementById('panel').style.display='none';
-document.getElementById('interact').onclick=()=>{let nearest=null,dist=1e9;for(const v of interactables){let d=Math.hypot(player.position.x-v.x,player.position.z-v.z);if(d<dist){dist=d;nearest=v}}if(nearest&&dist<9)showPanel(nearest.name,nearest.desc);else showPanel('Thành phố 369','Đi đến gần một cổng neon rồi nhấn TƯƠNG TÁC để khám phá khu vực nhé!')};
+document.getElementById('interact').onclick=()=>{let nearest=null,dist=1e9;for(const v of interactables){let d=Math.hypot(player.position.x-v.x,player.position.z-v.z);if(d<dist){dist=d;nearest=v}}if(nearest&&dist<9){if(nearest.name==='MALL'&&typeof openMallPanel==='function'){openMallPanel()}else showPanel(nearest.name,nearest.desc)}else showPanel('Thành phố 369','Đi đến gần một cổng neon rồi nhấn TƯƠNG TÁC để khám phá khu vực nhé!')};
 // MULTIPLAYER: Supabase Realtime Presence + Broadcast (prototype)
 const SUPABASE_URL='https://pazfwdgmojkdblfgikwg.supabase.co';
 const SUPABASE_KEY='sb_publishable__2bDRA8f4ar1Q7O1u9jqCw_j9sA5MNv';
@@ -279,7 +279,8 @@ async function mallBuy(id,name){
  await mallLoad();if(typeof loadServerWallet==='function'&&walletUser)loadServerWallet().catch(()=>{})}
  catch(e){mallStatus('Chưa mua được: '+(e.message||'Lỗi máy chủ'))}finally{mallBusy=false}
 }
-document.getElementById('mallBtn').onclick=()=>{mallPanel.style.display='block';mallLoad().catch(e=>mallStatus('Lỗi kết nối: '+(e.message||'Không thể tải MALL')))};
+function openMallPanel(){document.getElementById('panel').style.display='none';mallPanel.style.display='block';mallLoad().catch(e=>mallStatus('Lỗi kết nối: '+(e.message||'Không thể tải MALL')))}
+document.getElementById('mallBtn').onclick=openMallPanel;
 document.getElementById('mallClose').onclick=()=>mallPanel.style.display='none';
 document.getElementById('mallSaveStore').onclick=mallSaveStore;
 document.getElementById('mallSaveProduct').onclick=mallSaveProduct;
