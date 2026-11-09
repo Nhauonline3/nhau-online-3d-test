@@ -10,7 +10,7 @@
 </style>
 
 <style>
-#storefront369{display:none;position:fixed;inset:0;z-index:1500;background:radial-gradient(circle at 50% 0%,#233d77,#080d22 68%);color:#fff;overflow:auto;touch-action:pan-y;padding:calc(14px + env(safe-area-inset-top)) 14px calc(22px + env(safe-area-inset-bottom))}
+#storefront369{display:none;position:fixed;inset:0;z-index:900;background:radial-gradient(circle at 50% 0%,#233d77,#080d22 68%);color:#fff;overflow:auto;touch-action:pan-y;padding:calc(14px + env(safe-area-inset-top)) 14px calc(22px + env(safe-area-inset-bottom))}
 #storefront369 .sf-wrap{max-width:620px;margin:0 auto}
 #storefront369 button{cursor:pointer}
 #storefront369 .sf-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
@@ -873,7 +873,7 @@ window.addEventListener('keydown',e=>{if(panel.style.display!=='block')return;co
    const title=document.createElement('b');title.textContent=item.name||'Sản phẩm';card.appendChild(title);
    const desc=document.createElement('p');desc.textContent=item.description||'Chưa có mô tả';card.appendChild(desc);
    const price=document.createElement('div');price.className='sf-price';price.textContent=Number(item.price_xu||0).toLocaleString('vi-VN')+' XU · '+Number(item.price_coin||0).toLocaleString('vi-VN')+' COIN';card.appendChild(price);
-   const buy=document.createElement('button');buy.type='button';buy.textContent='XEM / MUA SẢN PHẨM';buy.onclick=()=>{if(typeof window.openMallBuyModal==='function')window.openMallBuyModal(item.id,item.name,item.price_xu,item.stock,'XU');else{el('sfMyRating').textContent='Vui lòng mở sản phẩm trong Mall để mua hàng.'}};card.appendChild(buy);
+   const buys=document.createElement('div');buys.style.cssText='display:flex;gap:5px;margin-top:8px';const buyXu=document.createElement('button');buyXu.type='button';buyXu.textContent='MUA XU';buyXu.onclick=()=>{if(typeof window.openMallBuyModal==='function')window.openMallBuyModal(item.id,item.name,item.price_xu,item.stock,'XU')};const buyCoin=document.createElement('button');buyCoin.type='button';buyCoin.textContent='MUA COIN';buyCoin.style.background='#6043a8';buyCoin.onclick=()=>{if(typeof window.openMallBuyModal==='function')window.openMallBuyModal(item.id,item.name,item.price_coin||1,item.stock,'COIN')};buys.append(buyXu,buyCoin);card.appendChild(buys);
    grid.appendChild(card);
   });
   page.style.display='block';page.scrollTop=0;
