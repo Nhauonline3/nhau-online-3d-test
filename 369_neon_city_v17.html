@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" content="#090b20">
+<title>369 – Thành phố Neon V17</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090b20;font-family:system-ui,-apple-system,Arial;color:#fff;touch-action:none}#game{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}.top{position:fixed;top:env(safe-area-inset-top,10px);left:10px;right:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none}.brand,.status,.hint,.panel{background:#101a3bdc;border:1px solid #8aa7ff;border-radius:15px;box-shadow:0 0 16px #5b55ff55;padding:9px 12px;backdrop-filter:blur(8px)}.brand{font-weight:900;font-size:14px}.brand button{pointer-events:auto;position:relative;z-index:30;cursor:pointer}.status{font-size:11px;text-align:right}.hint{position:fixed;top:76px;left:50%;transform:translateX(-50%);font-size:12px;white-space:nowrap;pointer-events:none}.controls{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:16px;right:16px;display:flex;justify-content:space-between;align-items:flex-end;pointer-events:none}.joy{width:140px;height:140px;border-radius:50%;background:#18234ca8;border:2px solid #b5c6ff;box-shadow:0 0 16px #777bff66;position:relative;pointer-events:auto;touch-action:none}.knob{position:absolute;width:56px;height:56px;left:40px;top:40px;border-radius:50%;background:linear-gradient(#fff,#aab9ff);border:2px solid #fff;box-shadow:0 4px 12px #0008}.actions{display:flex;gap:10px;pointer-events:auto}.action{border:2px solid #d2dcff;border-radius:50%;width:60px;height:60px;background:#222e62dd;color:white;font-weight:800;font-size:12px;box-shadow:0 0 14px #7e70ff88}.action.primary{background:linear-gradient(#ffdb56,#ff9e22);color:#301a37;border-color:#fff0b5}.panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,360px);display:none;text-align:center;padding:20px;pointer-events:auto}.panel h2{margin:4px 0 8px}.panel p{font-size:14px;color:#dce4ff;line-height:1.5}.panel button{border:0;border-radius:12px;background:linear-gradient(#ffe16a,#ff9e24);padding:12px 18px;font-weight:900;color:#281b34}.bottomnote{position:fixed;bottom:calc(145px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);font-size:11px;color:#eef1ff;background:#111936b8;padding:7px 11px;border-radius:20px;white-space:nowrap;pointer-events:none}.profileActions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.chatbox{position:fixed;left:12px;right:12px;bottom:calc(150px + env(safe-area-inset-bottom,0px));max-width:420px;margin:auto;display:none;background:#101a3bf2;border:1px solid #8aa7ff;border-radius:16px;padding:12px;z-index:8;pointer-events:auto;box-shadow:0 8px 28px #0009}.chatlog{height:130px;overflow:auto;text-align:left;font-size:13px;color:#eef1ff;margin:8px 0}.chatrow{display:flex;gap:6px}.chatrow input{min-width:0;flex:1;border-radius:9px;border:1px solid #8aa7ff;background:#080d24;color:white;padding:10px}.chatrow button{border:0;border-radius:9px;background:#ffb52e;padding:0 13px;font-weight:800}.nameTag{font: bold 42px Arial;fill:white;stroke:#11152c;stroke-width:5px;paint-order:stroke;text-anchor:middle}@media(min-width:700px){.joy{width:132px;height:132px}.knob{left:38px;top:38px}.controls{max-width:900px;margin:auto;left:0;right:0}.hint{top:88px}.brand{font-size:17px}}
+</style>
+</head>
+<body>
+<div id="game"></div><div id="loaderror" style="display:none;position:fixed;left:18px;right:18px;top:45%;padding:18px;border:1px solid #ff9b9b;border-radius:16px;background:#25152beF;color:white;text-align:center;z-index:20">Không tải được thư viện đồ họa 3D. Hãy mở file bằng Safari và kiểm tra kết nối Internet, sau đó tải lại trang.</div>
+<div class="top"><div class="brand">🌃 369<br><span style="font-size:10px;font-weight:500">NEON CITY · V17</span><button id="myProfileBtn" style="display:block;margin-top:7px;border:1px solid #9cb5ff;border-radius:9px;background:#202b55;color:white;padding:6px 9px;font-size:11px">HỒ SƠ / BẠN BÈ</button><button id="walletBtn" style="display:block;margin-top:5px;border:1px solid #ffe08a;border-radius:9px;background:#47321c;color:#fff0b5;padding:6px 9px;font-size:11px">VÍ XU 369</button><button id="mallBtn" style="display:block;margin-top:5px;border:1px solid #71f4df;border-radius:9px;background:#123d4a;color:#d8fff8;padding:6px 9px;font-size:11px">MALL 369</button></div><div class="status" id="onlineStatus">🐧 Đang kết nối...<br>Phố thử nghiệm 01</div></div>
+<div class="bottomnote">369 V17 · Liên kết email có phản hồi</div>
+<div class="controls"><div class="joy" id="joy"><div class="knob" id="knob"></div></div><div class="actions"><button class="action" id="jump">NHẢY</button><button class="action primary" id="interact">TƯƠNG<br>TÁC</button></div></div>
+<div class="panel" id="panel"><h2 id="ptitle">Chào mừng!</h2><p id="pdesc">Bạn đã đến một địa điểm trên phố.</p><button id="close">ĐÓNG</button></div>
+<div class="panel" id="profilePanel" style="z-index:9"><h2>Hồ sơ người chơi</h2><p>Đặt tên hiển thị của bạn. Tên sẽ được lưu trên thiết bị này.</p><input id="profileName" maxlength="20" placeholder="Tên của bạn" style="width:100%;padding:11px;border-radius:10px;border:1px solid #8aa7ff;background:#080d24;color:white"><p id="friendSummary">Bạn bè đã lưu trên thiết bị: 0</p><div id="friendList" style="max-height:100px;overflow:auto;font-size:13px;text-align:left"></div><div class="profileActions"><button id="saveProfile">LƯU HỒ SƠ</button><button id="closeProfile">ĐÓNG</button></div></div>
+<div class="panel" id="walletPanel" style="z-index:10;width:min(92vw,390px)"><h2>💰 Ví xu 369</h2><div id="walletStatus" style="font-size:12px;color:#ffe08a">Đang kết nối ví an toàn...</div><div style="margin:12px 0;padding:14px;border-radius:14px;background:#17234b"><div style="font-size:12px;color:#cbd7ff">SỐ DƯ XU TRÊN MÁY CHỦ</div><div id="walletBalance" style="font-size:30px;font-weight:900;color:#ffe08a">-- xu</div></div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button id="refreshWallet">LÀM MỚI</button><button id="serverSpend">DÙNG 5 XU THỬ</button></div><h3 style="font-size:14px;text-align:left;margin:14px 0 5px">Lịch sử giao dịch</h3><div id="walletHistory" style="max-height:130px;overflow:auto;text-align:left;font-size:12px;color:#e8edff">Đang tải...</div><p style="font-size:11px">V10 dùng tài khoản ẩn danh Supabase. Mỗi tài khoản có ví riêng; máy chủ xác nhận số dư và giao dịch. 1.000 xu ban đầu chỉ là xu thử nghiệm, không có giá trị tiền mặt.</p><button id="closeWallet">ĐÓNG</button></div>
+<div class="panel" id="mallPanel" style="z-index:12;width:min(94vw,460px);max-height:82vh;overflow:auto;text-align:left;touch-action:pan-y">
+ <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">🛍️ MALL 369</h2><button id="mallClose" style="padding:8px 12px">ĐÓNG</button></div>
+ <div id="mallStatus" style="font-size:12px;color:#ffe08a;margin:8px 0">Đang kết nối gian hàng...</div>
+ <div style="background:#17234b;padding:12px;border-radius:12px;margin:10px 0">
+  <b>Gian hàng của tôi</b>
+  <input id="mallStoreName" maxlength="40" placeholder="Tên gian hàng" style="display:block;width:100%;margin-top:8px;padding:10px;border-radius:9px;background:#080d24;color:white;border:1px solid #8aa7ff">
+  <input id="mallStoreDesc" maxlength="240" placeholder="Mô tả gian hàng" style="display:block;width:100%;margin-top:7px;padding:10px;border-radius:9px;background:#080d24;color:white;border:1px solid #8aa7ff">
+  <button id="mallSaveStore" style="margin-top:8px">ĐĂNG KÝ / LƯU GIAN HÀNG</button>
+ </div>
+ <div style="background:#17234b;padding:12px;border-radius:12px;margin:10px 0">
+  <b>Đăng sản phẩm</b>
+  <input id="mallProductName" maxlength="60" placeholder="Tên sản phẩm" style="display:block;width:100%;margin-top:8px;padding:10px;border-radius:9px;background:#080d24;color:white;border:1px solid #8aa7ff">
+  <input id="mallProductDesc" maxlength="300" placeholder="Mô tả sản phẩm" style="display:block;width:100%;margin-top:7px;padding:10px;border-radius:9px;background:#080d24;color:white;border:1px solid #8aa7ff">
+  <label style="display:block;margin-top:9px;padding:12px;border:1px dashed #8aa7ff;border-radius:10px;color:#dce7ff">📷 HÌNH ẢNH SẢN PHẨM
+   <input id="mallProductImage" type="file" accept="image/jpeg,image/png,image/webp" style="display:block;width:100%;margin-top:8px;color:white">
+  </label>
+  <img id="mallImagePreview" alt="Xem trước hình sản phẩm" style="display:none;width:100%;max-height:260px;object-fit:contain;border-radius:10px;margin-top:8px;background:#080d24">
+  <div style="display:flex;gap:8px;margin-top:7px"><input id="mallProductPrice" type="number" min="1" max="100000000" placeholder="Giá xu" style="min-width:0;width:50%;padding:10px;border-radius:9px;background:#080d24;color:white;border:1px solid #8aa7ff"><input id="mallProductStock" type="number" min="0" max="100000" value="1" placeholder="Số lượng" style="min-width:0;width:50%;padding:10px;border-radius:9px;background:#080d24;color:white;border:1px solid #8aa7ff"></div>
+  <button id="mallSaveProduct" style="margin-top:8px">ĐĂNG BÁN</button>
+ </div>
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><b>Sản phẩm đang bán</b><button id="mallRefresh" style="padding:8px 12px">LÀM MỚI</button></div>
+ <div id="mallCatalog" style="display:grid;gap:9px;margin-top:9px"><div>Đang tải sản phẩm...</div></div><div style="margin-top:14px"><b>📦 ĐƠN HÀNG CỦA TÔI</b><div id="mallOrders" style="display:grid;gap:8px;margin-top:8px"></div></div>
+ <div style="background:#111d40;padding:12px;border:1px solid #8aa7ff;border-radius:12px;margin:10px 0">
+ <b>🔐 TÀI KHOẢN 369</b>
+ <div id="mallAuthStatus" style="font-size:12px;color:#ffe08a;margin:6px 0">Đang kiểm tra tài khoản...</div>
+ <input id="mallAuthEmail" type="email" autocomplete="email" placeholder="Email của bạn" style="width:100%;padding:11px;margin:5px 0;border-radius:8px">
+ <input id="mallAuthPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu (ít nhất 6 ký tự)" style="width:100%;padding:11px;margin:5px 0;border-radius:8px">
+ <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:7px">
+ <button id="mallAuthLink" style="padding:9px">LIÊN KẾT EMAIL</button>
+ <button id="mallAuthLogin" style="padding:9px">ĐĂNG NHẬP</button>
+ <button id="mallAuthLogout" style="padding:9px">ĐĂNG XUẤT</button>
+ </div>
+ <div style="font-size:11px;color:#cbd7ff;margin-top:7px">Liên kết email giúp giữ tài khoản hiện tại và ví xu. Hệ thống có thể gửi email xác nhận. Không chia sẻ mật khẩu hoặc mã xác minh.</div>
+ </div><div id="mallAdminWrap" style="display:none;background:#111d40;padding:12px;border:1px solid #8aa7ff;border-radius:12px;margin-top:12px">
+ <div style="display:flex;justify-content:space-between;align-items:center"><b>🛡️ QUẢN TRỊ MALL 369</b><button id="mallAdminRefresh" style="padding:7px">LÀM MỚI</button></div>
+ <div id="mallAdminSummary" style="font-size:12px;line-height:1.7;margin:8px 0">Đang kiểm tra quyền quản trị...</div>
+ <div style="border-top:1px solid #526cae;padding-top:10px;margin-top:8px"><b>Quyết toán cuối tháng</b>
+ <label style="display:block;font-size:12px;margin-top:6px">Từ ngày <input id="mallPeriodStart" type="date" style="width:100%;padding:8px;margin-top:3px"></label>
+ <label style="display:block;font-size:12px;margin-top:6px">Đến ngày <input id="mallPeriodEnd" type="date" style="width:100%;padding:8px;margin-top:3px"></label>
+ <button id="mallCreateSettlements" style="margin-top:8px">TỔNG HỢP DOANH THU NGƯỜI BÁN</button></div>
+ <div id="mallAdminSettlements" style="display:grid;gap:8px;margin-top:9px"></div><div id="mallAdminDisputes" style="display:grid;gap:8px;margin-top:9px"></div></div>
+ <p style="font-size:11px;color:#cbd7ff;line-height:1.4">Giao dịch chỉ dùng xu trong game. Khi mua thành công, máy chủ trừ xu người mua, cộng xu người bán và cập nhật tồn kho. Giao hàng thực tế do người mua và người bán tự thỏa thuận; chưa có thanh toán tiền thật.</p>
+</div>
+<div class="chatbox" id="chatbox"><div style="display:flex;justify-content:space-between;align-items:center"><b id="chatTitle">Trò chuyện</b><button id="chatClose" style="background:none;color:white;border:0;font-size:20px">✕</button></div><div class="chatlog" id="chatlog">Hãy gửi lời chào nhé!</div><div class="chatrow"><input id="chatInput" maxlength="300" placeholder="Nhập tin nhắn..."><button id="chatSend">GỬI</button></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+if (!window.THREE) { document.getElementById("loaderror").style.display="block"; throw new Error("Three.js CDN failed to load"); }
+const THREE = window.THREE;
+const host=document.getElementById('game');
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x070b20);scene.fog=new THREE.Fog(0x070b20,38,112);
+const camera=new THREE.PerspectiveCamera(62,innerWidth/innerHeight,.1,180);
+let renderer;try{renderer=new THREE.WebGLRenderer({antialias:true, powerPreference:'low-power'});}catch(err){document.getElementById('loaderror').style.display='block';document.getElementById('loaderror').textContent='iPhone không khởi tạo được đồ họa WebGL trong cửa sổ xem file. Hãy mở bằng Safari hoặc website để thử.';throw err;}renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.domElement.style.touchAction='none';renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0x8bbcff,0x170d35,2.0));const moon=new THREE.DirectionalLight(0xb7c9ff,1.8);moon.position.set(-15,28,18);moon.castShadow=true;scene.add(moon);
+const mat=(c,em=0,int=0)=>new THREE.MeshStandardMaterial({color:c,roughness:.72,emissive:em,emissiveIntensity:int});
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(150,150),mat(0x10182f));ground.rotation.x=-Math.PI/2;ground.position.y=-.08;ground.receiveShadow=true;scene.add(ground);
+// road and sidewalks
+const road=new THREE.Mesh(new THREE.PlaneGeometry(24,100),mat(0x171d38));road.rotation.x=-Math.PI/2;road.position.set(0,0,-34);road.receiveShadow=true;scene.add(road);
+// Neon boulevard edges and central spawn plaza
+for(const x of [-12,12]){const strip=new THREE.Mesh(new THREE.BoxGeometry(.12,.08,100),new THREE.MeshBasicMaterial({color:x<0?0x00eaff:0xff32c8}));strip.position.set(x,.06,-34);scene.add(strip)}
+const plaza=new THREE.Mesh(new THREE.CircleGeometry(10,64),mat(0x20264a,0x182b78,.55));plaza.rotation.x=-Math.PI/2;plaza.position.set(0,.025,5);scene.add(plaza);
+for(const r of [7.2,8.5]){const ring=new THREE.Mesh(new THREE.TorusGeometry(r,.09,8,96),new THREE.MeshBasicMaterial({color:r<8?0x00eaff:0xff35c8}));ring.rotation.x=Math.PI/2;ring.position.set(0,.12,5);scene.add(ring)}
+const core=new THREE.Mesh(new THREE.CylinderGeometry(1.2,1.8,.35,32),mat(0x263b73,0x00cfff,1.4));core.position.set(0,.2,5);scene.add(core);
+const sidewalkMat=mat(0x77758b),tileMat=mat(0xaaa0ad);for(const x of [-9.2,9.2]){let s=new THREE.Mesh(new THREE.BoxGeometry(3.4,.22,100),sidewalkMat);s.position.set(x,.04,-34);s.receiveShadow=true;scene.add(s)}
+for(let z=12;z>-82;z-=5){let stripe=new THREE.Mesh(new THREE.BoxGeometry(.12,.025,2.5),mat(0xf2d78a));stripe.position.set(0,.03,z);scene.add(stripe)}
+// buildings
+const colliders=[];const interactables=[];
+const venues=[
+ {name:'MALL',desc:'Trung tâm mua sắm 369. Khu trưng bày gian hàng và giao dịch vật phẩm trong game.',x:-8,z:0,c:0x00eaff,warm:0x00eaff},
+ {name:'EXCHANGE',desc:'Khu thông tin ví xu 369. Chức năng đổi tiền mặt hiện chưa được mở.',x:8,z:0,c:0xffc247,warm:0xffc247},
+ {name:'GAME CENTER',desc:'Trung tâm trò chơi giải trí và mini-game. Xu chỉ sử dụng trong game.',x:-8,z:-16,c:0x8c65ff,warm:0x8c65ff},
+ {name:'DRUNK STREET',desc:'Phố đêm giao lưu, âm nhạc, sân khấu và quà tặng ảo.',x:8,z:-16,c:0xff3b9d,warm:0xff3b9d},
+ {name:'WISHING PARK',desc:'Công viên điều ước và khu nhận phần thưởng theo thể lệ công khai.',x:-8,z:-32,c:0x45e69a,warm:0x45e69a},
+ {name:'RESIDENCE',desc:'Khu căn hộ riêng của người chơi. Mở khóa trang trí và nội thất ở các phiên bản sau.',x:8,z:-32,c:0x48a8ff,warm:0x48a8ff},
+ {name:'FUN PARK',desc:'Công viên trò chơi và hoạt động giải trí nhận xu thưởng trong game.',x:-8,z:-48,c:0xff8b35,warm:0xff8b35},
+ {name:'DOG RACING',desc:'Khu xem đua chó mô phỏng giải trí. Chưa có đặt cược hoặc đổi thưởng tiền mặt.',x:8,z:-48,c:0xff4e5e,warm:0xff4e5e}
+];
+function building(v){
+ const g=new THREE.Group();g.position.set(v.x,0,v.z);
+ const color=v.c;
+ const base=new THREE.Mesh(new THREE.CylinderGeometry(3.1,3.5,.35,8),mat(0x172345,0x142d6c,.65));base.position.y=.18;g.add(base);
+ const pillarMat=new THREE.MeshStandardMaterial({color:0x25365f,emissive:color,emissiveIntensity:.38,metalness:.55,roughness:.35});
+ for(const side of [-1,1]){const pillar=new THREE.Mesh(new THREE.BoxGeometry(.55,4.2,.65),pillarMat);pillar.position.set(side*2.05,2.25,0);pillar.castShadow=true;g.add(pillar);const cap=new THREE.Mesh(new THREE.BoxGeometry(.9,.22,.9),new THREE.MeshBasicMaterial({color}));cap.position.set(side*2.05,4.4,0);g.add(cap)}
+ const lintel=new THREE.Mesh(new THREE.BoxGeometry(4.7,.55,.75),pillarMat);lintel.position.set(0,4.25,0);g.add(lintel);
+ const sign=new THREE.Mesh(new THREE.PlaneGeometry(5.4,1.25),new THREE.MeshBasicMaterial({map:labelTexture(v.name,'#'+color.toString(16)),transparent:true,side:THREE.DoubleSide}));sign.position.set(0,5.35,.42);g.add(sign);
+ const pad=new THREE.Mesh(new THREE.CylinderGeometry(1.55,1.55,.12,32),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.7}));pad.position.y=.42;g.add(pad);
+ const light=new THREE.PointLight(color,2.6,13);light.position.set(0,3,1.5);g.add(light);
+ scene.add(g);interactables.push({x:v.x,z:v.z,name:v.name,desc:v.desc});
+}
+venues.forEach(building);
+// Distant neon skyline: decorative only, outside the playable boulevard
+for(let i=0;i<22;i++){const side=i%2?1:-1;const z=10-Math.floor(i/2)*5.2;const h=8+(i*7%13);const w=2.5+(i%3)*.7;const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,3),mat(0x111a37,side<0?0x073b70:0x45134e,.28));b.position.set(side*(17+(i%4)*3),h/2,z);scene.add(b);for(let y=2;y<h;y+=3){const win=new THREE.Mesh(new THREE.BoxGeometry(w*.62,.12,.08),new THREE.MeshBasicMaterial({color:side<0?0x00bde8:0xff3bba}));win.position.set(b.position.x,y,z-1.55);scene.add(win)}}
+function labelTexture(text,color){const c=document.createElement('canvas');c.width=512;c.height=128;const ctx=c.getContext('2d');ctx.clearRect(0,0,512,128);ctx.font='bold 48px Arial';ctx.textAlign='center';ctx.lineWidth=12;ctx.strokeStyle='#080d25';ctx.strokeText(text,256,82);ctx.fillStyle='#fff';ctx.shadowColor=color;ctx.shadowBlur=28;ctx.fillText(text,256,82);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t}
+// Neon streetlights and small glowing planters
+function cylinder(r,h,color,x,y,z){const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,12),mat(color));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;scene.add(m);return m}
+for(let z=8;z>-58;z-=12){for(const x of [-11,11]){const pole=new THREE.Mesh(new THREE.CylinderGeometry(.08,.13,5,8),mat(0x202b4d));pole.position.set(x,2.5,z);scene.add(pole);const lamp=new THREE.Mesh(new THREE.SphereGeometry(.32,12,8),new THREE.MeshBasicMaterial({color:x<0?0x00eaff:0xff35c8}));lamp.position.set(x,5,z);scene.add(lamp);const light=new THREE.PointLight(x<0?0x00cfff:0xff35c8,1.5,10);light.position.set(x,4.5,z);scene.add(light)}}
+// simple pixel penguin player, low-poly/blocky silhouette
+const player=new THREE.Group();scene.add(player);const black=mat(0x171923),white=mat(0xf4f1ec),orange=mat(0xffa32b),eye=mat(0x090b12);
+function ball(parent,r,material,x,y,z,sx=1,sy=1,sz=1,seg=10){let m=new THREE.Mesh(new THREE.SphereGeometry(r,seg,Math.max(6,seg-2)),material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=true;parent.add(m);return m}
+ball(player,.72,black,0,1.15,0,.88,1.2,.72,10);ball(player,.59,white,0,1.12,.28,.78,1.06,.56,10);ball(player,.58,black,0,2.25,0,.9,.88,.78,10);ball(player,.48,white,0,2.2,.28,.9,.86,.55,10);ball(player,.12,orange,0,2.05,.78,1.2,.65,1,8);for(let x of [-.2,.2])ball(player,.07,eye,x,2.34,.73,1,1,.45,8);for(let x of [-.66,.66]){let wing=ball(player,.25,black,x,1.2,0,.55,1.4,.55,8);wing.rotation.z=x<0?-.35:.35}for(let x of [-.3,.3]){let foot=new THREE.Mesh(new THREE.BoxGeometry(.42,.16,.48),orange);foot.position.set(x,.12,.1);player.add(foot)}
+player.position.set(0,0,5);player.add(makeNameTag('Bạn'));
+// Third-person camera: joystick moves relative to camera direction; drag the scene to look around.
+let cameraYaw=0,moveX=0,moveY=0,velocityY=0,isJump=false;const clock=new THREE.Clock();
+function collides(nx,nz){for(const c of colliders){if(Math.abs(nx-c.x)<c.w/2&&Math.abs(nz-c.z)<c.d/2)return true}return false}
+// Larger, calibrated joystick with pointer capture and a small dead zone.
+const joy=document.getElementById('joy'),knob=document.getElementById('knob');let active=false,joyId=null;
+function setJoy(e){const r=joy.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const max=Math.min(r.width,r.height)*.34,len=Math.hypot(dx,dy);if(len>max){dx=dx/len*max;dy=dy/len*max}const mag=Math.hypot(dx,dy)/max;knob.style.transform=`translate(${dx}px,${dy}px)`;if(mag<.12){moveX=0;moveY=0}else{moveX=dx/max;moveY=dy/max}}
+joy.addEventListener('pointerdown',e=>{e.preventDefault();active=true;joyId=e.pointerId;joy.setPointerCapture(e.pointerId);setJoy(e)});joy.addEventListener('pointermove',e=>{if(active&&e.pointerId===joyId){e.preventDefault();setJoy(e)}});function endJoy(e){if(e&&joyId!==null&&e.pointerId!==joyId)return;active=false;joyId=null;moveX=0;moveY=0;knob.style.transform='translate(0,0)'}joy.addEventListener('pointerup',endJoy);joy.addEventListener('pointercancel',endJoy);joy.addEventListener('lostpointercapture',()=>endJoy());
+// keyboard support
+const keys={};addEventListener('keydown',e=>keys[e.key.toLowerCase()]=true);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+document.getElementById('jump').onclick=()=>{if(!isJump){velocityY=8.2;isJump=true}};
+function showPanel(title,desc){document.getElementById('ptitle').textContent=title;document.getElementById('pdesc').textContent=desc;document.getElementById('panel').style.display='block'}document.getElementById('close').onclick=()=>document.getElementById('panel').style.display='none';
+document.getElementById('interact').onclick=()=>{let nearest=null,dist=1e9;for(const v of interactables){let d=Math.hypot(player.position.x-v.x,player.position.z-v.z);if(d<dist){dist=d;nearest=v}}if(nearest&&dist<9){if(nearest.name==='MALL'&&typeof openMallPanel==='function'){openMallPanel()}else showPanel(nearest.name,nearest.desc)}else showPanel('Thành phố 369','Đi đến gần một cổng neon rồi nhấn TƯƠNG TÁC để khám phá khu vực nhé!')};
+// MULTIPLAYER: Supabase Realtime Presence + Broadcast (prototype)
+const SUPABASE_URL='https://pazfwdgmojkdblfgikwg.supabase.co';
+const SUPABASE_KEY='sb_publishable__2bDRA8f4ar1Q7O1u9jqCw_j9sA5MNv';
+const onlineStatus=document.getElementById('onlineStatus');
+const guestId=(()=>{let id=localStorage.getItem('369_guest_id');if(!id){id='guest-'+Math.random().toString(36).slice(2,10);localStorage.setItem('369_guest_id',id)}return id})();
+const defaultGuestName='Khách '+guestId.slice(-4).toUpperCase();
+let guestName=localStorage.getItem('369_display_name')||defaultGuestName;
+let friends=JSON.parse(localStorage.getItem('369_friends')||'[]');
+function saveFriends(){localStorage.setItem('369_friends',JSON.stringify(friends.slice(0,100)));renderFriends()}
+function renderFriends(){const box=document.getElementById('friendList');if(!box)return;box.textContent='';friends.forEach(f=>{const row=document.createElement('div');row.textContent='🐧 '+f.name;row.style.padding='5px 2px';box.appendChild(row)});document.getElementById('friendSummary').textContent='Bạn bè đã lưu trên thiết bị: '+friends.length}
+const remotePlayers=new Map();
+let mpClient=null,mpChannel=null,mpReady=false,lastBroadcast=0,lastPresence=0,mpRetryTimer=null,mpRetryDelay=2000,mpStarting=false;
+function makeNameTag(name){const c=document.createElement('canvas');c.width=512;c.height=100;const ctx=c.getContext('2d');ctx.font='bold 42px Arial';ctx.textAlign='center';ctx.lineWidth=8;ctx.strokeStyle='#10152d';ctx.strokeText(name,256,65);ctx.fillStyle='#ffffff';ctx.fillText(name,256,65);const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));sp.scale.set(3.8,.75,1);sp.position.y=3.45;return sp}
+function makeRemoteAvatar(name){const g=new THREE.Group();const b=mat(0x262936),w=mat(0xf4f1ec),o=mat(0xffa32b),e=mat(0x090b12);ball(g,.72,b,0,1.15,0,.88,1.2,.72,10);ball(g,.59,w,0,1.12,.28,.78,1.06,.56,10);ball(g,.58,b,0,2.25,0,.9,.88,.78,10);ball(g,.48,w,0,2.2,.28,.9,.86,.55,10);ball(g,.12,o,0,2.05,.78,1.2,.65,1,8);for(const x of [-.2,.2])ball(g,.07,e,x,2.34,.73,1,1,.45,8);for(const x of [-.66,.66])ball(g,.25,b,x,1.2,0,.55,1.4,.55,8);for(const x of [-.3,.3]){const f=new THREE.Mesh(new THREE.BoxGeometry(.42,.16,.48),o);f.position.set(x,.12,.1);g.add(f)}g.add(makeNameTag(name||'Khách'));g.userData.playerId='';g.userData.playerName=name||'Khách';g.userData.target=new THREE.Vector3();scene.add(g);return g}
+function updateRemote(id,state){if(!state||id===guestId)return;let obj=remotePlayers.get(id);if(!obj){obj=makeRemoteAvatar(state.name);obj.userData.playerId=id;remotePlayers.set(id,obj)}const x=Number(state.x),z=Number(state.z);if(Number.isFinite(x)&&Number.isFinite(z)){const y=Number(state.y);obj.userData.target.set(THREE.MathUtils.clamp(x,-6.2,6.2),Number.isFinite(y)?THREE.MathUtils.clamp(y,0,2.5):0,THREE.MathUtils.clamp(z,-76,13));if(!obj.userData.hasPosition){obj.position.copy(obj.userData.target);obj.userData.hasPosition=true}}if(Number.isFinite(Number(state.rot)))obj.userData.targetRot=Number(state.rot);if(state.name)obj.userData.playerName=state.name;refreshOnlineCount()}
+function refreshOnlineCount(){onlineStatus.innerHTML='🐧 '+(1+remotePlayers.size)+' người đang online<br>Phố thử nghiệm 01'}
+function removeRemote(id){const obj=remotePlayers.get(id);if(obj){scene.remove(obj);remotePlayers.delete(id)}refreshOnlineCount()}
+function scheduleMultiplayerReconnect(reason){
+ if(mpRetryTimer)return;
+ mpReady=false;
+ const wait=mpRetryDelay;
+ onlineStatus.innerHTML='🐧 Mất kết nối ('+String(reason||'Realtime')+')<br>Đang tự kết nối lại...';
+ mpRetryDelay=Math.min(Math.round(mpRetryDelay*1.7),20000);
+ mpRetryTimer=setTimeout(async()=>{
+  mpRetryTimer=null;
+  try{if(mpClient&&mpChannel)await mpClient.removeChannel(mpChannel)}catch(err){console.warn('Remove old channel:',err)}
+  mpChannel=null;
+  startMultiplayer();
+ },wait);
+}
+async function startMultiplayer(){
+ if(mpStarting)return;
+ mpStarting=true;
+ try{
+  if(!window.supabase){onlineStatus.innerHTML='🐧 Không tải được thư viện Supabase<br>Kiểm tra Internet rồi tải lại';mpStarting=false;return}
+  if(!mpClient)mpClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{realtime:{params:{eventsPerSecond:30}}});
+  const channel=mpClient.channel('nhau-online-3d-lobby-v1',{config:{presence:{key:guestId},broadcast:{self:false,ack:false}}});
+  mpChannel=channel;
+  channel.on('presence',{event:'sync'},()=>{if(channel!==mpChannel)return;const state=channel.presenceState();const seen=new Set();for(const [id,items] of Object.entries(state)){if(id===guestId)continue;const latest=items&&items[items.length-1];if(latest){seen.add(id);updateRemote(id,latest)}}for(const id of [...remotePlayers.keys()])if(!seen.has(id))removeRemote(id);refreshOnlineCount()});
+  channel.on('presence',{event:'join'},({key,newPresences})=>{if(channel===mpChannel&&key!==guestId&&newPresences?.length)updateRemote(key,newPresences[newPresences.length-1])});
+  channel.on('presence',{event:'leave'},({key})=>{if(channel===mpChannel&&key!==guestId)removeRemote(key)});
+  channel.on('broadcast',{event:'move'},({payload})=>{if(channel===mpChannel&&payload?.id&&payload.id!==guestId)updateRemote(payload.id,payload)});
+  channel.on('broadcast',{event:'friend_request'},({payload})=>{if(channel===mpChannel&&payload&&payload.to===guestId){const from=String(payload.from||'');const name=String(payload.name||'Người chơi').slice(0,20);if(from&&!friends.some(f=>f.id===from)){friends.push({id:from,name});saveFriends();showPanel('Lời mời kết bạn',name+' đã gửi lời mời kết bạn. Đã thêm vào danh sách bạn bè trên thiết bị này.')}}});
+  channel.on('broadcast',{event:'chat'},({payload})=>{if(channel===mpChannel&&payload&&payload.to===guestId){const senderName=String(payload.name||'Người chơi').slice(0,40);selectedPlayer={id:String(payload.from||''),name:senderName};document.getElementById('chatTitle').textContent='Trò chuyện với '+senderName;chatbox.style.display='block';addChatLine(senderName,String(payload.message||'').slice(0,300));}});
+  channel.subscribe(async(status)=>{
+   if(channel!==mpChannel)return;
+   if(status==='SUBSCRIBED'){
+    mpReady=true;mpRetryDelay=2000;
+    try{const initial={id:guestId,name:guestName,x:player.position.x,z:player.position.z,y:player.position.y,rot:player.rotation.y,joined_at:new Date().toISOString()};const result=await channel.track(initial);if(result==='error')throw new Error('Presence track failed');onlineStatus.innerHTML='🐧 Đã kết nối · Đang tìm người chơi<br>Phố thử nghiệm 01';refreshOnlineCount()}
+    catch(err){console.warn('Presence track:',err);scheduleMultiplayerReconnect('TRACK_ERROR')}
+   }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED'){
+    scheduleMultiplayerReconnect(status);
+   }
+  });
+ }catch(err){console.error('Multiplayer:',err);scheduleMultiplayerReconnect('CLIENT_ERROR')}
+ finally{mpStarting=false}
+}
+startMultiplayer();
+
+// iPhone Safari may suspend realtime while the page is backgrounded.
+function resumeMultiplayer(reason){
+ if(document.visibilityState==='hidden')return;
+ if(!mpReady&&!mpRetryTimer&&!mpStarting)scheduleMultiplayerReconnect(reason||'RESUME');
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')resumeMultiplayer('RESUME')});
+window.addEventListener('online',()=>resumeMultiplayer('NETWORK_ONLINE'));
+window.addEventListener('pageshow',()=>resumeMultiplayer('PAGE_SHOW'));
+
+// V8: player profile stored on this device; online name is shared through presence.
+const profilePanel=document.getElementById('profilePanel');
+document.getElementById('myProfileBtn').onclick=()=>{document.getElementById('profileName').value=guestName;renderFriends();profilePanel.style.display='block'};
+document.getElementById('closeProfile').onclick=()=>profilePanel.style.display='none';
+document.getElementById('saveProfile').onclick=()=>{const value=document.getElementById('profileName').value.trim().replace(/[<>]/g,'').slice(0,20);if(!value){alert('Vui lòng nhập tên hiển thị.');return}guestName=value;localStorage.setItem('369_display_name',guestName);if(mpReady&&mpChannel)mpChannel.track({id:guestId,name:guestName,x:player.position.x,z:player.position.z,y:player.position.y,rot:player.rotation.y,joined_at:new Date().toISOString()});profilePanel.style.display='none';showPanel('Đã lưu hồ sơ','Tên hiển thị của bạn: '+guestName)};
+
+
+const walletPanel=document.getElementById('walletPanel');
+let walletUser=null,walletBusy=false;
+function walletMessage(msg){document.getElementById('walletStatus').textContent=msg}
+function renderServerWallet(data){
+ document.getElementById('walletBalance').textContent=Number(data.balance||0).toLocaleString('vi-VN')+' xu';
+ const box=document.getElementById('walletHistory');box.textContent='';
+ (data.transactions||[]).forEach(item=>{const row=document.createElement('div');row.style.padding='6px 2px';const amount=Number(item.amount||0);row.textContent=(item.description||'Giao dịch')+' · '+(amount>0?'+':'')+amount.toLocaleString('vi-VN')+' xu';box.appendChild(row)});
+ if(!data.transactions||!data.transactions.length)box.textContent='Chưa có giao dịch.';
+}
+async function connectWallet(){
+ if(walletBusy)return;walletBusy=true;walletMessage('Đang xác thực tài khoản...');
+ try{
+  if(!window.supabase)throw new Error('Thư viện Supabase chưa tải được.');
+  const client=mpClient||window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  const {data:sessionData,error:sessionError}=await client.auth.getSession();if(sessionError)throw sessionError;
+  let user=sessionData.session?.user;
+  if(!user){const {data,error}=await client.auth.signInAnonymously();if(error)throw error;user=data.user}
+  walletUser=user;
+  await loadServerWallet();
+ }catch(err){console.error('Wallet auth:',err);walletMessage('Chưa kết nối được ví: '+(err.message||'Lỗi xác thực')+'. Cần bật Anonymous Sign-Ins và chạy SQL V10 trong Supabase.')}
+ finally{walletBusy=false}
+}
+async function loadServerWallet(){
+ if(!walletUser)return;
+ walletMessage('Đang tải số dư từ máy chủ...');
+ const client=mpClient;
+ const {data,error}=await client.rpc('wallet_get_my_balance');
+ if(error)throw error;
+ renderServerWallet(data||{balance:0,transactions:[]});walletMessage('Đã kết nối ví máy chủ · Tài khoản riêng');
+}
+async function spendServerWallet(){
+ if(!walletUser||walletBusy)return;walletBusy=true;walletMessage('Đang xác nhận giao dịch...');
+ try{const {data,error}=await mpClient.rpc('wallet_spend_xu',{p_amount:5,p_description:'Chi tiêu thử nghiệm V10'});if(error)throw error;renderServerWallet(data);walletMessage('Giao dịch đã được máy chủ xác nhận.')}
+ catch(err){console.error('Wallet transaction:',err);walletMessage('Giao dịch chưa thực hiện: '+(err.message||'Lỗi máy chủ'))}
+ finally{walletBusy=false}
+}
+document.getElementById('walletBtn').onclick=()=>{walletPanel.style.display='block';connectWallet()};
+document.getElementById('closeWallet').onclick=()=>walletPanel.style.display='none';
+document.getElementById('refreshWallet').onclick=()=>loadServerWallet().catch(e=>walletMessage('Lỗi tải ví: '+e.message));
+document.getElementById('serverSpend').onclick=spendServerWallet;
+
+
+const mallPanel=document.getElementById('mallPanel');
+let mallBusy=false;
+function mallStatus(message){document.getElementById('mallStatus').textContent=message}
+async function ensureMallAuth(){
+ if(!window.supabase)throw new Error('Không tải được thư viện Supabase.');
+ if(!mpClient)mpClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+ const {data,error}=await mpClient.auth.getSession();if(error)throw error;
+ if(!data.session){const result=await mpClient.auth.signInAnonymously();if(result.error)throw result.error;walletUser=result.data.user}
+ else walletUser=data.session.user;
+ return mpClient;
+}
+async function mallLoad(){
+ const client=await ensureMallAuth();
+ mallStatus('Đang tải gian hàng và sản phẩm...');
+ const [store,catalog,orders]=await Promise.all([client.rpc('mall_get_my_store'),client.rpc('mall_get_catalog'),client.rpc('mall_get_my_orders')]);
+ if(store.error)throw store.error;if(catalog.error)throw catalog.error;if(orders.error)throw orders.error;
+ const mine=store.data;
+ document.getElementById('mallStoreName').value=mine?.store_name||'';
+ document.getElementById('mallStoreDesc').value=mine?.description||'';
+ const box=document.getElementById('mallCatalog');box.textContent='';
+ const items=Array.isArray(catalog.data)?catalog.data:[];
+ if(!items.length){const empty=document.createElement('div');empty.textContent='Chưa có sản phẩm. Hãy đăng ký gian hàng và đăng sản phẩm đầu tiên!';box.appendChild(empty)}
+ items.forEach(item=>{
+  const card=document.createElement('div');card.style.cssText='padding:11px;border:1px solid #657fc8;border-radius:12px;background:#111d40';
+  if(item.image_url){const photo=document.createElement('img');photo.src=item.image_url;photo.alt=item.name;photo.loading='lazy';photo.style.cssText='width:100%;height:230px;object-fit:contain;border-radius:9px;margin-bottom:8px;background:#080d24';card.appendChild(photo)}
+  const title=document.createElement('b');title.textContent=item.name;card.appendChild(title);
+  const storeName=document.createElement('div');storeName.style.cssText='font-size:11px;color:#a9c6ff;margin-top:3px';storeName.textContent='Gian hàng: '+item.store_name;card.appendChild(storeName);
+  const desc=document.createElement('div');desc.style.cssText='font-size:12px;margin-top:6px';desc.textContent=item.description||'Chưa có mô tả';card.appendChild(desc);const rating=document.createElement('div');rating.style.cssText='font-size:12px;color:#ffe08a;margin-top:5px';rating.textContent='⭐ '+(item.average_rating??'Chưa có đánh giá')+' · '+(item.review_count||0)+' đánh giá';card.appendChild(rating);
+  const footer=document.createElement('div');footer.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px';
+  const price=document.createElement('b');price.style.color='#ffe08a';price.textContent=Number(item.price_xu).toLocaleString('vi-VN')+' xu · Còn '+item.stock;footer.appendChild(price);
+  if(item.seller_id===walletUser?.id){const own=document.createElement('span');own.style.fontSize='11px';own.textContent='Sản phẩm của bạn';footer.appendChild(own)}
+  else {const buy=document.createElement('button');buy.textContent='MUA HÀNG';buy.style.padding='9px 13px';buy.onclick=()=>mallBuy(item.id,item.name);footer.appendChild(buy)}
+  card.appendChild(footer);box.appendChild(card);
+ });
+ const orderBox=document.getElementById('mallOrders');orderBox.textContent='';
+ (Array.isArray(orders.data)?orders.data:[]).forEach(o=>{
+  const row=document.createElement('div');row.style.cssText='padding:10px;border:1px solid #526cae;border-radius:10px;background:#101a39;font-size:12px';
+  const head=document.createElement('b');head.textContent='#'+o.id+' · '+o.product_name+' × '+o.quantity+' · '+o.total_xu+' xu';row.appendChild(head);
+  const state=document.createElement('div');state.style.cssText='margin:5px 0;color:#ffe08a';state.textContent='Trạng thái: '+o.status;row.appendChild(state);
+  if(o.seller_id===walletUser?.id && o.status==='awaiting_shipment'){
+   const info=document.createElement('div');info.textContent='Người nhận: '+o.recipient_name+' · '+o.recipient_phone+' · '+o.shipping_address;row.appendChild(info);
+   const ship=document.createElement('button');ship.textContent='XÁC NHẬN ĐÃ GỬI HÀNG';ship.style.marginTop='6px';ship.onclick=async()=>{const code=prompt('Mã vận đơn (nếu có):')||'';const {error}=await client.rpc('mall_mark_shipped',{p_order_id:o.id,p_tracking_code:code});if(error)mallStatus(error.message);else{mallStatus('Đã cập nhật gửi hàng.');mallLoad()}};row.appendChild(ship);
+  }
+  if(o.buyer_id===walletUser?.id && o.status==='shipped'){
+   const done=document.createElement('button');done.textContent='ĐÃ NHẬN HÀNG · XÁC NHẬN';done.style.marginTop='6px';done.onclick=async()=>{if(!confirm('Bạn đã nhận đúng hàng? Xác nhận sẽ đưa đơn vào danh sách quyết toán cuối tháng. Quản trị 369 vẫn giữ xu và trả cho người bán theo kỳ.'))return;const {error}=await client.rpc('mall_confirm_received',{p_order_id:o.id});if(error)mallStatus(error.message);else{mallStatus('Đã xác nhận nhận hàng. Xu vẫn do quản trị giữ, chờ quyết toán cuối tháng.');mallLoad()}};row.appendChild(done);
+   const report=document.createElement('button');report.textContent='BÁO CHƯA NHẬN / CÓ VẤN ĐỀ';report.style.cssText='margin:6px 0 0 6px;background:#8c2e59';report.onclick=async()=>{const reason=prompt('Mô tả vấn đề bạn gặp:');if(!reason)return;const {error}=await client.rpc('mall_report_order',{p_order_id:o.id,p_reason:reason});if(error)mallStatus(error.message);else{mallStatus('Đã tiếp nhận khiếu nại. Gian hàng tạm khóa để kiểm tra.');mallLoad()}};row.appendChild(report);
+  }
+  if(o.buyer_id===walletUser?.id && o.status==='completed'){
+   const rate=document.createElement('button');rate.textContent='ĐÁNH GIÁ GIAN HÀNG';rate.style.marginTop='6px';rate.onclick=async()=>{const stars=Number(prompt('Đánh giá từ 1 đến 5 sao:','5'));if(!stars)return;const comment=prompt('Nhận xét về gian hàng:')||'';const {error}=await client.rpc('mall_rate_store',{p_order_id:o.id,p_rating:stars,p_comment:comment});if(error)mallStatus(error.message);else{mallStatus('Cảm ơn bạn đã đánh giá!');mallLoad()}};row.appendChild(rate);
+  }
+  orderBox.appendChild(row);
+ });
+ if(!orderBox.childNodes.length){const empty=document.createElement('div');empty.style.cssText='font-size:12px;color:#cbd7ff';empty.textContent='Chưa có đơn hàng.';orderBox.appendChild(empty)}
+ mallStatus('Đã kết nối MALL · '+items.length+' sản phẩm đang bán');
+ if(walletUser)mallAdminLoad().catch(()=>{});mallAuthRefresh().catch(()=>{});
+}
+async function mallSaveStore(){
+ if(mallBusy)return;mallBusy=true;
+ try{const client=await ensureMallAuth();const {error}=await client.rpc('mall_save_store',{p_name:document.getElementById('mallStoreName').value,p_description:document.getElementById('mallStoreDesc').value});if(error)throw error;mallStatus('Đã lưu gian hàng trên máy chủ.');await mallLoad()}
+ catch(e){mallStatus('Chưa lưu được: '+(e.message||'Lỗi máy chủ'))}finally{mallBusy=false}
+}
+async function mallSaveProduct(){
+ if(mallBusy)return;mallBusy=true;
+ try{const client=await ensureMallAuth();const args={p_product_id:null,p_name:document.getElementById('mallProductName').value,p_description:document.getElementById('mallProductDesc').value,p_price_xu:Number(document.getElementById('mallProductPrice').value),p_stock:Number(document.getElementById('mallProductStock').value)};
+ const imageFile=document.getElementById('mallProductImage').files[0];
+ if(imageFile){
+  if(!['image/jpeg','image/png','image/webp'].includes(imageFile.type))throw new Error('Chỉ nhận ảnh JPG, PNG hoặc WEBP.');
+  if(imageFile.size>5*1024*1024)throw new Error('Ảnh tối đa 5 MB.');
+  mallStatus('Đang tải ảnh sản phẩm lên...');
+  const ext=imageFile.type==='image/png'?'png':imageFile.type==='image/webp'?'webp':'jpg';
+  const objectPath=walletUser.id+'/'+Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
+  const {error:uploadError}=await client.storage.from('mall-products').upload(objectPath,imageFile,{contentType:imageFile.type,upsert:false});
+  if(uploadError)throw uploadError;
+  args.p_image_url=client.storage.from('mall-products').getPublicUrl(objectPath).data.publicUrl;
+ }
+ const {error}=await client.rpc('mall_save_product',args);if(error)throw error;
+ document.getElementById('mallProductName').value='';document.getElementById('mallProductDesc').value='';document.getElementById('mallProductPrice').value='';document.getElementById('mallProductStock').value='1';document.getElementById('mallProductImage').value='';document.getElementById('mallImagePreview').style.display='none';
+ mallStatus('Đã đăng sản phẩm.');await mallLoad()}
+ catch(e){mallStatus('Chưa đăng được: '+(e.message||'Lỗi máy chủ'))}finally{mallBusy=false}
+}
+async function mallBuy(id,name){
+ if(mallBusy)return;
+ const recipient=prompt('Họ tên người nhận:');if(!recipient)return;
+ const phone=prompt('Số điện thoại người nhận:');if(!phone)return;
+ const address=prompt('Địa chỉ giao hàng đầy đủ:');if(!address)return;
+ if(!confirm('Thanh toán bằng xu trong game. Phí vận chuyển sẽ thanh toán trực tiếp cho đơn vị giao hàng. Xu của bạn được chuyển vào quỹ ký quỹ của quản trị 369. Người bán chỉ nhận xu sau khi xác nhận giao hàng và quản trị quyết toán cuối tháng. Tiếp tục mua "'+name+'"?'))return;
+ mallBusy=true;
+ try{const client=await ensureMallAuth();const {data,error}=await client.rpc('mall_buy_product',{p_product_id:id,p_quantity:1,p_recipient_name:recipient,p_recipient_phone:phone,p_shipping_address:address,p_payment_method:'xu'});if(error)throw error;
+ mallStatus('Đã tạo đơn #'+data.order_id+'. '+data.total_xu+' xu đang được giữ chờ giao hàng. Phí ship trả trực tiếp cho đơn vị vận chuyển.');
+ await mallLoad();if(typeof loadServerWallet==='function'&&walletUser)loadServerWallet().catch(()=>{})}
+ catch(e){mallStatus('Chưa mua được: '+(e.message||'Lỗi máy chủ'))}finally{mallBusy=false}
+}
+
+
+function mallAuthMessage(msg){const el=document.getElementById('mallAuthStatus');if(el)el.textContent=msg}
+async function mallAuthRefresh(){
+ try{const c=await ensureMallAuth();const {data}=await c.auth.getUser();const u=data.user;
+ mallAuthMessage(u?.is_anonymous?'Đang dùng tài khoản khách ẩn danh. Hãy liên kết email để giữ ví xu.':'Đã đăng nhập: '+(u?.email||'tài khoản 369'));
+ }catch(e){mallAuthMessage('Lỗi tài khoản: '+e.message)}
+}
+async function mallLinkEmail(){
+ const btn=document.getElementById('mallAuthLink');
+ const email=document.getElementById('mallAuthEmail').value.trim();
+ const password=document.getElementById('mallAuthPassword').value;
+ try{
+  mallAuthMessage('Đang liên kết email, vui lòng chờ...');
+  if(btn){btn.disabled=true;btn.textContent='ĐANG XỬ LÝ...'}
+  if(!email||!password||password.length<6)throw new Error('Nhập email và mật khẩu ít nhất 6 ký tự.');
+  const c=await ensureMallAuth();
+  const {data:sessionData,error:sessionError}=await c.auth.getSession();
+  if(sessionError)throw sessionError;
+  if(!sessionData.session)throw new Error('Chưa có phiên đăng nhập. Hãy tải lại trang rồi thử lại.');
+  const {data,error}=await c.auth.updateUser(
+   {email,password},
+   {emailRedirectTo:'https://nhau-online-3d-test.vercel.app/369_neon_city_v17.html'}
+  );
+  if(error)throw error;
+  mallAuthMessage('Supabase đã nhận yêu cầu liên kết email. Hãy kiểm tra Gmail và xác nhận địa chỉ mới.');
+  alert('Đã gửi yêu cầu liên kết email. Hãy kiểm tra Gmail, kể cả mục Spam.');
+ }catch(e){
+  const msg=e?.message||String(e);
+  mallAuthMessage('LIÊN KẾT THẤT BẠI: '+msg);
+  alert('Không liên kết được: '+msg);
+ }finally{
+  if(btn){btn.disabled=false;btn.textContent='LIÊN KẾT EMAIL'}
+ }
+}
+async function mallEmailLogin(){
+ try{const c=await ensureMallAuth();const email=document.getElementById('mallAuthEmail').value.trim(),password=document.getElementById('mallAuthPassword').value;
+ if(!email||!password)throw new Error('Nhập email và mật khẩu.');
+ const {error:outError}=await c.auth.signOut();if(outError)throw outError;
+ const {data,error}=await c.auth.signInWithPassword({email,password});if(error)throw error;
+ walletUser=data.user;mallAuthMessage('Đã đăng nhập: '+email);await mallLoad();
+ }catch(e){mallAuthMessage('Đăng nhập chưa thành công: '+e.message)}
+}
+async function mallEmailLogout(){
+ try{const c=await ensureMallAuth();const {error}=await c.auth.signOut();if(error)throw error;walletUser=null;mallAuthMessage('Đã đăng xuất. Tải lại trang để vào bằng tài khoản khách.');}
+ catch(e){mallAuthMessage(e.message)}
+}
+async function mallAdminLoad(){
+ const wrap=document.getElementById('mallAdminWrap');if(!wrap)return;
+ const client=await ensureMallAuth();const {data,error}=await client.rpc('mall_admin_summary');
+ if(error){wrap.style.display='none';return}wrap.style.display='block';
+ document.getElementById('mallAdminSummary').textContent='Quỹ ký quỹ: '+Number(data.escrow_balance||0).toLocaleString('vi-VN')+' xu · Đơn đang giữ: '+(data.pending_orders||0)+' · Khiếu nại: '+(data.disputes||0);
+ const settlements=document.getElementById('mallAdminSettlements');settlements.textContent='';
+ (data.settlements||[]).forEach(x=>{const row=document.createElement('div');row.style.cssText='padding:9px;border:1px solid #526cae;border-radius:9px;font-size:12px';row.textContent='Kỳ '+x.period_start+' – '+x.period_end+' · '+x.order_count+' đơn · '+Number(x.total_xu).toLocaleString('vi-VN')+' xu · '+x.status;
+ if(x.status==='pending'){const btn=document.createElement('button');btn.textContent='DUYỆT TRẢ XU';btn.style.marginTop='6px';btn.onclick=async()=>{if(!confirm('Duyệt trả '+Number(x.total_xu).toLocaleString('vi-VN')+' xu cho người bán?'))return;const {error}=await client.rpc('mall_admin_pay_settlement',{p_settlement_id:x.id});if(error)mallStatus(error.message);else{mallStatus('Đã quyết toán cho người bán.');mallAdminLoad()}};row.appendChild(btn)}settlements.appendChild(row)});
+ const disputes=document.getElementById('mallAdminDisputes');disputes.textContent='';
+ (data.orders||[]).filter(x=>x.status==='disputed').forEach(x=>{const row=document.createElement('div');row.style.cssText='padding:9px;border:1px solid #b45c77;border-radius:9px;font-size:12px';row.textContent='Khiếu nại #'+x.id+' · '+x.product_name+' · '+Number(x.total_xu).toLocaleString('vi-VN')+' xu · '+(x.buyer_report||'');
+ const refund=document.createElement('button');refund.textContent='HOÀN XU NGƯỜI MUA';refund.style.marginTop='6px';refund.onclick=async()=>{const note=prompt('Ghi kết quả xác minh và thông tin trả hàng. Phí ship trả hàng do người bán chịu:');if(!note)return;const {error}=await client.rpc('mall_admin_resolve_dispute',{p_order_id:x.id,p_resolution:'refund_buyer',p_note:note});if(error)mallStatus(error.message);else{mallStatus('Đã hoàn xu cho người mua.');mallAdminLoad()}};row.appendChild(refund);
+ const release=document.createElement('button');release.textContent='CHUYỂN VÀO CHỜ QUYẾT TOÁN';release.style.cssText='margin:6px 0 0 5px';release.onclick=async()=>{const note=prompt('Ghi lý do kết luận khiếu nại không đủ căn cứ:');if(!note)return;const {error}=await client.rpc('mall_admin_resolve_dispute',{p_order_id:x.id,p_resolution:'release_to_settlement',p_note:note});if(error)mallStatus(error.message);else{mallStatus('Đơn được chuyển vào kỳ quyết toán.');mallAdminLoad()}};row.appendChild(release);disputes.appendChild(row)});
+}
+function openMallPanel(){document.getElementById('panel').style.display='none';mallPanel.style.display='block';mallLoad().catch(e=>mallStatus('Lỗi kết nối: '+(e.message||'Không thể tải MALL')))}
+document.getElementById('mallBtn').onclick=openMallPanel;
+document.getElementById('mallClose').onclick=()=>mallPanel.style.display='none';
+document.getElementById('mallProductImage').onchange=(event)=>{const file=event.target.files[0],preview=document.getElementById('mallImagePreview');if(!file){preview.style.display='none';return}preview.src=URL.createObjectURL(file);preview.style.display='block'};
+document.getElementById('mallSaveStore').onclick=mallSaveStore;
+document.getElementById('mallSaveProduct').onclick=mallSaveProduct;
+document.getElementById('mallRefresh').onclick=()=>mallLoad().catch(e=>mallStatus('Lỗi tải: '+e.message));
+document.getElementById('mallAuthLink').onclick=mallLinkEmail;
+document.getElementById('mallAuthLogin').onclick=mallEmailLogin;
+document.getElementById('mallAuthLogout').onclick=mallEmailLogout;
+document.getElementById('mallAdminRefresh').onclick=()=>mallAdminLoad().catch(e=>mallStatus(e.message));
+document.getElementById('mallCreateSettlements').onclick=async()=>{try{const client=await ensureMallAuth(),start=document.getElementById('mallPeriodStart').value,end=document.getElementById('mallPeriodEnd').value;if(!start||!end)throw new Error('Chọn ngày bắt đầu và kết thúc.');const {data,error}=await client.rpc('mall_admin_create_monthly_settlements',{p_period_start:start,p_period_end:end});if(error)throw error;mallStatus('Đã tổng hợp '+data.created+' khoản quyết toán.');mallAdminLoad()}catch(e){mallStatus(e.message)}};
+
+let selectedPlayer=null;
+const chatbox=document.getElementById('chatbox'),chatlog=document.getElementById('chatlog'),chatInput=document.getElementById('chatInput');
+function addChatLine(who,msg){const line=document.createElement('div');line.textContent=who+': '+msg;line.style.padding='4px 0';chatlog.appendChild(line);chatlog.scrollTop=chatlog.scrollHeight}
+function openPlayerProfile(obj){selectedPlayer={id:obj.userData.playerId,name:obj.userData.playerName||'Khách'};showPanel('👋 '+selectedPlayer.name,'Người chơi đang ở Phố thử nghiệm 01. Bạn có thể kết bạn hoặc trò chuyện.');const panel=document.getElementById('panel');let actions=document.getElementById('profileChat');if(!actions){actions=document.createElement('button');actions.id='profileChat';actions.textContent='NHẮN TIN';panel.insertBefore(actions,document.getElementById('close'));actions.onclick=()=>{document.getElementById('panel').style.display='none';document.getElementById('chatTitle').textContent='Trò chuyện với '+selectedPlayer.name;chatlog.innerHTML='';chatbox.style.display='block';chatInput.focus()}}let add=document.getElementById('profileFriend');if(!add){add=document.createElement('button');add.id='profileFriend';add.textContent='KẾT BẠN';panel.insertBefore(add,document.getElementById('close'));add.onclick=()=>{if(!selectedPlayer||!mpReady)return;mpChannel.send({type:'broadcast',event:'friend_request',payload:{from:guestId,to:selectedPlayer.id,name:guestName}});if(!friends.some(f=>f.id===selectedPlayer.id)){friends.push({id:selectedPlayer.id,name:selectedPlayer.name});saveFriends()}add.textContent='ĐÃ GỬI LỜI MỜI';add.disabled=true}}add.textContent=friends.some(f=>f.id===selectedPlayer.id)?'ĐÃ LÀ BẠN':'KẾT BẠN';add.disabled=friends.some(f=>f.id===selectedPlayer.id)}
+const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();let lookPointer=null,lookStartX=0,lookStartY=0,lookMoved=false,lastLookX=0;
+renderer.domElement.addEventListener('pointerdown',e=>{if(active)return;lookPointer=e.pointerId;lookStartX=lastLookX=e.clientX;lookStartY=e.clientY;lookMoved=false;renderer.domElement.setPointerCapture?.(e.pointerId)});
+renderer.domElement.addEventListener('pointermove',e=>{if(lookPointer!==e.pointerId||active)return;const dx=e.clientX-lastLookX;const dy=e.clientY-lookStartY;if(Math.hypot(e.clientX-lookStartX,e.clientY-lookStartY)>7)lookMoved=true;if(lookMoved){cameraYaw-=dx*.006;cameraYaw=THREE.MathUtils.clamp(cameraYaw,-Math.PI*.85,Math.PI*.85)}lastLookX=e.clientX;lookStartY=e.clientY});
+renderer.domElement.addEventListener('pointerup',e=>{if(lookPointer!==e.pointerId||active)return;lookPointer=null;if(lookMoved)return;const rect=renderer.domElement.getBoundingClientRect();pointer.x=((e.clientX-rect.left)/rect.width)*2-1;pointer.y=-((e.clientY-rect.top)/rect.height)*2+1;raycaster.setFromCamera(pointer,camera);for(const root of remotePlayers.values()){const hits=raycaster.intersectObject(root,true);if(hits.length){openPlayerProfile(root);break}}});
+renderer.domElement.addEventListener('pointercancel',()=>{lookPointer=null});
+document.getElementById('chatClose').onclick=()=>chatbox.style.display='none';
+function sendChat(){const msg=chatInput.value.trim();if(!msg||!selectedPlayer||!mpReady)return;mpChannel.send({type:'broadcast',event:'chat',payload:{from:guestId,name:guestName,to:selectedPlayer.id,message:msg.slice(0,300)}});addChatLine('Bạn',msg);chatInput.value=''}
+document.getElementById('chatSend').onclick=sendChat;chatInput.addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
+// decorative crowd penguins placed along sidewalks
+for(let i=0;i<22;i++){let p=new THREE.Group();ball(p,.38,black,0,.58,0,.9,1.2,.75,8);ball(p,.29,white,0,.58,.12,.9,1.1,.55,8);ball(p,.31,black,0,1.25,0,.9,.85,.8,8);ball(p,.25,white,0,1.22,.12,.9,.8,.55,8);ball(p,.07,orange,0,1.12,.38,1.2,.6,1,6);for(let x of [-.1,.1])ball(p,.035,eye,x,1.31,.34,1,1,.4,6);p.position.set((i%2?1:-1)*(5.5+Math.random()*1.2),0,2-Math.floor(i/2)*5.2);scene.add(p)}
+function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.04);let ix=moveX+(keys['d']?1:0)-(keys['a']?1:0),iz=moveY+(keys['s']?1:0)-(keys['w']?1:0);let l=Math.hypot(ix,iz);if(l>1){ix/=l;iz/=l}const speed=6.2;const forward=new THREE.Vector3(Math.sin(cameraYaw),0,-Math.cos(cameraYaw));const right=new THREE.Vector3(Math.cos(cameraYaw),0,Math.sin(cameraYaw));const delta=forward.multiplyScalar(-iz*speed*dt).add(right.multiplyScalar(ix*speed*dt));const nx=player.position.x+delta.x,nz=player.position.z+delta.z;if(!collides(nx,player.position.z))player.position.x=THREE.MathUtils.clamp(nx,-6.2,6.2);if(!collides(player.position.x,nz))player.position.z=THREE.MathUtils.clamp(nz,-76,13);if(l>.08){player.rotation.y=Math.atan2(delta.x,delta.z);if(!isJump)player.position.y=Math.abs(Math.sin(clock.elapsedTime*11))*.045}else if(!isJump)player.position.y=0;
+if(isJump){velocityY-=18*dt;player.position.y+=velocityY*dt;if(player.position.y<=0){player.position.y=0;velocityY=0;isJump=false}}
+const now=performance.now();if(mpReady&&mpChannel){const payload={id:guestId,name:guestName,x:player.position.x,z:player.position.z,y:player.position.y,rot:player.rotation.y};if(now-lastBroadcast>100){lastBroadcast=now;mpChannel.send({type:'broadcast',event:'move',payload}).then(result=>{if(result==='error')console.warn('Move broadcast failed')}).catch(err=>console.warn('Move broadcast:',err))}if(now-lastPresence>1000){lastPresence=now;mpChannel.track({...payload,heartbeat:Date.now()}).catch(err=>console.warn('Presence update:',err))}}
+for(const obj of remotePlayers.values()){if(obj.userData.hasPosition){obj.position.lerp(obj.userData.target,Math.min(1,dt*14));if(Number.isFinite(obj.userData.targetRot)){let d=((obj.userData.targetRot-obj.rotation.y+Math.PI*3)%(Math.PI*2))-Math.PI;obj.rotation.y+=d*Math.min(1,dt*12)}}}
+const target=new THREE.Vector3(player.position.x,player.position.y+2.3,player.position.z);const camOffset=new THREE.Vector3(0,5.2,9.5);camOffset.applyAxisAngle(new THREE.Vector3(0,1,0),cameraYaw);camera.position.lerp(target.clone().add(camOffset),.14);camera.lookAt(target.x,target.y-.3,target.z-2.5);renderer.render(scene,camera)}animate();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+</script>
+</body></html>
