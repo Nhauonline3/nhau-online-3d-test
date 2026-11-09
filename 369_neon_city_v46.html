@@ -285,8 +285,9 @@ function building(v){
     const cactus=new THREE.Mesh(new THREE.CylinderGeometry(.28,.38,1.35,14),neonMint);cactus.position.set(x,.95,4.2);g.add(cactus);
     for(const side of [-1,1]){const arm=new THREE.Mesh(new THREE.CylinderGeometry(.14,.18,.62,12),neonGreen);arm.position.set(x+side*.28,1.2,4.2);arm.rotation.z=side*.65;g.add(arm)}
    }
-   glow(g,-7,2.2,4.2,0x27ff77,1.2,7);glow(g,7,2.2,4.2,0x27ff77,1.2,7);
-  else if(v.name==='EXCHANGE'){
+   glow(g,-7,2.2,4.2,0x27ff77,1.2,7);
+   glow(g,7,2.2,4.2,0x27ff77,1.2,7);
+  }else if(v.name==='EXCHANGE'){
   boxMesh(g,7,4.3,5,dark,0,2.25,-.5);boxMesh(g,7.6,.35,5.6,0xffc247,0,4.55,-.5,0xffb52e);
   for(let x of [-2.7,-.9,.9,2.7]){const col=new THREE.Mesh(new THREE.CylinderGeometry(.22,.28,3.8,12),mat(0xe4c77d,0x9c6b25,.4));col.position.set(x,2.2,2);g.add(col)}
   boxMesh(g,2.5,2.5,.15,0x1e607c,0,1.5,2.05,0x00aacc);boxMesh(g,3,.35,1.5,0xd7b66b,0,.35,3.1);
