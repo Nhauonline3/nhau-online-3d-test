@@ -14,7 +14,8 @@
 <div class="bottomnote">369 V8 · Hồ sơ và kết bạn</div>
 <div class="controls"><div class="joy" id="joy"><div class="knob" id="knob"></div></div><div class="actions"><button class="action" id="jump">NHẢY</button><button class="action primary" id="interact">TƯƠNG<br>TÁC</button></div></div>
 <div class="panel" id="panel"><h2 id="ptitle">Chào mừng!</h2><p id="pdesc">Bạn đã đến một địa điểm trên phố.</p><button id="close">ĐÓNG</button></div>
-<div class="panel" id="profilePanel" style="z-index:9"><h2>Hồ sơ người chơi</h2><p>Đặt tên hiển thị của bạn. Tên sẽ được lưu trên thiết bị này.</p><input id="profileName" maxlength="20" placeholder="Tên của bạn" style="width:100%;padding:11px;border-radius:10px;border:1px solid #8aa7ff;background:#080d24;color:white"><p id="friendSummary">Bạn bè đã lưu trên thiết bị: 0</p><div id="friendList" style="max-height:100px;overflow:auto;font-size:13px;text-align:left"></div><div class="profileActions"><button id="saveProfile">LƯU HỒ SƠ</button><button id="closeProfile">ĐÓNG</button></div></div>\n<div class="chatbox" id="chatbox"><div style="display:flex;justify-content:space-between;align-items:center"><b id="chatTitle">Trò chuyện</b><button id="chatClose" style="background:none;color:white;border:0;font-size:20px">✕</button></div><div class="chatlog" id="chatlog">Hãy gửi lời chào nhé!</div><div class="chatrow"><input id="chatInput" maxlength="300" placeholder="Nhập tin nhắn..."><button id="chatSend">GỬI</button></div></div>
+<div class="panel" id="profilePanel" style="z-index:9"><h2>Hồ sơ người chơi</h2><p>Đặt tên hiển thị của bạn. Tên sẽ được lưu trên thiết bị này.</p><input id="profileName" maxlength="20" placeholder="Tên của bạn" style="width:100%;padding:11px;border-radius:10px;border:1px solid #8aa7ff;background:#080d24;color:white"><p id="friendSummary">Bạn bè đã lưu trên thiết bị: 0</p><div id="friendList" style="max-height:100px;overflow:auto;font-size:13px;text-align:left"></div><div class="profileActions"><button id="saveProfile">LƯU HỒ SƠ</button><button id="closeProfile">ĐÓNG</button></div></div>
+<div class="chatbox" id="chatbox"><div style="display:flex;justify-content:space-between;align-items:center"><b id="chatTitle">Trò chuyện</b><button id="chatClose" style="background:none;color:white;border:0;font-size:20px">✕</button></div><div class="chatlog" id="chatlog">Hãy gửi lời chào nhé!</div><div class="chatrow"><input id="chatInput" maxlength="300" placeholder="Nhập tin nhắn..."><button id="chatSend">GỬI</button></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script>
@@ -89,7 +90,11 @@ const SUPABASE_URL='https://pazfwdgmojkdblfgikwg.supabase.co';
 const SUPABASE_KEY='sb_publishable__2bDRA8f4ar1Q7O1u9jqCw_j9sA5MNv';
 const onlineStatus=document.getElementById('onlineStatus');
 const guestId=(()=>{let id=localStorage.getItem('369_guest_id');if(!id){id='guest-'+Math.random().toString(36).slice(2,10);localStorage.setItem('369_guest_id',id)}return id})();
-const defaultGuestName='Khách '+guestId.slice(-4).toUpperCase();\nlet guestName=localStorage.getItem('369_display_name')||defaultGuestName;\nlet friends=JSON.parse(localStorage.getItem('369_friends')||'[]');\nfunction saveFriends(){localStorage.setItem('369_friends',JSON.stringify(friends.slice(0,100)));renderFriends()}\nfunction renderFriends(){const box=document.getElementById('friendList');if(!box)return;box.textContent='';friends.forEach(f=>{const row=document.createElement('div');row.textContent='🐧 '+f.name;row.style.padding='5px 2px';box.appendChild(row)});document.getElementById('friendSummary').textContent='Bạn bè đã lưu trên thiết bị: '+friends.length}
+const defaultGuestName='Khách '+guestId.slice(-4).toUpperCase();
+let guestName=localStorage.getItem('369_display_name')||defaultGuestName;
+let friends=JSON.parse(localStorage.getItem('369_friends')||'[]');
+function saveFriends(){localStorage.setItem('369_friends',JSON.stringify(friends.slice(0,100)));renderFriends()}
+function renderFriends(){const box=document.getElementById('friendList');if(!box)return;box.textContent='';friends.forEach(f=>{const row=document.createElement('div');row.textContent='🐧 '+f.name;row.style.padding='5px 2px';box.appendChild(row)});document.getElementById('friendSummary').textContent='Bạn bè đã lưu trên thiết bị: '+friends.length}
 const remotePlayers=new Map();
 let mpClient=null,mpChannel=null,mpReady=false,lastBroadcast=0,lastPresence=0,mpRetryTimer=null,mpRetryDelay=2000,mpStarting=false;
 function makeNameTag(name){const c=document.createElement('canvas');c.width=512;c.height=100;const ctx=c.getContext('2d');ctx.font='bold 42px Arial';ctx.textAlign='center';ctx.lineWidth=8;ctx.strokeStyle='#10152d';ctx.strokeText(name,256,65);ctx.fillStyle='#ffffff';ctx.fillText(name,256,65);const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));sp.scale.set(3.8,.75,1);sp.position.y=3.45;return sp}
@@ -122,7 +127,8 @@ async function startMultiplayer(){
   channel.on('presence',{event:'join'},({key,newPresences})=>{if(channel===mpChannel&&key!==guestId&&newPresences?.length)updateRemote(key,newPresences[newPresences.length-1])});
   channel.on('presence',{event:'leave'},({key})=>{if(channel===mpChannel&&key!==guestId)removeRemote(key)});
   channel.on('broadcast',{event:'move'},({payload})=>{if(channel===mpChannel&&payload?.id&&payload.id!==guestId)updateRemote(payload.id,payload)});
-  channel.on('broadcast',{event:'friend_request'},({payload})=>{if(channel===mpChannel&&payload&&payload.to===guestId){const from=String(payload.from||'');const name=String(payload.name||'Người chơi').slice(0,20);if(from&&!friends.some(f=>f.id===from)){friends.push({id:from,name});saveFriends();showPanel('Lời mời kết bạn',name+' đã gửi lời mời kết bạn. Đã thêm vào danh sách bạn bè trên thiết bị này.')}}});\n  channel.on('broadcast',{event:'chat'},({payload})=>{if(channel===mpChannel&&payload&&payload.to===guestId){const senderName=String(payload.name||'Người chơi').slice(0,40);selectedPlayer={id:String(payload.from||''),name:senderName};document.getElementById('chatTitle').textContent='Trò chuyện với '+senderName;chatbox.style.display='block';addChatLine(senderName,String(payload.message||'').slice(0,300));}});
+  channel.on('broadcast',{event:'friend_request'},({payload})=>{if(channel===mpChannel&&payload&&payload.to===guestId){const from=String(payload.from||'');const name=String(payload.name||'Người chơi').slice(0,20);if(from&&!friends.some(f=>f.id===from)){friends.push({id:from,name});saveFriends();showPanel('Lời mời kết bạn',name+' đã gửi lời mời kết bạn. Đã thêm vào danh sách bạn bè trên thiết bị này.')}}});
+  channel.on('broadcast',{event:'chat'},({payload})=>{if(channel===mpChannel&&payload&&payload.to===guestId){const senderName=String(payload.name||'Người chơi').slice(0,40);selectedPlayer={id:String(payload.from||''),name:senderName};document.getElementById('chatTitle').textContent='Trò chuyện với '+senderName;chatbox.style.display='block';addChatLine(senderName,String(payload.message||'').slice(0,300));}});
   channel.subscribe(async(status)=>{
    if(channel!==mpChannel)return;
    if(status==='SUBSCRIBED'){
@@ -137,6 +143,13 @@ async function startMultiplayer(){
  finally{mpStarting=false}
 }
 startMultiplayer();
+
+// V8: player profile stored on this device; online name is shared through presence.
+const profilePanel=document.getElementById('profilePanel');
+document.getElementById('myProfileBtn').onclick=()=>{document.getElementById('profileName').value=guestName;renderFriends();profilePanel.style.display='block'};
+document.getElementById('closeProfile').onclick=()=>profilePanel.style.display='none';
+document.getElementById('saveProfile').onclick=()=>{const value=document.getElementById('profileName').value.trim().replace(/[<>]/g,'').slice(0,20);if(!value){alert('Vui lòng nhập tên hiển thị.');return}guestName=value;localStorage.setItem('369_display_name',guestName);if(mpReady&&mpChannel)mpChannel.track({id:guestId,name:guestName,x:player.position.x,z:player.position.z,y:player.position.y,rot:player.rotation.y,joined_at:new Date().toISOString()});profilePanel.style.display='none';showPanel('Đã lưu hồ sơ','Tên hiển thị của bạn: '+guestName)};
+
 let selectedPlayer=null;
 const chatbox=document.getElementById('chatbox'),chatlog=document.getElementById('chatlog'),chatInput=document.getElementById('chatInput');
 function addChatLine(who,msg){const line=document.createElement('div');line.textContent=who+': '+msg;line.style.padding='4px 0';chatlog.appendChild(line);chatlog.scrollTop=chatlog.scrollHeight}
