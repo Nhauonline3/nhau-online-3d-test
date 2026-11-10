@@ -6,7 +6,6 @@
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#070b20;font-family:system-ui,-apple-system,sans-serif}#scene{position:fixed;inset:0}canvas{display:block;width:100%;height:100%;touch-action:none}
 .panel{position:fixed;z-index:3;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.card{background:#07152cf2;color:#fff;border:1px solid #23d8ff;border-radius:12px;padding:10px 13px;box-shadow:0 0 18px #00cfff66,inset 0 0 12px #b000ff22;pointer-events:auto}.card strong{font-size:16px;letter-spacing:.3px}.sub{font-size:10px;color:#9beeff;margin-top:2px}
-.hint{position:fixed;z-index:3;left:50%;transform:translateX(-50%);top:88px;background:#07152cf2;color:#fff;padding:9px 13px;border:1px solid #ec37ff;border-radius:10px;font-size:12px;white-space:nowrap;max-width:calc(100vw - 24px);box-shadow:0 0 16px #d000ff66}
 .bottom{position:fixed;z-index:3;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;align-items:end;gap:8px}.pill{background:#07152cf2;color:white;border:1px solid #24dfff;border-radius:10px;padding:10px 12px;font-size:12px;box-shadow:0 0 16px #00cfff55;max-width:68%}
 button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px;padding:11px 13px;font-weight:800;font-size:12px;box-shadow:0 0 16px #e000ff88}
 #shopInfo{position:fixed;z-index:4;left:50%;transform:translateX(-50%);bottom:78px;width:min(430px,calc(100vw - 28px));display:none;background:#07152cf5;color:white;border:1px solid #20ddff;border-radius:14px;padding:14px;box-shadow:0 0 24px #00cfff77}
@@ -25,7 +24,6 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 <body>
 <div id="scene"></div>
 <div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">PHỐ MUA SẮM + QUẢNG TRƯỜNG · PIXEL NEON</div></div><div class="card" style="text-align:right"><strong>🛍️ SHOPPING STREET</strong><div class="sub">8 gian hàng + quảng trường</div></div></div>
-<div class="hint">Vuốt để xoay · Chụm 2 ngón để phóng to/thu nhỏ · Chạm cửa hàng để xem</div>
 <div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p></div>
 <div id="playerJoy" aria-label="Điều khiển di chuyển"><div id="playerKnob"></div></div>
 <div id="playerActions"><button id="playerJump">🐧 NHẢY</button><button id="playerCenter">📍 THEO NHÂN VẬT</button><button id="playerPlaza">🏙️ VỀ QUẢNG TRƯỜNG</button></div>
@@ -265,13 +263,7 @@ for(const [x,z] of [[0,-17],[0,17],[-17,0],[17,0],[-12,-12],[12,-12]]){cylinder(
 // floating pixel lantern strings across the street
 for(let i=0;i<13;i++){const x=-9+i*1.5;const b=new THREE.Mesh(new THREE.BoxGeometry(.2,.2,.2),i%2?M.pink:M.cyan);b.position.set(x,10,-1+Math.sin(i*.65)*1.2);scene.add(b);point(x,10,-1+Math.sin(i*.65)*1.2,i%2?0xff28c8:0x19e5ff,.08,3)}
 // Removed vending machines to leave the walking avenue open.
-// overhead 369 CITY wayfinding portal at the far end
-box(0,8,-30,13,.35,.7,M.dark);box(0,8.2,-30,13.2,.12,.8,M.pink);const arch=new THREE.Mesh(new THREE.PlaneGeometry(10,.8),labelTexture('369 CITY  •  SHOPPING STREET','#091632','#fff16a'));arch.position.set(0,8,-29.58);scene.add(arch);
-for(const x of [-6.4,6.4]){box(x,4.1,-30,.28,7.8,.3,M.cyan);box(x,7.8,-30,.5,.3,.6,M.gold)}
-// luminous skyline backdrop, no real people, keep view focused on the shop fronts
-for(let i=0;i<12;i++){const x=-30+i*5.4,h=8+(i%4)*3;box(x,h/2,-38,3.8,h,2.8,M.dark);for(let y=1;y<h-1;y+=1.3)for(let k=-1;k<=1;k++)box(x+k*.9,y,-36.48,.48,.55,.08,i%2?M.pink:M.cyan)}
-// extra ambient fills for bright readable mobile preview
-for(const [x,z,c] of [[-15,-8,0xff28c8],[15,-8,0x19e5ff],[-15,15,0x873cff],[15,15,0xffb936],[0,0,0x328cff]])point(x,8,z,c,2.2,26);
+// Removed the overhead portal and distant skyline wall to keep the plaza sightline open.
 const initial={pos:new THREE.Vector3(0,24,48),target:new THREE.Vector3(0,2.4,0)};
 document.getElementById('reset').onclick=()=>{camera.position.copy(initial.pos);controls.target.copy(initial.target);controls.update()};
 document.getElementById('closeInfo').onclick=()=>document.getElementById('shopInfo').style.display='none';
