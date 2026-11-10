@@ -139,7 +139,7 @@ for(const side of [-1,1]){
  function textTexture(txt,bg="#07152d",fg="#7cf5ff"){const c=document.createElement("canvas");c.width=512;c.height=160;const g=c.getContext("2d");g.fillStyle=bg;g.fillRect(0,0,512,160);g.strokeStyle="#25dfff";g.lineWidth=8;g.strokeRect(5,5,502,150);g.fillStyle=fg;g.font="bold 42px monospace";g.textAlign="center";g.textBaseline="middle";g.fillText(txt,256,82,470);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return new THREE.MeshStandardMaterial({map:t,roughness:.9})}
  function sign(x,z,label,rot=0){box(x,1.5,z,5.2,2.2,.42,"dark");const p=new THREE.Mesh(new THREE.PlaneGeometry(4.9,1.8),textTexture(label));p.position.set(x,2.65,z+.225);p.rotation.y=rot;plazaGroup.add(p);for(const dx of [-2,2])box(x+dx,0,z,.18,1.6,.18,"wood")}
  function tree(x,z,scale=1){const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);plazaGroup.add(g);box(0,0,0,.7,2,.7,"wood",g);for(let i=0;i<4;i++){const w=2.5-i*.48;box(0,1.25+i*.78,0,w,.78,w,i%2?"green2":"green",g)}}
- function lamp(x,z){cylinder(x,0,z,.16,.21,5.2,"dark",8);box(x,5.05,z,1.05,.5,1.05,"gold");box(x,5.52,z,.72,.52,.72,amber);box(x,5.82,z,.9,.14,.9,cyan);const light=new THREE.PointLight(0xffd36b,1.8,13);light.position.set(x,5.35,z);plazaGroup.add(light)}
+ function lamp(x,z){cylinder(x,0,z,.16,.21,5.2,"dark",8);box(x,5.05,z,1.05,.5,1.05,"gold");box(x,5.52,z,.72,.52,.72,amber);box(x,5.82,z,.9,.14,.9,cyan);const bulb=new THREE.Mesh(new THREE.SphereGeometry(.34,12,10),new THREE.MeshBasicMaterial({color:0xfff2a6}));bulb.position.set(x,5.35,z);plazaGroup.add(bulb);const halo=new THREE.Mesh(new THREE.SphereGeometry(.62,12,10),new THREE.MeshBasicMaterial({color:0xffd36b,transparent:true,opacity:.18,depthWrite:false}));halo.position.copy(bulb.position);plazaGroup.add(halo);const light=new THREE.PointLight(0xffd36b,4.5,22);light.position.set(x,5.35,z);plazaGroup.add(light)}
  function bench(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;box(0,.65,0,2.5,.22,.75,"wood",g);box(0,1.05,-.28,2.5,.8,.2,"wood",g);for(const dx of [-.9,.9])box(dx,.15,0,.18,.8,.18,"dark",g);plazaGroup.add(g)}
 
  // Surrounding lawn and raised square LEGO platform
@@ -169,8 +169,7 @@ pSphere(0,3.18,.52,.53,.76,.20,penguinWhite);    // bụng trắng
 pSphere(0,4.18,0,.72,.68,.62,penguinDark);      // đầu
 pSphere(0,4.03,.51,.43,.43,.18,penguinWhite);   // mặt
 pSphere(-.22,4.25,.68,.075,.09,.055,penguinEye);pSphere(.22,4.25,.68,.075,.09,.055,penguinEye);
-const beak=new THREE.Mesh(new THREE.ConeGeometry(.19,.38,8),penguinOrange);beak.rotation.x=Math.PI/2;beak.position.set(0,4.02,.83);penguinGroup.add(beak);
-for(const side of [-1,1]){const wing=pSphere(side*.77,3.35,.02,.25,.66,.27,penguinDark);wing.rotation.z=side*.22;const foot=new THREE.Mesh(new THREE.SphereGeometry(.22,12,10),penguinOrange);foot.scale.set(1.25,.45,1);foot.position.set(side*.34,2.42,.25);penguinGroup.add(foot)}
+const beak=new THREE.Mesh(new THREE.ConeGeometry(.19,.38,8),penguinOrange);beak.rotation.x=Math.PI/2;beak.position.set(0,4.02,.83);penguinGroup.add(beak);\nconst jaw=new THREE.Mesh(new THREE.SphereGeometry(.16,12,10),penguinOrange);jaw.scale.set(1.25,.35,.8);jaw.position.set(0,3.91,.82);penguinGroup.add(jaw);\nconst statueWings=[];\nfor(const side of [-1,1]){const wing=pSphere(side*.77,3.35,.02,.25,.66,.27,penguinDark);wing.rotation.z=side*.22;statueWings.push({mesh:wing,side});const foot=new THREE.Mesh(new THREE.SphereGeometry(.22,12,10),penguinOrange);foot.scale.set(1.25,.45,1);foot.position.set(side*.34,2.42,.25);penguinGroup.add(foot)}
 // Khăn choàng đỏ, tai nghe neon và vương miện: mascot biểu tượng độc quyền 369 CITY
 const scarf=new THREE.Mesh(new THREE.TorusGeometry(.58,.11,8,24),penguinRed);scarf.position.set(0,3.83,.03);scarf.rotation.x=Math.PI/2;penguinGroup.add(scarf);
 const headphone=new THREE.Mesh(new THREE.TorusGeometry(.79,.13,8,32),cyan);headphone.position.set(0,4.18,0);headphone.rotation.x=Math.PI/2;penguinGroup.add(headphone);
@@ -278,7 +277,7 @@ pBall(player,.72,pBlack,0,1.15,0,.88,1.2,.72,10);pBall(player,.59,pWhite,0,1.12,
 pBall(player,.58,pBlack,0,2.25,0,.9,.88,.78,10);pBall(player,.48,pWhite,0,2.2,.28,.9,.86,.55,10);
 pBall(player,.12,pOrange,0,2.05,.78,1.2,.65,1,8);for(const x of [-.2,.2])pBall(player,.07,pEye,x,2.34,.73,1,1,.45,8);
 const pWings=[];for(const x of [-.66,.66]){const w=pBall(player,.25,pBlack,x,1.2,0,.55,1.4,.55,8);w.rotation.z=x<0?-.35:.35;pWings.push(w)}
-for(const x of [-.3,.3]){const foot=new THREE.Mesh(new THREE.BoxGeometry(.42,.16,.48),pOrange);foot.position.set(x,.12,.1);player.add(foot)}
+for(const x of [-.3,.3]){const leg=new THREE.Mesh(new THREE.CylinderGeometry(.085,.10,.34,8),pOrange);leg.position.set(x,.27,.10);player.add(leg);const foot=new THREE.Mesh(new THREE.BoxGeometry(.52,.20,.62),pOrange);foot.position.set(x,.12,.24);player.add(foot)}
 player.position.set(0,.34,-91);
 const pJoy=document.getElementById('playerJoy'),pKnob=document.getElementById('playerKnob');
 let pMoveX=0,pMoveY=0,pJoyActive=false,pJoyId=null,pJumpV=0,pJumping=false;
@@ -321,6 +320,6 @@ function updatePlayer(){
 const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
 const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.045,.22,.68);composer.addPass(bloom);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight)});
-function animate(){requestAnimationFrame(animate);controls.update();updatePlayer();composer.render()}animate();
+const mascotClock=new THREE.Clock();\nfunction animate(){requestAnimationFrame(animate);const t=mascotClock.getElapsedTime();\n // Mascot nhún nhảy nhẹ, vẫy cánh luân phiên và mỏ chuyển động như đang cười nói.\n penguinGroup.position.y=-.55+Math.max(0,Math.sin(t*2.4))*.22;\n statueWings.forEach(({mesh,side})=>{mesh.rotation.z=side*(.22+Math.max(0,Math.sin(t*3.2+(side>0?Math.PI:0)))*.78)});\n beak.scale.y=.75+Math.max(0,Math.sin(t*7))*.65;jaw.position.y=3.89-Math.max(0,Math.sin(t*7))*.10;jaw.scale.y=.25+Math.max(0,Math.sin(t*7))*.30;\n controls.update();updatePlayer();composer.render()}animate();
 </script>
 </body></html>
