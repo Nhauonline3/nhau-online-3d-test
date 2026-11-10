@@ -12,6 +12,14 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 #shopInfo{position:fixed;z-index:4;left:50%;transform:translateX(-50%);bottom:78px;width:min(430px,calc(100vw - 28px));display:none;background:#07152cf5;color:white;border:1px solid #20ddff;border-radius:14px;padding:14px;box-shadow:0 0 24px #00cfff77}
 #shopInfo strong{font-size:17px;color:#6df4ff}#shopInfo p{margin:6px 0 10px;font-size:13px;color:#d8e8ff}#closeInfo{float:right;padding:5px 9px}
 @media(min-width:700px){.card strong{font-size:20px}.sub,.hint,.pill,button{font-size:14px}}
+
+/* Player controls */
+#playerJoy{position:fixed;z-index:6;left:18px;bottom:24px;width:116px;height:116px;border-radius:50%;border:2px solid #46eaff;background:#07152caa;box-shadow:0 0 20px #00cfff88;touch-action:none;display:flex;align-items:center;justify-content:center}
+#playerKnob{width:48px;height:48px;border-radius:50%;background:linear-gradient(145deg,#43efff,#a32cff);border:2px solid #fff;box-shadow:0 0 15px #19e5ff;pointer-events:none}
+#playerActions{position:fixed;z-index:6;right:18px;bottom:28px;display:flex;flex-direction:column;gap:9px}
+#playerActions button{min-width:76px;min-height:48px}
+#playerState{position:fixed;z-index:5;left:50%;transform:translateX(-50%);bottom:18px;background:#07152ce8;color:#c9f8ff;border:1px solid #22dfff;border-radius:9px;padding:7px 10px;font-size:10px;pointer-events:none}
+@media(min-width:700px){#playerJoy{width:100px;height:100px;left:24px;bottom:24px}#playerKnob{width:42px;height:42px}}
 </style>
 </head>
 <body>
@@ -19,6 +27,9 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 <div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">PHỐ MUA SẮM · PIXEL NEON V03</div></div><div class="card" style="text-align:right"><strong>🛍️ SHOPPING STREET</strong><div class="sub">8 gian hàng · Bản thử nghiệm</div></div></div>
 <div class="hint">Vuốt để xoay · Chụm 2 ngón để phóng to/thu nhỏ · Chạm cửa hàng để xem</div>
 <div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p></div>
+<div id="playerJoy" aria-label="Điều khiển di chuyển"><div id="playerKnob"></div></div>
+<div id="playerActions"><button id="playerJump">🐧 NHẢY</button><button id="playerCenter">📍 THEO NHÂN VẬT</button></div>
+<div id="playerState">KÉO JOYSTICK ĐỂ DI CHUYỂN · CHẠM ĐỂ XEM CỬA HÀNG</div>
 <div class="bottom"><div class="pill">Bản thử nghiệm riêng · Chưa đưa vào game chính</div><button id="reset">ĐẶT LẠI GÓC NHÌN</button></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
@@ -109,9 +120,52 @@ document.getElementById('reset').onclick=()=>{camera.position.copy(initial.pos);
 document.getElementById('closeInfo').onclick=()=>document.getElementById('shopInfo').style.display='none';
 const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();renderer.domElement.addEventListener('pointerup',e=>{if(Math.abs(e.clientX-(window._downX??e.clientX))>8||Math.abs(e.clientY-(window._downY??e.clientY))>8)return;pointer.x=e.clientX/innerWidth*2-1;pointer.y=-(e.clientY/innerHeight)*2+1;ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects(shopMeshes,false);if(hits.length){const d=hits[0].object.userData.shop;document.getElementById('shopTitle').textContent=d.name;document.getElementById('shopDesc').textContent=d.desc;document.getElementById('shopInfo').style.display='block'}});
 renderer.domElement.addEventListener('pointerdown',e=>{window._downX=e.clientX;window._downY=e.clientY});
+
+// 369 CITY player: penguin avatar + mobile joystick + keyboard + jump
+const player=new THREE.Group();scene.add(player);
+const pBlack=mat(0x171923),pWhite=mat(0xf4f1ec),pOrange=mat(0xffa32b),pEye=mat(0x090b12);
+function pBall(parent,r,material,x,y,z,sx=1,sy=1,sz=1,seg=10){const m=new THREE.Mesh(new THREE.SphereGeometry(r,seg,Math.max(6,seg-2)),material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=true;parent.add(m);return m}
+pBall(player,.72,pBlack,0,1.15,0,.88,1.2,.72,10);pBall(player,.59,pWhite,0,1.12,.28,.78,1.06,.56,10);
+pBall(player,.58,pBlack,0,2.25,0,.9,.88,.78,10);pBall(player,.48,pWhite,0,2.2,.28,.9,.86,.55,10);
+pBall(player,.12,pOrange,0,2.05,.78,1.2,.65,1,8);for(const x of [-.2,.2])pBall(player,.07,pEye,x,2.34,.73,1,1,.45,8);
+const pWings=[];for(const x of [-.66,.66]){const w=pBall(player,.25,pBlack,x,1.2,0,.55,1.4,.55,8);w.rotation.z=x<0?-.35:.35;pWings.push(w)}
+for(const x of [-.3,.3]){const foot=new THREE.Mesh(new THREE.BoxGeometry(.42,.16,.48),pOrange);foot.position.set(x,.12,.1);player.add(foot)}
+player.position.set(0,0,0);
+const pJoy=document.getElementById('playerJoy'),pKnob=document.getElementById('playerKnob');
+let pMoveX=0,pMoveY=0,pJoyActive=false,pJoyId=null,pJumpV=0,pJumping=false;
+function pSetJoy(e){const r=pJoy.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const max=Math.min(r.width,r.height)*.34,len=Math.hypot(dx,dy);if(len>max){dx=dx/len*max;dy=dy/len*max}pKnob.style.transform='translate('+dx+'px,'+dy+'px)';const mag=Math.hypot(dx,dy)/max;pMoveX=mag<.1?0:dx/max;pMoveY=mag<.1?0:dy/max}
+pJoy.addEventListener('pointerdown',e=>{e.preventDefault();pJoyActive=true;pJoyId=e.pointerId;pJoy.setPointerCapture(e.pointerId);pSetJoy(e)});
+pJoy.addEventListener('pointermove',e=>{if(pJoyActive&&e.pointerId===pJoyId){e.preventDefault();pSetJoy(e)}});
+function pEndJoy(e){if(e&&pJoyId!==null&&e.pointerId!==pJoyId)return;pJoyActive=false;pJoyId=null;pMoveX=0;pMoveY=0;pKnob.style.transform='translate(0,0)'}
+pJoy.addEventListener('pointerup',pEndJoy);pJoy.addEventListener('pointercancel',pEndJoy);pJoy.addEventListener('lostpointercapture',()=>pEndJoy());
+const pKeys={};addEventListener('keydown',e=>{pKeys[e.key.toLowerCase()]=true});addEventListener('keyup',e=>{pKeys[e.key.toLowerCase()]=false});
+function pJump(){if(!pJumping){pJumpV=8;pJumping=true}}
+document.getElementById('playerJump').addEventListener('click',pJump);
+document.getElementById('playerCenter').addEventListener('click',()=>{const dx=player.position.x-controls.target.x,dz=player.position.z-controls.target.z;camera.position.x+=dx;camera.position.z+=dz;controls.target.set(player.position.x,2.1,player.position.z);controls.update()});
+let pPrev=new THREE.Vector3();const pClock=new THREE.Clock();
+function updatePlayer(){
+ const dt=Math.min(pClock.getDelta(),.04);
+ let ix=pMoveX+(pKeys['d']||pKeys['arrowright']?1:0)-(pKeys['a']||pKeys['arrowleft']?1:0);
+ let iy=pMoveY+(pKeys['s']||pKeys['arrowdown']?1:0)-(pKeys['w']||pKeys['arrowup']?1:0);
+ const len=Math.hypot(ix,iy);if(len>1){ix/=len;iy/=len}
+ // Move along the avenue; the camera's horizontal viewing direction defines forward.
+ const dir=new THREE.Vector3();camera.getWorldDirection(dir);dir.y=0;dir.normalize();
+ const right=new THREE.Vector3(dir.z,0,-dir.x);
+ const move=right.multiplyScalar(ix).add(dir.multiplyScalar(-iy));
+ const speed=7.2;const nx=THREE.MathUtils.clamp(player.position.x+move.x*speed*dt,-7.25,7.25);
+ const nz=THREE.MathUtils.clamp(player.position.z+move.z*speed*dt,-29.5,29.5);
+ player.position.x=nx;player.position.z=nz;
+ if(len>.08){player.rotation.y=Math.atan2(move.x,move.z);pWings.forEach((w,i)=>w.rotation.z=(i===0?-.35:.35)+Math.sin(performance.now()*.012)*.16)}
+ if(pJumping){pJumpV-=18*dt;player.position.y+=pJumpV*dt;if(player.position.y<=0){player.position.y=0;pJumpV=0;pJumping=false}}
+ else if(len>.08)player.position.y=Math.abs(Math.sin(performance.now()*.012))*.035;
+ const dx=player.position.x-pPrev.x,dz=player.position.z-pPrev.z;
+ if(Math.abs(dx)+Math.abs(dz)>.00001){camera.position.x+=dx;camera.position.z+=dz;controls.target.x+=dx;controls.target.z+=dz;pPrev.copy(player.position)}
+ controls.update();
+}
+
 const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
 const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.72,.62,.16);composer.addPass(bloom);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight)});
-function animate(){requestAnimationFrame(animate);controls.update();composer.render()}animate();
+function animate(){requestAnimationFrame(animate);controls.update();updatePlayer();composer.render()}animate();
 </script>
 </body></html>
