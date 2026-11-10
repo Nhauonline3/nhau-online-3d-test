@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>369 CITY – Quảng trường trung tâm | Bản thiết kế xem trước</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#b9d8df;font-family:system-ui,-apple-system,sans-serif}
+#scene{position:fixed;inset:0}canvas{display:block;width:100%;height:100%;touch-action:none}
+.panel{position:fixed;z-index:2;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none}
+.card{background:#17352c;color:#fff;border:1px solid #a7c99b;border-radius:15px;padding:11px 14px;box-shadow:0 5px 18px #14291d55;pointer-events:auto}
+.card strong{font-size:16px;letter-spacing:.3px}.sub{font-size:11px;color:#c5dfc2;margin-top:2px}
+.hint{position:fixed;z-index:2;left:50%;transform:translateX(-50%);top:86px;background:#17352c;color:#fff;padding:9px 14px;border:1px solid #a7c99b;border-radius:13px;font-size:12px;white-space:nowrap;max-width:calc(100vw - 24px)}
+.bottom{position:fixed;z-index:2;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;align-items:end;gap:8px}
+.pill{background:#17352c;color:white;border:1px solid #a7c99b;border-radius:12px;padding:9px 12px;font-size:12px;box-shadow:0 4px 12px #14291d44}
+button{background:#f3b83e;color:#282318;border:1px solid #ffe3a0;border-radius:12px;padding:10px 13px;font-weight:700;font-size:12px}
+#labels{position:fixed;inset:0;pointer-events:none;z-index:1}
+@media(min-width:700px){.card strong{font-size:20px}.sub,.hint,.pill,button{font-size:14px}}
+</style>
+</head>
+<body>
+<div id="scene"></div>
+<div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">QUẢNG TRƯỜNG TRUNG TÂM · BẢN THIẾT KẾ 01</div></div><div class="card" style="text-align:right"><strong>📍 KHU TRUNG TÂM</strong><div class="sub">Quy mô vừa · 6 lối kết nối</div></div></div>
+<div class="hint">Vuốt để xoay · Chụm 2 ngón để phóng to/thu nhỏ</div>
+<div class="bottom"><div class="pill">Mẫu LEGO 3D · Chưa đưa vào game chính</div><button id="reset">ĐẶT LẠI GÓC NHÌN</button></div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+const host=document.getElementById('scene');
+const scene=new THREE.Scene();scene.background=new THREE.Color(0xb9d8df);scene.fog=new THREE.Fog(0xb9d8df,75,145);
+const camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,250);camera.position.set(48,43,54);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.06;controls.target.set(0,1.5,0);controls.minDistance=24;controls.maxDistance=105;controls.maxPolarAngle=Math.PI*.48;
+scene.add(new THREE.HemisphereLight(0xffffff,0x78935f,2.0));const sun=new THREE.DirectionalLight(0xfff2d7,2.2);sun.position.set(-28,55,25);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-60;sun.shadow.camera.right=60;sun.shadow.camera.top=60;sun.shadow.camera.bottom=-60;scene.add(sun);
+const mats={grass:0x83b75e,edge:0xd5d0ad,cream:0xf6edc9,tile:0xe9dfbd,tile2:0xded5b3,road:0x858d8c,blue:0x55a9d9,water:0x4aa9d6,white:0xf9f4df,wood:0x94633e,green:0x39834d,green2:0x58a85a,dark:0x26332f,gold:0xf0bd48,red:0xd86c58,purple:0x6a4b8c};
+function mat(c){return new THREE.MeshStandardMaterial({color:c,roughness:.86})}
+const M={};for(const k in mats)M[k]=mat(mats[k]);
+function box(x,y,z,sx,sy,sz,material, parent=scene){const o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),typeof material==='string'?M[material]:material);o.position.set(x,y+sy/2,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
+function cylinder(x,y,z,r1,r2,h,material,seg=12){const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,seg),M[material]);o.position.set(x,y+h/2,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);return o}
+function textTexture(txt,bg='#18372e',fg='#fff1bd'){const c=document.createElement('canvas');c.width=512;c.height=160;const g=c.getContext('2d');g.fillStyle=bg;g.fillRect(0,0,512,160);g.strokeStyle='#e8d49a';g.lineWidth=10;g.strokeRect(5,5,502,150);g.fillStyle=fg;g.font='bold 42px system-ui';g.textAlign='center';g.textBaseline='middle';g.fillText(txt,256,82,470);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return new THREE.MeshStandardMaterial({map:t,roughness:.9})}
+function sign(x,z,label,rot=0){box(x,1.5,z,5.2,2.2,.42,'dark');const p=new THREE.Mesh(new THREE.PlaneGeometry(4.9,1.8),textTexture(label));p.position.set(x,2.65,z+.225);p.rotation.y=rot;scene.add(p);for(const dx of [-2,2])box(x+dx,0,z,.18,1.6,.18,'wood')}
+function tree(x,z,s=1){box(x,.0,z,.65,2*s,.65,'wood');box(x,2*s,z,2.3*s,2.1*s,2.3*s,'green');box(x-.12,3.5*s,z-.12,1.85*s,.35,1.85*s,'green2')}
+function lamp(x,z){cylinder(x,0,z,.13,.18,3.2,'dark',8);box(x,3.15,z,.75,.42,.75,'gold');box(x,3.57,z,.48,.12,.48,'cream')}
+function bench(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;box(0,.65,0,2.5,.22,.75,'wood',g);box(0,1.05,-.28,2.5,.8,.2,'wood',g);for(const dx of [-.9,.9])box(dx,.15,0,.18,.8,.18,'dark',g);scene.add(g)}
+// Surrounding lawn and raised square LEGO platform
+box(0,-.55,0,180,.5,180,'grass');
+box(0,-.12,0,46,.55,46,'edge');
+box(0,.16,0,43.8,.18,43.8,'cream');
+// checker tiles border ring
+for(let i=-20;i<=20;i+=2){box(i,.26,-20.6,1.8,.08,.75,(i/2)%2?'tile':'tile2');box(i,.26,20.6,1.8,.08,.75,(i/2)%2?'tile2':'tile');box(-20.6,.26,i,.75,.08,1.8,(i/2)%2?'tile':'tile2');box(20.6,.26,i,.75,.08,1.8,(i/2)%2?'tile2':'tile')}
+// central square plaza, paved paths to six gateways
+box(0,.27,0,24,.10,24,'tile');
+for(let i=-11;i<=11;i+=2){for(let j=-11;j<=11;j+=2){if((i+j)%4===0)box(i,.33,j,1.82,.045,1.82,'tile2')}}
+box(0,.32,-20,6,.12,10,'cream');box(0,.32,20,6,.12,10,'cream');box(-20,.32,0,10,.12,6,'cream');box(20,.32,0,10,.12,6,'cream');
+box(-14,.32,-14,6,.12,6,'cream');box(14,.32,-14,6,.12,6,'cream');
+// Fountain at center
+cylinder(0,.38,0,4.8,4.8,.38,'edge',32);cylinder(0,.76,0,4.25,4.25,.18,'blue',32);cylinder(0,.88,0,3.3,3.3,.12,'water',32);cylinder(0,1.0,0,.75,.95,1.25,'cream',16);cylinder(0,2.25,0,1.25,.75,.28,'blue',20);cylinder(0,2.53,0,.24,.24,.55,'gold',12);
+for(let i=0;i<8;i++){const a=i*Math.PI/4;box(Math.cos(a)*3.6,1.05,Math.sin(a)*3.6,.22,.42,.22,'cream')}
+// Four garden beds and small shrubs around inner square
+for(const [x,z] of [[-13,-13],[13,-13],[-13,13],[13,13]]){box(x,.34,z,4.6,.3,4.6,'green');for(const dx of [-1,1])for(const dz of [-1,1])box(x+dx,.65,z+dz,1.1,1.1,1.1,'green2')}
+// benches and lamps along square edges
+bench(-8,-5,0);bench(8,-5,Math.PI);bench(-8,5,0);bench(8,5,Math.PI);
+for(const [x,z] of [[-17,-8],[17,-8],[-17,8],[17,8],[-8,-17],[8,-17],[-8,17],[8,17]])lamp(x,z);
+// trees in perimeter landscaping
+for(const [x,z,s] of [[-20,-14,.9],[-20,14,.9],[20,-14,.9],[20,14,.9],[-14,-20,.8],[14,-20,.8],[-14,20,.8],[14,20,.8]])tree(x,z,s);
+// six labeled connections to surrounding future districts
+sign(0,-21.8,'KHU MUA SAM');sign(0,21.8,'CONG VIEN',Math.PI);
+sign(-21.8,0,'STRESS BEAR CLUB',Math.PI/2);sign(21.8,0,'DOI TIEN',-Math.PI/2);
+sign(-15.7,-15.7,'APARTMENT',Math.PI/4);sign(15.7,-15.7,'PICKLEBALL',-Math.PI/4);
+// entry markers, paving lights and decorative low bollards
+for(const [x,z] of [[0,-17],[0,17],[-17,0],[17,0],[-12,-12],[12,-12]]){cylinder(x,.35,z,.28,.28,.45,'gold',8);cylinder(x,.8,z,.12,.12,.5,'cream',8)}
+// World ground guide ring outside platform
+for(let a=0;a<64;a++){const t=a*Math.PI*2/64;box(Math.cos(t)*31,-.02,Math.sin(t)*31,.35,.06,.35,'edge')}
+const initial={pos:new THREE.Vector3(48,43,54),target:new THREE.Vector3(0,1.5,0)};
+document.getElementById('reset').addEventListener('click',()=>{camera.position.copy(initial.pos);controls.target.copy(initial.target);controls.update()});
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)}animate();
+</script>
+</body></html>
