@@ -75,36 +75,35 @@ function lamp(x,z){cube(x,0,z,.25,3,.25,'black');cube(x,3,z,.9,.55,.9,'gold')}
 for(let z=-42;z<=42;z+=12){lamp(-7,z);lamp(7,z)}for(let x=-42;x<=42;x+=12){lamp(x,-7);lamp(x,7)}
 // Blocky penguin avatar.
 const player=new THREE.Group();scene.add(player);
-// Penguin is outline-only: bold black 3D strokes, with no filled body parts.
-const penguinStroke=new THREE.MeshBasicMaterial({color:0x080b10});
-function penguinLine(points,radius=.055,closed=false){
-  const pts=points.map(p=>new THREE.Vector3(p[0],p[1],p[2]));
-  const curve=new THREE.CatmullRomCurve3(pts,closed,'catmullrom',.35);
-  const tube=new THREE.Mesh(new THREE.TubeGeometry(curve,Math.max(32,pts.length*8),radius,7,closed),penguinStroke);
-  player.add(tube);
-  return tube;
+// Rounded 3D penguin avatar, matching the earlier colored model reference.
+const penguinDark=new THREE.MeshLambertMaterial({color:0x10131f,flatShading:false});
+const penguinWhite=new THREE.MeshLambertMaterial({color:0xf3f3f7,flatShading:false});
+const penguinYellow=new THREE.MeshLambertMaterial({color:0xf2a900,flatShading:false});
+const penguinEye=new THREE.MeshLambertMaterial({color:0x080b12,flatShading:false});
+function penguinPart(x,y,z,sx,sy,sz,mat,rotationZ=0){
+  const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,24,18),mat);
+  mesh.position.set(x,y,z);
+  mesh.scale.set(sx,sy,sz);
+  mesh.rotation.z=rotationZ;
+  player.add(mesh);
+  return mesh;
 }
-function ellipseLine(cx,cy,cz,rx,ry,radius=.055){
-  const pts=[];
-  for(let i=0;i<48;i++){const a=i*Math.PI*2/48;pts.push([cx+Math.cos(a)*rx,cy+Math.sin(a)*ry,cz]);}
-  return penguinLine(pts,radius,true);
-}
-// Rounded head and plump body silhouettes.
-ellipseLine(0,1.12,0,.78,.98,.065);
-ellipseLine(0,2.18,0,.69,.69,.065);
-// Face and belly are left empty; only their bold borders are drawn.
-ellipseLine(0,2.14,.58,.49,.43,.052);
-ellipseLine(0,1.08,.60,.52,.70,.06);
-// Curved side flippers.
-penguinLine([[-.58,1.48,.08],[-.78,1.25,.08],[-.91,.93,.09],[-.88,.72,.1],[-.73,.66,.12],[-.58,.82,.14]],.065,false);
-penguinLine([[.58,1.48,.08],[.78,1.25,.08],[.91,.93,.09],[.88,.72,.1],[.73,.66,.12],[.58,.82,.14]],.065,false);
-// Eyes remain simple dark dots; beak is an empty outlined oval.
-ellipseLine(-.205,2.22,.73,.075,.09,.045);
-ellipseLine(.205,2.22,.73,.075,.09,.045);
-ellipseLine(0,1.91,.76,.19,.105,.05);
-// Feet are outlined only, with no yellow fill.
-penguinLine([[-.58,.18,.35],[-.58,.04,.35],[-.10,.04,.35],[-.08,.18,.35],[-.16,.23,.35],[-.50,.23,.35]],.055,true);
-penguinLine([[.08,.18,.35],[.10,.04,.35],[.58,.04,.35],[.58,.18,.35],[.50,.23,.35],[.16,.23,.35]],.055,true);
+// Smooth rounded black body and head.
+penguinPart(0,1.05,0,.77,.98,.59,penguinDark);
+penguinPart(0,2.12,0,.68,.69,.61,penguinDark);
+// White oval belly with visible black border.
+penguinPart(0,1.04,.505,.53,.71,.16,penguinWhite);
+// White face area.
+penguinPart(0,2.13,.565,.47,.435,.145,penguinWhite);
+// Short rounded flippers.
+penguinPart(-.72,.94,.015,.22,.59,.25,penguinDark,-.28);
+penguinPart(.72,.94,.015,.22,.59,.25,penguinDark,.28);
+// Eyes, yellow beak and yellow feet.
+penguinPart(-.205,2.19,.704,.085,.105,.075,penguinEye);
+penguinPart(.205,2.19,.704,.085,.105,.075,penguinEye);
+penguinPart(0,1.91,.755,.205,.125,.15,penguinYellow);
+penguinPart(-.29,.12,.22,.31,.105,.39,penguinYellow);
+penguinPart(.29,.12,.22,.31,.105,.39,penguinYellow);
 player.position.set(0,0,5);
 // Camera: free orbit around the player (drag to rotate, pinch/wheel to zoom).
 let yaw=0,pitch=.45,distance=13,drag=null,lastX=0,lastY=0,pinchStart=0;
