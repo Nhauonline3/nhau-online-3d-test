@@ -198,39 +198,34 @@ adBoard(15,8.2,-17.25,4.4,2.5,'ARCADE 369',pink,0);
 adBoard(-15,6.5,16.25,4.0,2.2,'LIVE SHOW',cyan,Math.PI);
 adBoard(15,7.2,16.25,4.0,2.2,'PLAY TOGETHER',pink,Math.PI);
 
-// Compact advertising screen moved to the right-side plaza zone
-// Kept lower than the nearby towers and sized to fit the marked area.
+// Clearly relocated low billboard on the far-right edge of the plaza
 function heroBillboard(){
- const x=10.8,y=4.55,z=-7.8;
- // Two slim supports keep the sign grounded without blocking the skyline
- for(const sx of [-3.35,3.35]){
-   box(x+sx,2.0,z,.34,3.8,.42,'dark');
-   box(x+sx,2.0,z+.25,.09,3.45,.08,sx<0?cyan:pink);
-   box(x+sx,3.95,z,.62,.16,.62,amber);
-   box(x+sx,.28,z,.78,.34,.78,'dark');
+ const x=14.1,y=3.35,z=-8.2;
+ // Short supports and compact frame; keep the skyline visible above it
+ for(const sx of [-2.85,2.85]){
+   box(x+sx,1.55,z,.28,2.9,.34,'dark');
+   box(x+sx,1.55,z+.22,.08,2.65,.07,sx<0?cyan:pink);
+   box(x+sx,2.95,z,.52,.14,.52,amber);
+   box(x+sx,.28,z,.66,.3,.66,'dark');
  }
- // A medium-width portrait-friendly LED panel, well below tower rooftops
- box(x,y,z,7.45,3.65,.48,'dark');
- box(x,y,z+.29,7.12,3.34,.12,violet);
- const screen=new THREE.Mesh(new THREE.PlaneGeometry(6.86,3.08),textTexture('369 CITY  •  SHOPPING  •  GAMES','#07132f','#ffffff'));
- screen.position.set(x,y,z+.39);scene.add(screen);
- box(x,y+1.76,z+.42,7.35,.12,.16,cyan);
- box(x,y-1.76,z+.42,7.35,.12,.16,pink);
- for(const sx of [-3.62,3.62])box(x+sx,y,z+.42,.12,3.55,.16,cyan);
- // Small crown emblem and a restrained lower slogan strip
- const crown=new THREE.Mesh(new THREE.OctahedronGeometry(.38,0),new THREE.MeshStandardMaterial({color:0xffd44d,emissive:0xff9b19,emissiveIntensity:1.2}));
- crown.position.set(x,y+1.05,z+.55);scene.add(crown);
- const subtitle=new THREE.Mesh(new THREE.PlaneGeometry(5.4,.34),textTexture('ADVERTISE  •  369 CITY','#10133b','#ffe56b'));
- subtitle.position.set(x,y-.92,z+.47);scene.add(subtitle);
- const glow=new THREE.PointLight(0x19cfff,3.5,18);glow.position.set(x,y+1,z+2);scene.add(glow);
- // Low flower planters beneath the display
- for(const sx of [-2.35,2.35]){
-   box(x+sx,.42,z+.9,1.65,.48,.82,'dark');
-   box(x+sx,.68,z+.9,1.52,.12,.72,cyan);
-   for(let i=0;i<5;i++){
-     const flower=new THREE.Mesh(new THREE.SphereGeometry(.13,8,8),new THREE.MeshStandardMaterial({color:i%2?0xff35c9:0xffd45b,emissive:i%2?0x8d145d:0x8a6515,emissiveIntensity:.55}));
-     flower.position.set(x+sx-.55+i*.27,1.02,z+.9);scene.add(flower);
-   }
+ box(x,y,z,6.35,2.75,.42,'dark');
+ box(x,y,z+.25,6.08,2.48,.10,violet);
+ const screen=new THREE.Mesh(new THREE.PlaneGeometry(5.82,2.24),textTexture('369 CITY  •  SHOPPING  •  GAMES','#07132f','#ffffff'));
+ screen.position.set(x,y,z+.34);scene.add(screen);
+ box(x,y+1.32,z+.37,6.25,.10,.14,cyan);
+ box(x,y-1.32,z+.37,6.25,.10,.14,pink);
+ for(const sx of [-3.08,3.08])box(x+sx,y,z+.37,.10,2.65,.14,cyan);
+ const crown=new THREE.Mesh(new THREE.OctahedronGeometry(.30,0),new THREE.MeshStandardMaterial({color:0xffd44d,emissive:0xff9b19,emissiveIntensity:1.2}));
+ crown.position.set(x,y+.78,z+.48);scene.add(crown);
+ const subtitle=new THREE.Mesh(new THREE.PlaneGeometry(4.5,.25),textTexture('WELCOME  •  369 CITY','#10133b','#ffe56b'));
+ subtitle.position.set(x,y-.78,z+.42);scene.add(subtitle);
+ const glow=new THREE.PointLight(0x19cfff,3.2,16);glow.position.set(x,y+.7,z+1.6);scene.add(glow);
+ // Small flower bed at the foot of the sign
+ box(x,.48,z+1.0,5.9,.42,.72,'dark');
+ box(x,.70,z+1.0,5.65,.10,.62,cyan);
+ for(let i=0;i<15;i++){
+   const flower=new THREE.Mesh(new THREE.SphereGeometry(.11,8,8),new THREE.MeshStandardMaterial({color:i%2?0xff35c9:0xffd45b,emissive:i%2?0x8d145d:0x8a6515,emissiveIntensity:.55}));
+   flower.position.set(x-2.55+i*.36,.98,z+1.0);scene.add(flower);
  }
 }
 heroBillboard();
