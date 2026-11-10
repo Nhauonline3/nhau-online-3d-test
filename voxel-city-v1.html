@@ -75,10 +75,24 @@ function lamp(x,z){cube(x,0,z,.25,3,.25,'black');cube(x,3,z,.9,.55,.9,'gold')}
 for(let z=-42;z<=42;z+=12){lamp(-7,z);lamp(7,z)}for(let x=-42;x<=42;x+=12){lamp(x,-7);lamp(x,7)}
 // Blocky penguin avatar.
 const player=new THREE.Group();scene.add(player);
-const penguinBlack=new THREE.MeshLambertMaterial({color:0x202631}),penguinWhite=new THREE.MeshLambertMaterial({color:0xf5f1e8}),orange=new THREE.MeshLambertMaterial({color:0xffa52e}),eye=new THREE.MeshLambertMaterial({color:0x101018});
-cube(0,0,0,.01,.01,.01,'grass',player);
-function pc(x,y,z,w,h,d,m){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y+h/2,z);player.add(o);return o}
-pc(0,.25,0,1.25,1.5,1,penguinBlack);pc(0,.65,.53,.85,.9,.12,penguinWhite);pc(0,1.75,0,1.1,1.05,.95,penguinBlack);pc(0,1.85,.51,.78,.7,.12,penguinWhite);pc(0,1.55,.7,.35,.2,.35,orange);for(const x of [-.2,.2])pc(x,1.98,.64,.12,.15,.08,eye);for(const x of [-.45,.45])pc(x,.65,0,.28,.9,.35,penguinBlack);for(const x of [-.28,.28])pc(x,.08,.2,.42,.16,.55,orange);
+// Penguin line-art only: transparent interiors, dark outlines, no filled colors.
+const outlineMaterial=new THREE.LineBasicMaterial({color:0x17221d});
+function pc(x,y,z,w,h,d){
+  const geometry=new THREE.EdgesGeometry(new THREE.BoxGeometry(w,h,d),1);
+  const lines=new THREE.LineSegments(geometry,outlineMaterial);
+  lines.position.set(x,y+h/2,z);
+  player.add(lines);
+  return lines;
+}
+// Main body, head and belly panel are drawn as outlines only.
+pc(0,.25,0,1.25,1.5,1);
+pc(0,1.75,0,1.1,1.05,.95);
+pc(0,.65,.53,.85,.9,.12);
+// Wings, feet, beak and eyes use the same single outline color.
+for(const x of [-.45,.45])pc(x,.65,0,.28,.9,.35);
+for(const x of [-.28,.28])pc(x,.08,.2,.42,.16,.55);
+pc(0,1.55,.7,.35,.2,.35);
+for(const x of [-.2,.2])pc(x,1.98,.64,.12,.15,.08);
 player.position.set(0,0,5);
 // Camera: free orbit around the player (drag to rotate, pinch/wheel to zoom).
 let yaw=0,pitch=.45,distance=13,drag=null,lastX=0,lastY=0,pinchStart=0;
