@@ -286,28 +286,20 @@ function building(v){
    // Round crown halo, no flower or lotus ornament.
    const crown=new THREE.Mesh(new THREE.TorusGeometry(1.75,.055,8,80),green);crown.position.set(0,13.3,-.55);crown.rotation.x=Math.PI/2;g.add(crown);
    // Wide two-storey glass podium and open double-door entrance.
-   // Transparent curved lobby facade: remove the opaque black cylindrical wall.
-   const lobbyGlass=new THREE.MeshPhysicalMaterial({color:0x65d9c9,metalness:.18,roughness:.12,transparent:true,opacity:.2,side:THREE.DoubleSide});
-   const lobbyFrame=new THREE.MeshStandardMaterial({color:0x9dffe0,emissive:0x42ffba,emissiveIntensity:.65,metalness:.55,roughness:.28});
-   for(let k=0;k<32;k++){
-    const a0=(k/32)*Math.PI*2, a1=((k+1)/32)*Math.PI*2;
-    const shape=new THREE.Shape();
-    const r=6.15;
-    shape.moveTo(Math.cos(a0)*r,0);shape.lineTo(Math.cos(a1)*r,0);
-    shape.lineTo(Math.cos(a1)*r,2.9);shape.lineTo(Math.cos(a0)*r,2.9);shape.closePath();
-    const pane=new THREE.Mesh(new THREE.ShapeGeometry(shape),lobbyGlass);
-    pane.position.set(0,.22,2.25);pane.rotation.y=0;g.add(pane);
-   }
-   // slim vertical mullions and a clear, centered double-door entrance
+   // Transparent cylindrical glass lobby, open visual facade with no opaque black mask.
+   const lobbyGlass=new THREE.MeshPhysicalMaterial({color:0x78e9d7,metalness:.08,roughness:.1,transparent:true,opacity:.16,side:THREE.DoubleSide,depthWrite:false});
+   const lobbyShell=new THREE.Mesh(new THREE.CylinderGeometry(6.12,6.28,3.0,96,1,true),lobbyGlass);
+   lobbyShell.position.set(0,1.72,2.25);g.add(lobbyShell);
+   const lobbyFrame=new THREE.MeshStandardMaterial({color:0x5dffe0,emissive:0x26ffbd,emissiveIntensity:.72,metalness:.45,roughness:.25});
    for(let k=0;k<32;k++){
     const a=k*Math.PI*2/32;
-    const bar=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,3.0,8),lobbyFrame);
-    bar.position.set(Math.cos(a)*6.16,1.72,2.25+Math.sin(a)*6.16);g.add(bar);
+    const bar=new THREE.Mesh(new THREE.CylinderGeometry(.028,.028,3.0,8),lobbyFrame);
+    bar.position.set(Math.sin(a)*6.18,1.72,2.25+Math.cos(a)*6.18);g.add(bar);
    }
-   for(const x of [-6.15,6.15])boxMesh(g,.2,3.35,.24,mint,x,1.85,5.68);
-   const doorMat=new THREE.MeshPhysicalMaterial({color:0x83f6e8,transparent:true,opacity:.34,metalness:.25,roughness:.12});
-   for(const x of [-.82,.82]){
-    const door=new THREE.Mesh(new THREE.BoxGeometry(1.55,2.55,.08),doorMat);door.position.set(x,1.72,5.78);g.add(door);
+   // clear centered double doors
+   const doorMat=new THREE.MeshPhysicalMaterial({color:0xa0fff0,transparent:true,opacity:.12,metalness:.12,roughness:.08,side:THREE.DoubleSide});
+   for(const x of [-.78,.78]){
+    const door=new THREE.Mesh(new THREE.BoxGeometry(1.48,2.55,.055),doorMat);door.position.set(x,1.55,8.38);g.add(door);
    }
    // Pink circular entrance canopy, deliberately smaller than the cactus body.
    const canopy=new THREE.Mesh(new THREE.CylinderGeometry(4.45,4.62,.38,72),darkGlass);canopy.position.set(0,3.55,2.45);g.add(canopy);
