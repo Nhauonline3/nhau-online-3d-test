@@ -19,9 +19,9 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:8px;
 </head>
 <body>
 <div id="scene"></div>
-<div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">QUẢNG TRƯỜNG TRUNG TÂM · PIXEL NEON V02</div></div><div class="card" style="text-align:right"><strong>📍 KHU TRUNG TÂM</strong><div class="sub">Quy mô vừa · 6 lối kết nối</div></div></div>
+<div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">QUẢNG TRƯỜNG TRUNG TÂM · PIXEL NEON V03 SÁNG HƠN</div></div><div class="card" style="text-align:right"><strong>📍 KHU TRUNG TÂM</strong><div class="sub">Quy mô vừa · 6 lối kết nối</div></div></div>
 <div class="hint">Vuốt để xoay · Chụm 2 ngón để phóng to/thu nhỏ</div>
-<div class="bottom"><div class="pill">Mẫu PIXEL NEON · Bản thử nghiệm</div><button id="reset">ĐẶT LẠI GÓC NHÌN</button></div>
+<div class="bottom"><div class="pill">Mẫu PIXEL NEON V03 · Tăng ánh sáng</div><button id="reset">ĐẶT LẠI GÓC NHÌN</button></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
@@ -31,10 +31,10 @@ const scene=new THREE.Scene();scene.background=new THREE.Color(0x080b25);scene.f
 const camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,250);camera.position.set(48,43,54);
 const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
 const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.06;controls.target.set(0,1.5,0);controls.minDistance=24;controls.maxDistance=105;controls.maxPolarAngle=Math.PI*.48;
-scene.add(new THREE.HemisphereLight(0x5366b8,0x11152c,.8));const sun=new THREE.DirectionalLight(0x8ba8ff,.35);sun.position.set(-28,55,25);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-60;sun.shadow.camera.right=60;sun.shadow.camera.top=60;sun.shadow.camera.bottom=-60;scene.add(sun);
-const mats={grass:0x101b35,edge:0x182445,cream:0x253052,tile:0x111a38,tile2:0x1b2850,road:0x080d20,blue:0x087dff,water:0x075cbb,white:0xeaf8ff,wood:0x7b397c,green:0x087f72,green2:0x16c99a,dark:0x090f27,gold:0xffb52e,red:0xff367f,purple:0x54217e};
+scene.add(new THREE.AmbientLight(0xb8caff,1.45));scene.add(new THREE.HemisphereLight(0x9ebcff,0x35416d,1.65));const sun=new THREE.DirectionalLight(0xc5d8ff,1.25);sun.position.set(-28,55,25);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-60;sun.shadow.camera.right=60;sun.shadow.camera.top=60;sun.shadow.camera.bottom=-60;scene.add(sun);
+const mats={grass:0x263d66,edge:0x46577e,cream:0x53648b,tile:0x34466f,tile2:0x465a85,road:0x263653,blue:0x168dff,water:0x0875d5,white:0xf2f7ff,wood:0x9b5592,green:0x168f82,green2:0x39c9a8,dark:0x182747,gold:0xffc44d,red:0xff4b91,purple:0x7540a8};
 function mat(c){return new THREE.MeshStandardMaterial({color:c,roughness:.48,metalness:.18})}
-const neon=(color)=>new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:2.1,roughness:.28});
+const neon=(color)=>new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:1.35,roughness:.38});
 const cyan=neon(0x16dfff),pink=neon(0xff28c8),violet=neon(0x873cff),amber=neon(0xffa52b);
 const M={};for(const k in mats)M[k]=mat(mats[k]);
 function box(x,y,z,sx,sy,sz,material, parent=scene){const o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),typeof material==='string'?M[material]:material);o.position.set(x,y+sy/2,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
@@ -46,13 +46,13 @@ function lamp(x,z){cylinder(x,0,z,.16,.21,5.2,'dark',8);box(x,5.05,z,1.05,.5,1.0
 function bench(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;box(0,.65,0,2.5,.22,.75,'wood',g);box(0,1.05,-.28,2.5,.8,.2,'wood',g);for(const dx of [-.9,.9])box(dx,.15,0,.18,.8,.18,'dark',g);scene.add(g)}
 // Surrounding lawn and raised square LEGO platform
 box(0,-.55,0,180,.5,180,'grass');
-const wet=new THREE.MeshStandardMaterial({color:0x121b3d,metalness:.72,roughness:.22});box(0,.12,0,43.8,.12,43.8,wet);
+const wet=new THREE.MeshStandardMaterial({color:0x34466f,metalness:.42,roughness:.3});box(0,.12,0,43.8,.12,43.8,wet);
 box(0,-.12,0,46,.55,46,'edge');
 box(0,.16,0,43.8,.18,43.8,'cream');
 // checker tiles border ring
 for(let i=-20;i<=20;i+=2){box(i,.26,-20.6,1.8,.08,.75,(i/2)%2?'tile':'tile2');box(i,.26,20.6,1.8,.08,.75,(i/2)%2?'tile2':'tile');box(-20.6,.26,i,.75,.08,1.8,(i/2)%2?'tile':'tile2');box(20.6,.26,i,.75,.08,1.8,(i/2)%2?'tile2':'tile')}
 // central square plaza, paved paths to six gateways
-box(0,.27,0,24,.10,24,'tile');
+box(0,.27,0,24,.10,24,'tile');\n// Bright readable paving under neon night lighting\nconst plazaFill=new THREE.MeshStandardMaterial({color:0x435780,roughness:.55,metalness:.16});box(0,.275,0,23.5,.06,23.5,plazaFill);
 for(let i=-20;i<=20;i+=2){box(i,.29,-20.2,.08,.025,40,cyan);box(-20.2,.29,i,40,.025,.08,pink)}
 for(let i=-11;i<=11;i+=2){for(let j=-11;j<=11;j+=2){if((i+j)%4===0)box(i,.33,j,1.82,.045,1.82,'tile2')}}
 box(0,.32,-20,6,.12,10,'cream');box(0,.32,20,6,.12,10,'cream');box(-20,.32,0,10,.12,6,'cream');box(20,.32,0,10,.12,6,'cream');
@@ -131,7 +131,7 @@ neonBuilding(-15,-15,5.5,9,4,pink,'SHOP');neonBuilding(15,-15,5.5,11,4,cyan,'ARC
 neonBuilding(-15,14,5.5,8,4,cyan,'CLUB');neonBuilding(15,14,5.5,10,4,pink,'369');
 neonBuilding(-21,0,3.5,7,4,violet,'BAR');neonBuilding(21,0,3.5,7,4,cyan,'PLAY');
 for(const [x,z] of [[-8,-5],[8,-5],[-8,5],[8,5]]){box(x,.48,z,2.7,.12,.9,pink);box(x,.62,z,.12,.22,.9,cyan)}
-const rainGeo=new THREE.BufferGeometry(),rainPts=[];for(let i=0;i<260;i++)rainPts.push((Math.random()-.5)*90,Math.random()*32,(Math.random()-.5)*90);
+// Broad colored fill lights keep buildings, paths and the fountain visible on phones\nfor(const [x,z,color,intensity] of [[-16,-8,0xff35c9,4],[16,-8,0x21dfff,4],[-16,10,0x8a52ff,3],[16,10,0x21dfff,3],[0,0,0x4b9cff,2.2]]){const fill=new THREE.PointLight(color,intensity,34);fill.position.set(x,8,z);scene.add(fill)}\nconst rainGeo=new THREE.BufferGeometry(),rainPts=[];for(let i=0;i<260;i++)rainPts.push((Math.random()-.5)*90,Math.random()*32,(Math.random()-.5)*90);
 rainGeo.setAttribute('position',new THREE.Float32BufferAttribute(rainPts,3));const rain=new THREE.Points(rainGeo,new THREE.PointsMaterial({color:0x9eeeff,size:.11,transparent:true,opacity:.62}));scene.add(rain);
 // World ground guide ring outside platform
 for(let a=0;a<64;a++){const t=a*Math.PI*2/64;box(Math.cos(t)*31,-.02,Math.sin(t)*31,.35,.06,.35,'edge')}
