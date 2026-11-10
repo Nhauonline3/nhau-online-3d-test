@@ -39,8 +39,12 @@ function box(x,y,z,sx,sy,sz,material, parent=scene){const o=new THREE.Mesh(new T
 function cylinder(x,y,z,r1,r2,h,material,seg=12){const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,seg),M[material]);o.position.set(x,y+h/2,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);return o}
 function textTexture(txt,bg='#18372e',fg='#fff1bd'){const c=document.createElement('canvas');c.width=512;c.height=160;const g=c.getContext('2d');g.fillStyle=bg;g.fillRect(0,0,512,160);g.strokeStyle='#e8d49a';g.lineWidth=10;g.strokeRect(5,5,502,150);g.fillStyle=fg;g.font='bold 42px system-ui';g.textAlign='center';g.textBaseline='middle';g.fillText(txt,256,82,470);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return new THREE.MeshStandardMaterial({map:t,roughness:.9})}
 function sign(x,z,label,rot=0){box(x,1.5,z,5.2,2.2,.42,'dark');const p=new THREE.Mesh(new THREE.PlaneGeometry(4.9,1.8),textTexture(label));p.position.set(x,2.65,z+.225);p.rotation.y=rot;scene.add(p);for(const dx of [-2,2])box(x+dx,0,z,.18,1.6,.18,'wood')}
-function tree(x,z,s=1){box(x,.0,z,.65,2*s,.65,'wood');box(x,2*s,z,2.3*s,2.1*s,2.3*s,'green');box(x-.12,3.5*s,z-.12,1.85*s,.35,1.85*s,'green2')}
-function lamp(x,z){cylinder(x,0,z,.13,.18,3.2,'dark',8);box(x,3.15,z,.75,.42,.75,'gold');box(x,3.57,z,.48,.12,.48,'cream')}
+function tree(x,z,s=1){
+  box(x,0,z,.72,2.25*s,.72,'wood');
+  const layers=[{y:1.45,h:2.0,r:1.55},{y:2.65,h:1.9,r:1.22},{y:3.78,h:1.65,r:.88},{y:4.78,h:1.35,r:.55}];
+  for(let i=0;i<layers.length;i++){const L=layers[i],o=new THREE.Mesh(new THREE.ConeGeometry(L.r*s,L.h*s,4),i%2?M.green2:M.green);o.position.set(x,L.y*s,z);o.rotation.y=Math.PI/4;o.castShadow=true;o.receiveShadow=true;scene.add(o)}
+}
+function lamp(x,z){cylinder(x,0,z,.16,.21,5.0,'dark',8);box(x,4.92,z,.92,.48,.92,'gold');box(x,5.38,z,.62,.42,.62,'cream');box(x,5.78,z,.72,.12,.72,'gold')}
 function bench(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;box(0,.65,0,2.5,.22,.75,'wood',g);box(0,1.05,-.28,2.5,.8,.2,'wood',g);for(const dx of [-.9,.9])box(dx,.15,0,.18,.8,.18,'dark',g);scene.add(g)}
 // Surrounding lawn and raised square LEGO platform
 box(0,-.55,0,180,.5,180,'grass');
@@ -54,7 +58,19 @@ for(let i=-11;i<=11;i+=2){for(let j=-11;j<=11;j+=2){if((i+j)%4===0)box(i,.33,j,1
 box(0,.32,-20,6,.12,10,'cream');box(0,.32,20,6,.12,10,'cream');box(-20,.32,0,10,.12,6,'cream');box(20,.32,0,10,.12,6,'cream');
 box(-14,.32,-14,6,.12,6,'cream');box(14,.32,-14,6,.12,6,'cream');
 // Fountain at center
-cylinder(0,.38,0,4.8,4.8,.38,'edge',32);cylinder(0,.76,0,4.25,4.25,.18,'blue',32);cylinder(0,.88,0,3.3,3.3,.12,'water',32);cylinder(0,1.0,0,.75,.95,1.25,'cream',16);cylinder(0,2.25,0,1.25,.75,.28,'blue',20);cylinder(0,2.53,0,.24,.24,.55,'gold',12);
+cylinder(0,.38,0,4.8,4.8,.38,'edge',32);cylinder(0,.76,0,4.25,4.25,.18,'blue',32);cylinder(0,.88,0,3.3,3.3,.12,'water',32);cylinder(0,1.0,0,.75,.95,1.25,'cream',16);cylinder(0,2.25,0,1.25,.75,.28,'blue',20);
+cylinder(0,2.53,0,.24,.24,.55,'gold',12);
+// Tượng chim bồ câu cách điệu trên đỉnh đài phun
+const birdMat=mat(0xf5f1df),beakMat=mat(0xf0bd48);
+const birdBody=new THREE.Mesh(new THREE.SphereGeometry(.62,16,12),birdMat);birdBody.scale.set(1.0,1.25,.72);birdBody.position.set(0,3.35,0);birdBody.castShadow=true;scene.add(birdBody);
+const birdHead=new THREE.Mesh(new THREE.SphereGeometry(.34,16,12),birdMat);birdHead.position.set(.05,4.12,0);birdHead.castShadow=true;scene.add(birdHead);
+const birdBeak=new THREE.Mesh(new THREE.ConeGeometry(.17,.42,8),beakMat);birdBeak.rotation.z=-Math.PI/2;birdBeak.position.set(.42,4.08,0);scene.add(birdBeak);
+for(const side of [-1,1]){const wing=new THREE.Mesh(new THREE.SphereGeometry(.28,12,10),birdMat);wing.scale.set(.45,1.1,.65);wing.position.set(side*.48,3.42,0);wing.rotation.z=side*.3;scene.add(wing)}
+const eyeMat=mat(0x26332f);for(const side of [-1,1]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.055,8,8),eyeMat);eye.position.set(.18,4.18,side*.27);scene.add(eye)}
+// Đồng xu vàng dựng đứng bao quanh lòng hồ
+for(let i=0;i<10;i++){const a=i*Math.PI*2/10;const coin=new THREE.Mesh(new THREE.CylinderGeometry(.48,.48,.14,24),M.gold);coin.rotation.x=Math.PI/2;coin.rotation.z=a;coin.position.set(Math.cos(a)*3.55,1.52,Math.sin(a)*3.55);coin.castShadow=true;scene.add(coin);
+ const star=new THREE.Mesh(new THREE.SphereGeometry(.13,8,8),M.cream);star.position.set(coin.position.x,1.52,coin.position.z+.09);scene.add(star)}
+
 for(let i=0;i<8;i++){const a=i*Math.PI/4;box(Math.cos(a)*3.6,1.05,Math.sin(a)*3.6,.22,.42,.22,'cream')}
 // Four garden beds and small shrubs around inner square
 for(const [x,z] of [[-13,-13],[13,-13],[-13,13],[13,13]]){box(x,.34,z,4.6,.3,4.6,'green');for(const dx of [-1,1])for(const dz of [-1,1])box(x+dx,.65,z+dz,1.1,1.1,1.1,'green2')}
@@ -69,6 +85,27 @@ sign(-21.8,0,'STRESS BEAR CLUB',Math.PI/2);sign(21.8,0,'DOI TIEN',-Math.PI/2);
 sign(-15.7,-15.7,'APARTMENT',Math.PI/4);sign(15.7,-15.7,'PICKLEBALL',-Math.PI/4);
 // entry markers, paving lights and decorative low bollards
 for(const [x,z] of [[0,-17],[0,17],[-17,0],[17,0],[-12,-12],[12,-12]]){cylinder(x,.35,z,.28,.28,.45,'gold',8);cylinder(x,.8,z,.12,.12,.5,'cream',8)}
+// Cổng chào chính ở lối vào quảng trường
+function entranceGate(){
+  const z=20.4;
+  for(const x of [-7.8,7.8]){
+    box(x,.35,z,1.45,6.0,1.55,'wood');
+    box(x,.55,z+.82,1.05,5.35,.16,'gold');
+    box(x,6.05,z,2.0,.55,1.9,'gold');
+    box(x,6.58,z,1.55,.35,1.55,'purple');
+    const cap=new THREE.Mesh(new THREE.ConeGeometry(.95,.85,4),M.gold);cap.position.set(x,7.1,z);cap.rotation.y=Math.PI/4;scene.add(cap);
+  }
+  box(0,6.15,z,17.2,1.35,1.5,'dark');
+  box(0,7.02,z,17.8,.22,1.72,'gold');
+  box(0,5.28,z,14.8,.18,1.62,'gold');
+  const board=new THREE.Mesh(new THREE.PlaneGeometry(15.8,1.65),textTexture('WELCOME 369 CITY','#241c36','#ffe16a'));
+  board.position.set(0,6.16,z+.79);scene.add(board);
+  // Hai dải đèn nổi bật chạy dọc cột cổng
+  for(const x of [-7.8,7.8])box(x,1.0,z+.92,.22,3.9,.12,'gold');
+  // Đường dẫn lát gạch dẫn từ cổng vào đài phun
+  for(let i=0;i<5;i++)box(0,.43,15.5-i*2.2,5.8,.09,1.65,i%2?'tile2':'cream');
+}
+entranceGate();
 // World ground guide ring outside platform
 for(let a=0;a<64;a++){const t=a*Math.PI*2/64;box(Math.cos(t)*31,-.02,Math.sin(t)*31,.35,.06,.35,'edge')}
 const initial={pos:new THREE.Vector3(48,43,54),target:new THREE.Vector3(0,1.5,0)};
