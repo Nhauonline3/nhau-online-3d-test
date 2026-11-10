@@ -79,9 +79,9 @@ const headphone=new THREE.Mesh(new THREE.TorusGeometry(.79,.13,8,32),cyan);headp
 for(const side of [-1,1]){const ear=new THREE.Mesh(new THREE.BoxGeometry(.24,.48,.34),violet);ear.position.set(side*.78,4.05,0);penguinGroup.add(ear)}
 // Vương miện pixel vàng với các đỉnh vuông
 const crownBase=new THREE.Mesh(new THREE.BoxGeometry(1.08,.18,.68),amber);crownBase.position.set(0,4.78,0);penguinGroup.add(crownBase);
-for(let i=0;i<5;i++){const spike=new THREE.Mesh(new THREE.BoxGeometry(.16,.42,.22),i%2?amber:gold);spike.position.set(-.42+i*.21,5.05,0);penguinGroup.add(spike)}
+for(let i=0;i<5;i++){const spike=new THREE.Mesh(new THREE.BoxGeometry(.16,.42,.22),i%2?amber:M.gold);spike.position.set(-.42+i*.21,5.05,0);penguinGroup.add(spike)}
 // Huy hiệu ngôi sao phát sáng trên ngực
-const badgeRing=new THREE.Mesh(new THREE.TorusGeometry(.24,.055,8,24),gold);badgeRing.position.set(0,3.35,.73);penguinGroup.add(badgeRing);
+const badgeRing=new THREE.Mesh(new THREE.TorusGeometry(.24,.055,8,24),M.gold);badgeRing.position.set(0,3.35,.73);penguinGroup.add(badgeRing);
 const badgeStar=new THREE.Mesh(new THREE.OctahedronGeometry(.22,0),amber);badgeStar.position.set(0,3.35,.76);penguinGroup.add(badgeStar);
 penguinGroup.scale.setScalar(1.48);penguinGroup.position.y=-.55;scene.add(penguinGroup);
 // Đồng xu cầu nguyện: nằm ngang, rải tự nhiên dưới mặt nước như người chơi vừa thả xuống hồ
@@ -122,7 +122,7 @@ function flowerBed(x,z){
  for(let i=0;i<9;i++){const px=x-1.15+(i%3)*1.15,pz=z-.55+Math.floor(i/3)*.55;
    cylinder(px,.62,pz,.035,.035,.34,'green2',6);
    const bloom=new THREE.Mesh(new THREE.BoxGeometry(.34,.18,.34),i%3===0?pink:i%3===1?amber:violet);bloom.position.set(px,.98,pz);scene.add(bloom);
-   const core=new THREE.Mesh(new THREE.BoxGeometry(.12,.12,.12),gold);core.position.set(px,1.08,pz);scene.add(core);
+   const core=new THREE.Mesh(new THREE.BoxGeometry(.12,.12,.12),M.gold);core.position.set(px,1.08,pz);scene.add(core);
  }
 }
 flowerBed(-9,-12);flowerBed(9,-12);flowerBed(-9,12);flowerBed(9,12);
@@ -136,7 +136,7 @@ function smokingZone(){
  bench(x, z+.9,Math.PI/2);
  cylinder(x+2.45,.35,z+.8,.22,.22,.7,'dark',12);cylinder(x+2.45,1.05,z+.8,.24,.24,.12,'gold',12);
  // Biểu tượng điếu thuốc cách điệu trên bảng nhỏ
- box(x-2.35,1.1,z-1.98,.75,.12,.12,cream);box(x-1.95,1.1,z-1.98,.18,.14,.14,pink);
+ box(x-2.35,1.1,z-1.98,.75,.12,.12,'cream');box(x-1.95,1.1,z-1.98,.18,.14,.14,pink);
 }
 smokingZone();
 
