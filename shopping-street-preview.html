@@ -139,7 +139,7 @@ for(const side of [-1,1]){
  function textTexture(txt,bg="#07152d",fg="#7cf5ff"){const c=document.createElement("canvas");c.width=512;c.height=160;const g=c.getContext("2d");g.fillStyle=bg;g.fillRect(0,0,512,160);g.strokeStyle="#25dfff";g.lineWidth=8;g.strokeRect(5,5,502,150);g.fillStyle=fg;g.font="bold 42px monospace";g.textAlign="center";g.textBaseline="middle";g.fillText(txt,256,82,470);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return new THREE.MeshStandardMaterial({map:t,roughness:.9})}
  function sign(x,z,label,rot=0){box(x,1.5,z,5.2,2.2,.42,"dark");const p=new THREE.Mesh(new THREE.PlaneGeometry(4.9,1.8),textTexture(label));p.position.set(x,2.65,z+.225);p.rotation.y=rot;plazaGroup.add(p);for(const dx of [-2,2])box(x+dx,0,z,.18,1.6,.18,"wood")}
  function tree(x,z,scale=1){const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);plazaGroup.add(g);box(0,0,0,.7,2,.7,"wood",g);for(let i=0;i<4;i++){const w=2.5-i*.48;box(0,1.25+i*.78,0,w,.78,w,i%2?"green2":"green",g)}}
- function lamp(x,z){cylinder(x,0,z,.16,.21,5.2,"dark",8);box(x,5.05,z,1.05,.5,1.05,"gold");box(x,5.52,z,.72,.52,.72,amber);box(x,5.82,z,.9,.14,.9,cyan)}
+ function lamp(x,z){cylinder(x,0,z,.16,.21,5.2,"dark",8);box(x,5.05,z,1.05,.5,1.05,"gold");box(x,5.52,z,.72,.52,.72,amber);box(x,5.82,z,.9,.14,.9,cyan);const light=new THREE.PointLight(0xffd36b,1.8,13);light.position.set(x,5.35,z);plazaGroup.add(light)}
  function bench(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;box(0,.65,0,2.5,.22,.75,"wood",g);box(0,1.05,-.28,2.5,.8,.2,"wood",g);for(const dx of [-.9,.9])box(dx,.15,0,.18,.8,.18,"dark",g);plazaGroup.add(g)}
 
  // Surrounding lawn and raised square LEGO platform
@@ -181,7 +181,7 @@ for(let i=0;i<5;i++){const spike=new THREE.Mesh(new THREE.BoxGeometry(.16,.42,.2
 // Huy hiệu ngôi sao phát sáng trên ngực
 const badgeRing=new THREE.Mesh(new THREE.TorusGeometry(.24,.055,8,24),M.gold);badgeRing.position.set(0,3.35,.73);penguinGroup.add(badgeRing);
 const badgeStar=new THREE.Mesh(new THREE.OctahedronGeometry(.22,0),amber);badgeStar.position.set(0,3.35,.76);penguinGroup.add(badgeStar);
-penguinGroup.scale.setScalar(1.48);penguinGroup.position.y=-.55;plazaGroup.add(penguinGroup);
+penguinGroup.scale.setScalar(1.48);penguinGroup.position.y=-.55;penguinGroup.rotation.y=Math.PI;plazaGroup.add(penguinGroup); // Quay mặt tượng về phía điểm xuất hiện của người chơi
 // Đồng xu cầu nguyện: nằm ngang, rải tự nhiên dưới mặt nước như người chơi vừa thả xuống hồ
 for(let i=0;i<14;i++){
   const a=i*2.399963,rad=1.65+(i%4)*.48;
@@ -279,7 +279,7 @@ pBall(player,.58,pBlack,0,2.25,0,.9,.88,.78,10);pBall(player,.48,pWhite,0,2.2,.2
 pBall(player,.12,pOrange,0,2.05,.78,1.2,.65,1,8);for(const x of [-.2,.2])pBall(player,.07,pEye,x,2.34,.73,1,1,.45,8);
 const pWings=[];for(const x of [-.66,.66]){const w=pBall(player,.25,pBlack,x,1.2,0,.55,1.4,.55,8);w.rotation.z=x<0?-.35:.35;pWings.push(w)}
 for(const x of [-.3,.3]){const foot=new THREE.Mesh(new THREE.BoxGeometry(.42,.16,.48),pOrange);foot.position.set(x,.12,.1);player.add(foot)}
-player.position.set(0,0,-91);
+player.position.set(0,.34,-91);
 const pJoy=document.getElementById('playerJoy'),pKnob=document.getElementById('playerKnob');
 let pMoveX=0,pMoveY=0,pJoyActive=false,pJoyId=null,pJumpV=0,pJumping=false;
 function pSetJoy(e){const r=pJoy.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const max=Math.min(r.width,r.height)*.34,len=Math.hypot(dx,dy);if(len>max){dx=dx/len*max;dy=dy/len*max}pKnob.style.transform='translate('+dx+'px,'+dy+'px)';const mag=Math.hypot(dx,dy)/max;pMoveX=mag<.1?0:dx/max;pMoveY=mag<.1?0:dy/max}
@@ -291,7 +291,7 @@ const pKeys={};addEventListener('keydown',e=>{pKeys[e.key.toLowerCase()]=true});
 function pJump(){if(!pJumping){pJumpV=8;pJumping=true}}
 document.getElementById('playerJump').addEventListener('click',pJump);
 document.getElementById('playerPlaza').addEventListener('click',()=>{
- pEndJoy();player.position.set(0,0,-91);pPrev.copy(player.position);
+ pEndJoy();player.position.set(0,.34,-91);pPrev.copy(player.position);
  camera.position.set(0,22,-111);controls.target.set(0,2.2,-91);controls.update();
  document.getElementById('playerState').textContent='ĐANG Ở QUẢNG TRƯỜNG 369 CITY · DÙNG JOYSTICK ĐỂ KHÁM PHÁ';
 });
