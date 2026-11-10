@@ -19,11 +19,16 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 #playerActions button{min-width:76px;min-height:48px;font-size:11px;padding:9px 10px}
 #playerState{position:fixed;z-index:5;left:50%;transform:translateX(-50%);bottom:18px;background:#07152ce8;color:#c9f8ff;border:1px solid #22dfff;border-radius:9px;padding:7px 10px;font-size:10px;pointer-events:none}
 @media(min-width:700px){#playerJoy{width:100px;height:100px;left:24px;bottom:24px}#playerKnob{width:42px;height:42px}}
+
+#walletBar{position:fixed;z-index:8;top:68px;right:12px;display:flex;align-items:center;gap:8px;background:#07152cf2;border:1px solid #f4bf43;border-radius:12px;padding:8px 11px;color:#fff;box-shadow:0 0 16px #ffbd3d55;font-size:12px;max-width:calc(100vw - 24px)}#walletBar button{padding:7px 10px;font-size:11px;white-space:nowrap}#walletBalances{display:flex;gap:10px;align-items:center;flex-wrap:wrap}#walletBalances b{white-space:nowrap}#walletModal{display:none;position:fixed;z-index:20;inset:0;background:#020817dd;align-items:center;justify-content:center;padding:16px}#walletModal.open{display:flex}#walletCard{width:min(420px,100%);max-height:85vh;overflow:auto;background:#091832;border:1px solid #31dcff;border-radius:18px;padding:18px;color:#fff;box-shadow:0 0 32px #00cfff66}#walletCard h2{margin:0 0 12px;color:#8defff;font-size:20px}#walletCard label{display:block;font-size:12px;color:#b8d9ee;margin:10px 0 5px}#walletCard input{width:100%;padding:12px;border-radius:9px;border:1px solid #3c648a;background:#061126;color:white;font-size:16px}#walletCard .walletActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}#walletCard .walletActions button{flex:1}#walletHistory{font-size:12px;color:#d6eaff;margin-top:12px;max-height:180px;overflow:auto}#walletStatus{font-size:12px;color:#ffdc8a;min-height:18px;margin-top:8px}#walletClose{float:right;background:#253a5b;border-color:#6283aa}#walletLock{font-size:11px;color:#ffc979;line-height:1.4;margin-top:10px}@media(max-width:520px){#walletBar{top:64px;left:12px;right:12px;justify-content:space-between;font-size:10px;padding:7px 8px}#walletBalances{gap:7px}#walletBar button{font-size:10px;padding:7px}}
 </style>
 </head>
 <body>
 <div id="scene"></div>
 <div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">PHỐ MUA SẮM + QUẢNG TRƯỜNG · PIXEL NEON</div></div><div class="card" style="text-align:right"><strong>🛍️ SHOPPING STREET</strong><div class="sub">8 gian hàng + quảng trường</div></div></div>
+
+<div id="walletBar"><div id="walletBalances"><b>🪙 XU: —</b><b>🟡 COIN: —</b></div><button id="walletOpen">👛 VÍ CỦA TÔI</button></div>
+<div id="walletModal"><div id="walletCard"><button id="walletClose">ĐÓNG</button><h2>👛 VÍ 369 CITY</h2><div id="walletSignedOut"><p>Đăng nhập để xem số dư XU và COIN của bạn.</p><label>Email</label><input id="walletEmail" type="email" autocomplete="email" placeholder="Email của bạn"><label>Mật khẩu</label><input id="walletPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu"><div class="walletActions"><button id="walletLogin">ĐĂNG NHẬP</button><button id="walletSignup">TẠO TÀI KHOẢN</button></div></div><div id="walletSignedIn" style="display:none"><p id="walletUserLabel"></p><div id="walletDetails"></div><div id="walletLock">🔒 Tính năng đổi XU sang COIN và thanh toán hàng thật đang tạm khóa cho đến khi hoàn tất xác nhận pháp lý.</div><div class="walletActions"><button id="walletRefresh">LÀM MỚI SỐ DƯ</button><button id="walletLogout">ĐĂNG XUẤT</button></div><h3 style="font-size:14px;color:#8defff;margin:16px 0 4px">LỊCH SỬ GIAO DỊCH</h3><div id="walletHistory">Chưa tải lịch sử.</div></div><div id="walletStatus"></div></div></div>
 <div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p></div>
 <div id="playerJoy" aria-label="Điều khiển di chuyển"><div id="playerKnob"></div></div>
 <div id="playerActions"><button id="playerJump">🐧 NHẢY</button><button id="playerCenter">📍 THEO NHÂN VẬT</button><button id="playerPlaza">🏙️ VỀ QUẢNG TRƯỜNG</button></div>
@@ -32,6 +37,40 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+// 369 CITY wallet: authenticated balance and transaction history
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+const walletClient=createClient('https://pazfwdgmojkdblfgikwg.supabase.co','sb_publishable__2bDRA8f4ar1Q7O1u9jqCw_j9sA5MNv');
+const walletModal=document.getElementById('walletModal'),walletStatus=document.getElementById('walletStatus');
+let walletSession=null;
+function walletMsg(s){walletStatus.textContent=s||''}
+function walletOpen(){walletModal.classList.add('open');walletMsg('')}
+function walletClose(){walletModal.classList.remove('open')}
+document.getElementById('walletOpen').onclick=walletOpen;
+document.getElementById('walletClose').onclick=walletClose;
+walletModal.addEventListener('click',e=>{if(e.target===walletModal)walletClose()});
+function walletNum(n){return Number(n||0).toLocaleString('vi-VN')}
+async function walletLoad(){
+ if(!walletSession){document.getElementById('walletBalances').innerHTML='<b>🪙 XU: —</b><b>🟡 COIN: —</b>';document.getElementById('walletSignedOut').style.display='block';document.getElementById('walletSignedIn').style.display='none';return}
+ document.getElementById('walletSignedOut').style.display='none';document.getElementById('walletSignedIn').style.display='block';
+ document.getElementById('walletUserLabel').textContent='Đang đăng nhập: '+(walletSession.user.email||'người chơi');
+ walletMsg('Đang tải ví...');
+ const {data,error}=await walletClient.rpc('currency_get_my_balances');
+ if(error){walletMsg('Không tải được ví: '+error.message);return}
+ const b=Array.isArray(data)?data[0]:data;
+ if(!b){walletMsg('Chưa tìm thấy thông tin ví.');return}
+ document.getElementById('walletBalances').innerHTML='<b>🪙 XU: '+walletNum(Number(b.xu_earned)+Number(b.xu_purchased))+'</b><b>🟡 COIN: '+walletNum(b.coin_balance)+'</b>';
+ document.getElementById('walletDetails').innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px"><div style="background:#10284a;padding:12px;border-radius:10px">🪙 <b>XU kiếm được</b><div style="font-size:22px;color:#ffd16a">'+walletNum(b.xu_earned)+'</div></div><div style="background:#10284a;padding:12px;border-radius:10px">🪙 <b>XU đã nạp</b><div style="font-size:22px;color:#ffd16a">'+walletNum(b.xu_purchased)+'</div></div><div style="background:#10284a;padding:12px;border-radius:10px;grid-column:1/-1">🟡 <b>COIN</b><div style="font-size:24px;color:#ffe27a">'+walletNum(b.coin_balance)+'</div><small>Quy đổi dự kiến: '+walletNum(b.earned_xu_per_coin)+' XU kiếm được = 1 COIN</small></div></div>';
+ const {data:history,error:historyError}=await walletClient.rpc('currency_get_my_history',{p_limit:15});
+ document.getElementById('walletHistory').innerHTML=historyError?'Không tải được lịch sử.':(history||[]).length?(history||[]).map(x=>'<div style="padding:8px 0;border-bottom:1px solid #29415f"><b>'+x.currency+'</b> · '+(Number(x.amount)>0?'+':'')+walletNum(x.amount)+'<br><span style="color:#9fb9d4">'+(x.reason||'Giao dịch')+' · '+new Date(x.created_at).toLocaleString('vi-VN')+'</span></div>').join(''):'Chưa có giao dịch.';
+ walletMsg('Ví đã cập nhật.');
+}
+document.getElementById('walletLogin').onclick=async()=>{const email=document.getElementById('walletEmail').value.trim(),password=document.getElementById('walletPassword').value;if(!email||!password){walletMsg('Vui lòng nhập email và mật khẩu.');return}walletMsg('Đang đăng nhập...');const {data,error}=await walletClient.auth.signInWithPassword({email,password});if(error){walletMsg(error.message);return}walletSession=data.session;await walletLoad()};
+document.getElementById('walletSignup').onclick=async()=>{const email=document.getElementById('walletEmail').value.trim(),password=document.getElementById('walletPassword').value;if(!email||password.length<6){walletMsg('Nhập email và mật khẩu ít nhất 6 ký tự.');return}walletMsg('Đang tạo tài khoản...');const {data,error}=await walletClient.auth.signUp({email,password});if(error){walletMsg(error.message);return}if(data.session){walletSession=data.session;await walletLoad()}else walletMsg('Đã gửi email xác nhận. Hãy xác nhận email rồi đăng nhập.')};
+document.getElementById('walletRefresh').onclick=walletLoad;
+document.getElementById('walletLogout').onclick=async()=>{await walletClient.auth.signOut();walletSession=null;await walletLoad();walletMsg('Đã đăng xuất.')};
+walletClient.auth.getSession().then(({data})=>{walletSession=data.session;walletLoad()});
+walletClient.auth.onAuthStateChange((_event,session)=>{walletSession=session;walletLoad()});
+
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
