@@ -35,11 +35,16 @@ function box(x,y,z,w,h,d,material,parent=scene){const o=new THREE.Mesh(new THREE
 function point(x,y,z,color,intensity=1.5,dist=10){const l=new THREE.PointLight(color,intensity,dist);l.position.set(x,y,z);scene.add(l)}
 function labelTexture(text,bg='#091632',fg='#ffffff',small=false){const c=document.createElement('canvas');c.width=512;c.height=160;const g=c.getContext('2d');g.fillStyle=bg;g.fillRect(0,0,512,160);g.strokeStyle='#24dcff';g.lineWidth=7;g.strokeRect(5,5,502,150);g.fillStyle=fg;g.font='bold '+(small?34:46)+'px monospace';g.textAlign='center';g.textBaseline='middle';g.shadowColor=fg;g.shadowBlur=12;g.fillText(text,256,82,470);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return new THREE.MeshStandardMaterial({map:t,emissive:0xffffff,emissiveMap:t,emissiveIntensity:.42,roughness:.85})}
 function sign(parent,x,y,z,w,h,text,accent){box(x,y,z,w+.28,h+.28,.22,M.dark,parent);box(x,y,z+.14,w+.12,h+.12,.08,accent,parent);const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),labelTexture(text,'#091632','#ffffff'));p.position.set(x,y,z+.20);parent.add(p)}
-// broad street base, sidewalks and luminous center lane
-box(0,-.55,0,110,.5,110,M.ground);box(0,-.18,0,37,.18,64,M.road);box(0,-.02,0,13,.10,64,M.floor);
-for(let z=-29;z<=29;z+=2){box(0,.055,z,.11,.025,1.1,z%4===0?M.cyan:M.pink)}
-for(const x of [-18.3,18.3]){box(x,.02,0,1.2,.18,64,M.dark);box(x,.14,0,.12,.08,64,x<0?M.cyan:M.pink)}
-for(let z=-30;z<=30;z+=5){box(-9.3,.08,z,1.2,.08,2.6,M.dark);box(9.3,.08,z,1.2,.08,2.6,M.dark)}
+// broad street base: polished midnight-blue pixel tiles, not a flat asphalt strip
+box(0,-.55,0,110,.5,110,M.ground);box(0,-.18,0,37,.18,64,M.road);
+const roadTile=mat(0x344b78),roadTileAlt=mat(0x293e6a),roadSeam=glow(0x365cff);
+box(0,-.055,0,15.8,.12,64,roadTile);
+for(let z=-31;z<=31;z+=2){for(let x=-7;x<=7;x+=2){box(x,.012,z,1.94,.035,1.94,((Math.round(x/2)+Math.round(z/2))%2===0)?roadTile:roadTileAlt)}}
+for(const x of [-8.15,8.15]){box(x,.02,0,.22,.12,64,M.dark);box(x,.11,0,.10,.07,64,x<0?M.cyan:M.pink)}
+// subtle central pixel motif and directional arrows
+for(let z=-25;z<=25;z+=5){box(0,.045,z,.10,.025,1.5,roadSeam)}
+function roadArrow(z){for(let k=0;k<3;k++){const y=.075+k*.62;const v=box(0,y,z+k*.72,1.25,.055,.18,M.pink);v.rotation.z=k%2?-.58:.58}}
+roadArrow(16);roadArrow(-15);
 // pixel-style shops: shop facades face the central avenue
 const shopData=[
  {name:'NEON FASHION',desc:'Thời trang và phụ kiện avatar. Khu vực dự kiến cho người chơi thuê gian hàng.',x:-13,z:-19,color:0xff28c8,tag:'FASHION'},
@@ -47,7 +52,7 @@ const shopData=[
  {name:'PIXEL MARKET',desc:'Cửa hàng tổng hợp để trưng bày và bán vật phẩm.',x:-13,z:-6,color:0xffb936,tag:'MARKET'},
  {name:'GAME STORE',desc:'Vật phẩm game, mini game và quà tặng trong thành phố.',x:13,z:-6,color:0x9c4cff,tag:'GAME'},
  {name:'369 FOOD',desc:'Quầy đồ ăn và nước uống phong cách phố đêm.',x:-13,z:7,color:0x18ddff,tag:'FOOD'},
- {name:'DRINK & TEA',desc:'Trà, nước giải khát và máy bán hàng tự động.',x:13,z:7,color:0xff28c8,tag:'DRINK'},
+ {name:'DRINK & TEA',desc:'Quầy trà và nước giải khát phong cách phố đêm.',x:13,z:7,color:0xff28c8,tag:'DRINK'},
  {name:'KARAOKE BOX',desc:'Phòng karaoke riêng và khu giao lưu bằng giọng nói.',x:-13,z:20,color:0x9c4cff,tag:'KARAOKE'},
  {name:'GIFT & TOYS',desc:'Quà lưu niệm, đồ sưu tầm và vật phẩm trang trí.',x:13,z:20,color:0xffb936,tag:'GIFTS'}
 ];
@@ -80,17 +85,16 @@ function shop(d,index){
  for(let k=0;k<3;k++)box(-3.5+k*.35,6.5,-2,.16,.45+(k%2)*.3,.16,k%2?M.pink:M.cyan,g);
 }
 shopData.forEach(shop);
-// street lamps, benches, planters and pixel trees make the avenue feel inhabited without blocking the shops
+// street lamps, lush pixel trees and flower beds keep the avenue green without blocking the shops
 function lamp(x,z){box(x,0,z,.22,4.5,.22,M.dark);box(x,4.45,z,.82,.38,.82,M.gold);box(x,4.85,z,.6,.35,.6,M.cyan);point(x,4.8,z,0xffb83e,1.7,10)}
-function planter(x,z){box(x,.18,z,3.4,.42,1.8,M.dark);box(x,.4,z,3.15,.12,1.55,M.leaf);for(let i=0;i<7;i++){const px=x-1.25+i*.42;box(px,.68,z,.3,.5+(i%3)*.16,.32,i%2?M.lime:M.pink);box(px,.95,z,.18,.18,.18,M.gold)}}
-function bench(x,z){box(x,.48,z,2.4,.2,.72,M.wood);box(x,.9,z-.25,2.4,.68,.16,M.wood);for(const dx of [-.85,.85])box(x+dx,.1,z,.16,.75,.16,M.dark)}
-for(const z of [-25,-13,-.5,12,25]){lamp(-7.8,z);lamp(7.8,z);planter(-9.5,z);planter(9.5,z)}
-for(const z of [-20,-8,5,17]){bench(-5.6,z);bench(5.6,z)}
+function planter(x,z){box(x,.18,z,3.8,.48,2.1,M.dark);box(x,.42,z,3.55,.14,1.85,M.leaf);for(let i=0;i<11;i++){const px=x-1.55+(i%6)*.62,pz=z+(i%2?-.42:.42);box(px,.72,pz,.34,.34+(i%3)*.13,.34,i%2?M.pink:M.lime);box(px,.98,pz,.16,.16,.16,M.gold)}}
+function voxelTree(x,z,scale=1){const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);scene.add(g);box(0,.25,0,.52,2.1,.52,mat(0x82512f),g);for(const [y,sx,sz] of [[1.55,1.35,1.25],[2.25,1.65,1.45],[2.95,1.15,1.15]]){box(0,y,0,sx,.95,sz,M.leaf,g);box(0,y+.46,0,sx+.08,.10,sz+.08,M.lime,g)}for(let i=0;i<5;i++){const flower=new THREE.Mesh(new THREE.BoxGeometry(.18,.18,.18),i%2?M.pink:M.gold);flower.position.set((i-2)*.22,1.3,Math.sin(i*2)*.35);g.add(flower)}}
+function flowerIsland(x,z){box(x,.18,z,3.8,.48,2.1,M.dark);box(x,.42,z,3.55,.14,1.85,M.leaf);for(let i=0;i<14;i++){const px=x-1.5+(i%7)*.5,pz=z+(i%2?-.48:.48);box(px,.68,pz,.25,.25,.25,i%3===0?M.gold:i%3===1?M.pink:M.purple);box(px,.86,pz,.12,.12,.12,M.white)}}
+for(const z of [-25,-13,-.5,12,25]){lamp(-7.8,z);lamp(7.8,z);flowerIsland(-10.3,z);flowerIsland(10.3,z)}
+for(const z of [-19,-6,7,20]){voxelTree(-10.7,z,.78);voxelTree(10.7,z,.78)}
 // floating pixel lantern strings across the street
 for(let i=0;i<13;i++){const x=-9+i*1.5;const b=new THREE.Mesh(new THREE.BoxGeometry(.2,.2,.2),i%2?M.pink:M.cyan);b.position.set(x,10,-1+Math.sin(i*.65)*1.2);scene.add(b);point(x,10,-1+Math.sin(i*.65)*1.2,i%2?0xff28c8:0x19e5ff,.28,5)}
-// vending kiosks and info board near the midpoint
-function vending(x,z,accent,title){const g=new THREE.Group();g.position.set(x,0,z);box(0,1.3,0,1.6,2.6,1.0,M.dark,g);box(0,1.35,.55,1.3,1.8,.08,accent,g);for(let r=0;r<3;r++)for(let c=0;c<3;c++)box(-.42+c*.42,1.9-r*.48,.64,.25,.32,.08,[M.pink,M.cyan,M.gold][(r+c)%3],g);box(0,2.85,.05,1.75,.3,1.1,M.dark,g);sign(g,0,2.9,.58,1.5,.3,title,accent);scene.add(g);point(x,1.6,z+1,0x19e5ff,.8,5)}
-vending(-5,0,M.cyan,'DRINKS');vending(5,0,M.pink,'SNACKS');
+// Removed vending machines to leave the walking avenue open.
 // overhead 369 CITY wayfinding portal at the far end
 box(0,8,-30,13,.35,.7,M.dark);box(0,8.2,-30,13.2,.12,.8,M.pink);const arch=new THREE.Mesh(new THREE.PlaneGeometry(10,.8),labelTexture('369 CITY  •  SHOPPING STREET','#091632','#fff16a'));arch.position.set(0,8,-29.58);scene.add(arch);
 for(const x of [-6.4,6.4]){box(x,4.1,-30,.28,7.8,.3,M.cyan);box(x,7.8,-30,.5,.3,.6,M.gold)}
