@@ -5,12 +5,12 @@
 <title>369 CITY – Phố mua sắm Pixel Neon | Bản thử nghiệm</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#070b20;font-family:system-ui,-apple-system,sans-serif}#scene{position:fixed;inset:0}canvas{display:block;width:100%;height:100%;touch-action:none}
-.panel{position:fixed;z-index:3;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.card{background:#07152cf2;color:#fff;border:1px solid #23d8ff;border-radius:12px;padding:10px 13px;box-shadow:0 0 18px #00cfff66,inset 0 0 12px #b000ff22;pointer-events:auto}.card strong{font-size:16px;letter-spacing:.3px}.sub{font-size:10px;color:#9beeff;margin-top:2px}
+.panel{position:fixed;z-index:3;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;pointer-events:none}.card{flex:1 1 0;min-width:0;max-width:48%;background:#07152cf2;color:#fff;border:1px solid #23d8ff;border-radius:12px;padding:9px 11px;box-shadow:0 0 18px #00cfff66,inset 0 0 12px #b000ff22;pointer-events:auto;overflow-wrap:anywhere}.card strong{display:block;font-size:clamp(12px,2vw,16px);line-height:1.2;letter-spacing:.2px}.sub{font-size:clamp(9px,1.4vw,10px);line-height:1.3;color:#9beeff;margin-top:4px;white-space:normal}
 .bottom{position:fixed;z-index:3;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;align-items:end;gap:8px}.pill{background:#07152cf2;color:white;border:1px solid #24dfff;border-radius:10px;padding:10px 12px;font-size:12px;box-shadow:0 0 16px #00cfff55;max-width:68%}
 button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px;padding:11px 13px;font-weight:800;font-size:12px;box-shadow:0 0 16px #e000ff88}
 #shopInfo{position:fixed;z-index:4;left:50%;transform:translateX(-50%);bottom:78px;width:min(430px,calc(100vw - 28px));display:none;background:#07152cf5;color:white;border:1px solid #20ddff;border-radius:14px;padding:14px;box-shadow:0 0 24px #00cfff77}
 #shopInfo strong{font-size:17px;color:#6df4ff}#shopInfo p{margin:6px 0 10px;font-size:13px;color:#d8e8ff}#closeInfo{float:right;padding:5px 9px}
-@media(min-width:700px){.card strong{font-size:20px}.sub,.hint,.pill,button{font-size:14px}}
+@media(min-width:700px){.card{max-width:48%;padding:10px 13px}.card strong{font-size:20px}.sub,.hint,.pill,button{font-size:14px}}
 
 /* Player controls */
 #playerJoy{position:fixed;z-index:6;left:18px;bottom:24px;width:116px;height:116px;border-radius:50%;border:2px solid #46eaff;background:#07152caa;box-shadow:0 0 20px #00cfff88;touch-action:none;display:flex;align-items:center;justify-content:center}
@@ -291,7 +291,7 @@ const pKeys={};addEventListener('keydown',e=>{pKeys[e.key.toLowerCase()]=true});
 function pJump(){if(!pJumping){pJumpV=8;pJumping=true}}
 document.getElementById('playerJump').addEventListener('click',pJump);
 document.getElementById('playerPlaza').addEventListener('click',()=>{
- pEndJoy();player.position.set(0,0,-91);pPrev.copy(player.position);
+ pEndJoy();player.position.set(0,.42,-91);pPrev.copy(player.position);
  camera.position.set(0,22,-111);controls.target.set(0,2.2,-91);controls.update();
  document.getElementById('playerState').textContent='ĐANG Ở QUẢNG TRƯỜNG 369 CITY · DÙNG JOYSTICK ĐỂ KHÁM PHÁ';
 });
