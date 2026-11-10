@@ -16,7 +16,7 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 </head>
 <body>
 <div id="scene"></div>
-<div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">PHỐ MUA SẮM · PIXEL NEON V02</div></div><div class="card" style="text-align:right"><strong>🛍️ SHOPPING STREET</strong><div class="sub">8 gian hàng · Bản thử nghiệm</div></div></div>
+<div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">PHỐ MUA SẮM · PIXEL NEON V03</div></div><div class="card" style="text-align:right"><strong>🛍️ SHOPPING STREET</strong><div class="sub">8 gian hàng · Bản thử nghiệm</div></div></div>
 <div class="hint">Vuốt để xoay · Chụm 2 ngón để phóng to/thu nhỏ · Chạm cửa hàng để xem</div>
 <div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p></div>
 <div class="bottom"><div class="pill">Bản thử nghiệm riêng · Chưa đưa vào game chính</div><button id="reset">ĐẶT LẠI GÓC NHÌN</button></div>
@@ -24,9 +24,12 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js';
 const host=document.getElementById('scene'),scene=new THREE.Scene();scene.background=new THREE.Color(0x080d29);scene.fog=new THREE.Fog(0x080d29,65,125);
 const camera=new THREE.PerspectiveCamera(43,innerWidth/innerHeight,.1,220);camera.position.set(0,24,48);
-const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
 const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.065;controls.target.set(0,2.4,0);controls.minDistance=18;controls.maxDistance=75;controls.maxPolarAngle=Math.PI*.48;controls.minPolarAngle=.18;
 scene.add(new THREE.AmbientLight(0xd5e7ff,2.25));scene.add(new THREE.HemisphereLight(0x92caff,0x354a78,2.1));const moon=new THREE.DirectionalLight(0xeaf4ff,2.15);moon.position.set(-25,42,22);moon.castShadow=true;moon.shadow.mapSize.set(1024,1024);scene.add(moon);
 const mat=c=>new THREE.MeshStandardMaterial({color:c,roughness:.46,metalness:.18}),glow=c=>new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:1.55,roughness:.35});
@@ -89,8 +92,8 @@ function lamp(x,z){box(x,0,z,.22,4.5,.22,M.dark);box(x,4.45,z,.82,.38,.82,M.gold
 function planter(x,z){box(x,.18,z,3.8,.48,2.1,M.dark);box(x,.42,z,3.55,.14,1.85,M.leaf);for(let i=0;i<11;i++){const px=x-1.55+(i%6)*.62,pz=z+(i%2?-.42:.42);box(px,.72,pz,.34,.34+(i%3)*.13,.34,i%2?M.pink:M.lime);box(px,.98,pz,.16,.16,.16,M.gold)}}
 function voxelTree(x,z,scale=1){const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);scene.add(g);box(0,.25,0,.52,2.1,.52,mat(0x82512f),g);for(const [y,sx,sz] of [[1.55,1.35,1.25],[2.25,1.65,1.45],[2.95,1.15,1.15]]){box(0,y,0,sx,.95,sz,M.leaf,g);box(0,y+.46,0,sx+.08,.10,sz+.08,M.lime,g)}for(let i=0;i<5;i++){const flower=new THREE.Mesh(new THREE.BoxGeometry(.18,.18,.18),i%2?M.pink:M.gold);flower.position.set((i-2)*.22,1.3,Math.sin(i*2)*.35);g.add(flower)}}
 function flowerIsland(x,z){box(x,.18,z,3.8,.48,2.1,M.dark);box(x,.42,z,3.55,.14,1.85,M.leaf);for(let i=0;i<14;i++){const px=x-1.5+(i%7)*.5,pz=z+(i%2?-.48:.48);box(px,.68,pz,.25,.25,.25,i%3===0?M.gold:i%3===1?M.pink:M.purple);box(px,.86,pz,.12,.12,.12,M.white)}}
-for(const z of [-25,-13,-.5,12,25]){lamp(-7.8,z);lamp(7.8,z);flowerIsland(-10.3,z);flowerIsland(10.3,z)}
-for(const z of [-19,-6,7,20]){voxelTree(-10.7,z,.78);voxelTree(10.7,z,.78)}
+for(const z of [-25,-13,-.5,12,25]){lamp(-7.8,z);lamp(7.8,z);flowerIsland(-9.15,z);flowerIsland(9.15,z)}
+for(const z of [-19,-6,7,20]){voxelTree(-9.15,z,.78);voxelTree(9.15,z,.78)}
 // floating pixel lantern strings across the street
 for(let i=0;i<13;i++){const x=-9+i*1.5;const b=new THREE.Mesh(new THREE.BoxGeometry(.2,.2,.2),i%2?M.pink:M.cyan);b.position.set(x,10,-1+Math.sin(i*.65)*1.2);scene.add(b);point(x,10,-1+Math.sin(i*.65)*1.2,i%2?0xff28c8:0x19e5ff,.28,5)}
 // Removed vending machines to leave the walking avenue open.
@@ -106,7 +109,9 @@ document.getElementById('reset').onclick=()=>{camera.position.copy(initial.pos);
 document.getElementById('closeInfo').onclick=()=>document.getElementById('shopInfo').style.display='none';
 const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();renderer.domElement.addEventListener('pointerup',e=>{if(Math.abs(e.clientX-(window._downX??e.clientX))>8||Math.abs(e.clientY-(window._downY??e.clientY))>8)return;pointer.x=e.clientX/innerWidth*2-1;pointer.y=-(e.clientY/innerHeight)*2+1;ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects(shopMeshes,false);if(hits.length){const d=hits[0].object.userData.shop;document.getElementById('shopTitle').textContent=d.name;document.getElementById('shopDesc').textContent=d.desc;document.getElementById('shopInfo').style.display='block'}});
 renderer.domElement.addEventListener('pointerdown',e=>{window._downX=e.clientX;window._downY=e.clientY});
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)}animate();
+const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.72,.62,.16);composer.addPass(bloom);
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight)});
+function animate(){requestAnimationFrame(animate);controls.update();composer.render()}animate();
 </script>
 </body></html>
