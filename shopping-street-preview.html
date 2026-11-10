@@ -278,7 +278,7 @@ pBall(player,.58,pBlack,0,2.25,0,.9,.88,.78,10);pBall(player,.48,pWhite,0,2.2,.2
 pBall(player,.12,pOrange,0,2.05,.78,1.2,.65,1,8);for(const x of [-.2,.2])pBall(player,.07,pEye,x,2.34,.73,1,1,.45,8);
 const pWings=[];for(const x of [-.66,.66]){const w=pBall(player,.25,pBlack,x,1.2,0,.55,1.4,.55,8);w.rotation.z=x<0?-.35:.35;pWings.push(w)}
 for(const x of [-.3,.3]){const leg=new THREE.Mesh(new THREE.CylinderGeometry(.085,.10,.34,8),pOrange);leg.position.set(x,.27,.10);player.add(leg);const foot=new THREE.Mesh(new THREE.BoxGeometry(.52,.20,.62),pOrange);foot.position.set(x,.12,.24);player.add(foot)}
-player.position.set(0,.34,-91);
+player.position.set(0,.78,-91);
 const pJoy=document.getElementById('playerJoy'),pKnob=document.getElementById('playerKnob');
 let pMoveX=0,pMoveY=0,pJoyActive=false,pJoyId=null,pJumpV=0,pJumping=false;
 function pSetJoy(e){const r=pJoy.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const max=Math.min(r.width,r.height)*.34,len=Math.hypot(dx,dy);if(len>max){dx=dx/len*max;dy=dy/len*max}pKnob.style.transform='translate('+dx+'px,'+dy+'px)';const mag=Math.hypot(dx,dy)/max;pMoveX=mag<.1?0:dx/max;pMoveY=mag<.1?0:dy/max}
@@ -290,7 +290,7 @@ const pKeys={};addEventListener('keydown',e=>{pKeys[e.key.toLowerCase()]=true});
 function pJump(){if(!pJumping){pJumpV=8;pJumping=true}}
 document.getElementById('playerJump').addEventListener('click',pJump);
 document.getElementById('playerPlaza').addEventListener('click',()=>{
- pEndJoy();player.position.set(0,.34,-91);pPrev.copy(player.position);
+ pEndJoy();player.position.set(0,.78,-91);pPrev.copy(player.position);
  camera.position.set(0,22,-111);controls.target.set(0,2.2,-91);controls.update();
  document.getElementById('playerState').textContent='ĐANG Ở QUẢNG TRƯỜNG 369 CITY · DÙNG JOYSTICK ĐỂ KHÁM PHÁ';
 });
@@ -320,6 +320,22 @@ function updatePlayer(){
 const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
 const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.045,.22,.68);composer.addPass(bloom);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight)});
-const mascotClock=new THREE.Clock();\nfunction animate(){requestAnimationFrame(animate);const t=mascotClock.getElapsedTime();\n // Mascot nhún nhảy nhẹ, vẫy cánh luân phiên và mỏ chuyển động như đang cười nói.\n penguinGroup.position.y=-.55+Math.max(0,Math.sin(t*2.4))*.22;\n statueWings.forEach(({mesh,side})=>{mesh.rotation.z=side*(.22+Math.max(0,Math.sin(t*3.2+(side>0?Math.PI:0)))*.78)});\n beak.scale.y=.75+Math.max(0,Math.sin(t*7))*.65;jaw.position.y=3.89-Math.max(0,Math.sin(t*7))*.10;jaw.scale.y=.25+Math.max(0,Math.sin(t*7))*.30;\n controls.update();updatePlayer();composer.render()}animate();
+const mascotClock=new THREE.Clock();
+function animate(){
+ requestAnimationFrame(animate);
+ const t=mascotClock.getElapsedTime();
+ // Mascot nhun nhay, vay canh va chuyen dong mom.
+ penguinGroup.position.y=-.55+Math.max(0,Math.sin(t*2.4))*.22;
+ statueWings.forEach(({mesh,side})=>{
+   mesh.rotation.z=side*(.22+Math.max(0,Math.sin(t*3.2+(side>0?Math.PI:0)))*.78);
+ });
+ beak.scale.y=.75+Math.max(0,Math.sin(t*7))*.65;
+ jaw.position.y=3.89-Math.max(0,Math.sin(t*7))*.10;
+ jaw.scale.y=.25+Math.max(0,Math.sin(t*7))*.30;
+ controls.update();
+ updatePlayer();
+ composer.render();
+}
+animate();
 </script>
 </body></html>
