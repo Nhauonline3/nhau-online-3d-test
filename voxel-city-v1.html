@@ -37,14 +37,14 @@ function road(x,z,w,d){cube(x,0,z,w,.12,d,'road');if(w>d){for(let px=x-w/2+2;px<
 function crosswalk(x,z,horizontal=true){for(let i=-3;i<=3;i++){if(horizontal)cube(x+i*1.05,.15,z, .55,.045,2.1,'white');else cube(x,.15,z+i*1.05,2.1,.045,.55,'white')}}
 ground(0,0,112,112); 
 // Road network: a central cross and an outer loop, with pedestrian connections to every district.
-road(0,0,10,104);road(0,0,104,10);road(-29,0,8,86);road(29,0,8,86);road(0,-29,86,8);road(0,29,86,8);
+road(0,0,10,48);road(0,0,48,10);road(-20,0,5,70);road(20,0,5,70);road(0,-20,70,5);road(0,20,70,5);road(-27,0,10,5);road(27,0,10,5);road(-20,-26,5,10);road(20,-26,5,10);road(-20,26,5,10);road(20,26,5,10);
 road(0,0,0.01,0.01); // harmless alignment marker
 crosswalk(0,-9,true);crosswalk(0,9,true);crosswalk(-9,0,false);crosswalk(9,0,false);
 function tree(x,z,scale=1){cube(x,0,z,.9*scale,2.5*scale,.9*scale,'wood');cube(x,2.3*scale,z,2.7*scale,2.2*scale,2.7*scale,'leaf');cube(x-.7*scale,3.2*scale,z+.2*scale,1.5*scale,1.4*scale,1.5*scale,'leaf2')}
 function bench(x,z){cube(x,0.55,z,2.2,.25,.7,'wood');cube(x,.1,z-.25,.18,.8,.18,'black');cube(x,.1,z+.25,.18,.8,.18,'black')}
 function sign(text,color){const c=document.createElement('canvas');c.width=512;c.height=128;const ctx=c.getContext('2d');ctx.fillStyle='#20332b';ctx.fillRect(0,0,512,128);ctx.strokeStyle='#f4e3ad';ctx.lineWidth=8;ctx.strokeRect(5,5,502,118);ctx.font='bold 43px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=color;ctx.fillText(text,256,66);const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;const mesh=new THREE.Mesh(new THREE.PlaneGeometry(12,3),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));return mesh}
 const areas=[];
-function addArea(name,desc,x,z,color){areas.push({name,desc,x,z});const s=sign(name,color);s.position.set(x,7,z-7);scene.add(s)}
+function addArea(name,desc,x,z,color){areas.push({name,desc,x,z});const s=sign(name,color);s.position.set(x,7,z+8);scene.add(s)}
 // Medium-sized central plaza and fountain.
 cube(0,.05,0,23,.25,23,'side');cube(0,.2,0,20,.18,20,'white');
 cube(0,.4,0,7,.35,7,'blue');cube(0,.75,0,4,.45,4,'side');cube(0,1.2,0,1.4,1.0,1.4,'gold');
