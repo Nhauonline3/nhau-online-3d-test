@@ -198,41 +198,33 @@ adBoard(15,8.2,-17.25,4.4,2.5,'ARCADE 369',pink,0);
 adBoard(-15,6.5,16.25,4.0,2.2,'LIVE SHOW',cyan,Math.PI);
 adBoard(15,7.2,16.25,4.0,2.2,'PLAY TOGETHER',pink,Math.PI);
 
-// Floating 360-degree LED billboard halo above the central plaza
-const skyHalo=new THREE.Group();skyHalo.position.set(0,15.5,0);
-const haloMat=new THREE.MeshStandardMaterial({color:0x17224b,emissive:0x173b88,emissiveIntensity:1.0,metalness:.55,roughness:.3});
-const haloBase=new THREE.Mesh(new THREE.TorusGeometry(8.1,.34,12,96),haloMat);haloBase.rotation.x=Math.PI/2;skyHalo.add(haloBase);
-for(const [rad,tube,color] of [[8.45,.075,0x16dfff],[7.72,.07,0xff28c8],[6.9,.055,0xffbd4a]]){
- const ring=new THREE.Mesh(new THREE.TorusGeometry(rad,tube,8,96),new THREE.MeshBasicMaterial({color}));ring.rotation.x=Math.PI/2;skyHalo.add(ring);
+// One oversized hero LED billboard at the back of the plaza
+// Replaces the floating ring with a clear, readable advertising landmark.
+function heroBillboard(){
+ const x=0,y=12.4,z=-20.6;
+ for(const sx of [-9.6,9.6]){
+   box(sx,6.5,z,1.0,11.8,1.0,'dark');
+   box(sx,6.6,z+.58,.16,11.2,.12,sx<0?cyan:pink);
+   box(sx,12.55,z,1.5,.35,1.35,amber);
+   for(let j=0;j<5;j++)box(sx,2.1+j*1.65,z+.58,.22,.55,.12,j%2?pink:cyan);
+ }
+ box(0,y,z,20.8,9.0,.85,'dark');
+ box(0,y,z+.48,20.25,8.45,.16,violet);
+ const screen=new THREE.Mesh(new THREE.PlaneGeometry(19.6,7.8),textTexture('369 CITY  •  SHOPPING  •  GAMES  •  KARAOKE','#07132f','#ffffff'));
+ screen.position.set(0,y,z+.60);scene.add(screen);
+ box(0,y+4.28,z+.63,20.5,.16,.18,cyan);
+ box(0,y-4.28,z+.63,20.5,.16,.18,pink);
+ for(const sx of [-10.15,10.15])box(sx,y,z+.63,.16,8.5,.18,cyan);
+ box(0,7.45,z+.8,13.8,.72,.22,'dark');
+ const subtitle=new THREE.Mesh(new THREE.PlaneGeometry(13.2,.52),textTexture('WELCOME TO THE FUTURE OF FUN','#10133b','#ffe56b'));
+ subtitle.position.set(0,7.45,z+.94);scene.add(subtitle);
+ const emblem=new THREE.Mesh(new THREE.TorusGeometry(1.05,.12,10,32),new THREE.MeshBasicMaterial({color:0xff35d4}));
+ emblem.position.set(0,17.25,z+.72);scene.add(emblem);
+ const star=new THREE.Mesh(new THREE.OctahedronGeometry(.72,0),new THREE.MeshStandardMaterial({color:0xffd44d,emissive:0xff9b19,emissiveIntensity:1.6}));
+ star.position.set(0,17.25,z+.9);scene.add(star);
+ const glow=new THREE.PointLight(0x19cfff,8,42);glow.position.set(0,12,z+3);scene.add(glow);
 }
-const haloAds=['369 CITY','SHOPPING','KARAOKE','MINI GAMES','LIVE SHOW','FRIENDS'];
-for(let i=0;i<6;i++){
- const a=i*Math.PI/3;
- const panel=new THREE.Group();panel.position.set(Math.sin(a)*7.95,0,Math.cos(a)*7.95);panel.rotation.y=a;
- const frame=new THREE.Mesh(new THREE.BoxGeometry(3.25,1.9,.22),new THREE.MeshStandardMaterial({color:0x111c3b,emissive:0x183d88,emissiveIntensity:.75}));panel.add(frame);
- const face=new THREE.Mesh(new THREE.PlaneGeometry(2.95,1.62),textTexture(haloAds[i],i%2?'#17103d':'#071b3d',i%2?'#ff78ed':'#7cf5ff'));face.position.z=.13;panel.add(face);
- const top=new THREE.Mesh(new THREE.BoxGeometry(3.05,.08,.08),new THREE.MeshBasicMaterial({color:i%2?0xff28c8:0x16dfff}));top.position.y=.94;panel.add(top);
- skyHalo.add(panel);
-}
-scene.add(skyHalo);
-const haloLight=new THREE.PointLight(0x3d8cff,5,34);haloLight.position.set(0,14,0);scene.add(haloLight);
-
-// Small pixel citizens make the square feel active without blocking the fountain
-function pixelCitizen(x,z,shirt,pants,scale=1){
- const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);
- box(0,1.05,0,.62,.92,.38,shirt,g);
- const head=new THREE.Mesh(new THREE.BoxGeometry(.48,.48,.42),new THREE.MeshStandardMaterial({color:0xf0c49c,roughness:.8}));head.position.set(0,1.78,0);g.add(head);
- box(0,2.05,0,.5,.12,.44,'dark',g);
- box(-.19,.38,0,.22,.72,.25,pants,g);box(.19,.38,0,.22,.72,.25,pants,g);
- box(-.39,1.1,0,.18,.72,.22,shirt,g);box(.39,1.1,0,.18,.72,.22,shirt,g);
- scene.add(g);
-}
-const citizens=[
- [-7,-7,pink,cyan],[-5,-8,cyan,violet],[7,-7,amber,pink],[5,-8,violet,cyan],
- [-10,2,cyan,pink],[10,2,pink,amber],[-7,9,amber,violet],[7,9,cyan,pink],
- [-2,11,pink,cyan],[2,11,amber,violet],[-12,-2,violet,amber],[12,-2,cyan,pink]
-];
-for(const p of citizens)pixelCitizen(...p,.82);
+heroBillboard();
 
 // Decorative overhead light strings and tiny glowing pennants
 for(let i=0;i<9;i++){
