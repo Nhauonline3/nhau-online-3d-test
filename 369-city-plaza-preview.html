@@ -19,9 +19,9 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:8px;
 </head>
 <body>
 <div id="scene"></div>
-<div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">QUẢNG TRƯỜNG TRUNG TÂM · PIXEL NEON V03 SÁNG HƠN</div></div><div class="card" style="text-align:right"><strong>📍 KHU TRUNG TÂM</strong><div class="sub">Quy mô vừa · 6 lối kết nối</div></div></div>
+<div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">QUẢNG TRƯỜNG TRUNG TÂM · PIXEL NEON V04 SỐNG ĐỘNG</div></div><div class="card" style="text-align:right"><strong>📍 KHU TRUNG TÂM</strong><div class="sub">Quy mô vừa · 6 lối kết nối</div></div></div>
 <div class="hint">Vuốt để xoay · Chụm 2 ngón để phóng to/thu nhỏ</div>
-<div class="bottom"><div class="pill">Mẫu PIXEL NEON V03 · Tăng ánh sáng</div><button id="reset">ĐẶT LẠI GÓC NHÌN</button></div>
+<div class="bottom"><div class="pill">Mẫu PIXEL NEON V04 · Thêm tiện ích và cảnh quan</div><button id="reset">ĐẶT LẠI GÓC NHÌN</button></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
@@ -73,9 +73,17 @@ pSphere(0,4.03,.51,.43,.43,.18,penguinWhite);   // mặt
 pSphere(-.22,4.25,.68,.075,.09,.055,penguinEye);pSphere(.22,4.25,.68,.075,.09,.055,penguinEye);
 const beak=new THREE.Mesh(new THREE.ConeGeometry(.19,.38,8),penguinOrange);beak.rotation.x=Math.PI/2;beak.position.set(0,4.02,.83);penguinGroup.add(beak);
 for(const side of [-1,1]){const wing=pSphere(side*.77,3.35,.02,.25,.66,.27,penguinDark);wing.rotation.z=side*.22;const foot=new THREE.Mesh(new THREE.SphereGeometry(.22,12,10),penguinOrange);foot.scale.set(1.25,.45,1);foot.position.set(side*.34,2.42,.25);penguinGroup.add(foot)}
-// Khăn choàng đỏ để nhận diện mascot trong game
+// Khăn choàng đỏ, tai nghe neon và vương miện: mascot biểu tượng độc quyền 369 CITY
 const scarf=new THREE.Mesh(new THREE.TorusGeometry(.58,.11,8,24),penguinRed);scarf.position.set(0,3.83,.03);scarf.rotation.x=Math.PI/2;penguinGroup.add(scarf);
-penguinGroup.position.y=.05;scene.add(penguinGroup);
+const headphone=new THREE.Mesh(new THREE.TorusGeometry(.79,.13,8,32),cyan);headphone.position.set(0,4.18,0);headphone.rotation.x=Math.PI/2;penguinGroup.add(headphone);
+for(const side of [-1,1]){const ear=new THREE.Mesh(new THREE.BoxGeometry(.24,.48,.34),violet);ear.position.set(side*.78,4.05,0);penguinGroup.add(ear)}
+// Vương miện pixel vàng với các đỉnh vuông
+const crownBase=new THREE.Mesh(new THREE.BoxGeometry(1.08,.18,.68),amber);crownBase.position.set(0,4.78,0);penguinGroup.add(crownBase);
+for(let i=0;i<5;i++){const spike=new THREE.Mesh(new THREE.BoxGeometry(.16,.42,.22),i%2?amber:gold);spike.position.set(-.42+i*.21,5.05,0);penguinGroup.add(spike)}
+// Huy hiệu ngôi sao phát sáng trên ngực
+const badgeRing=new THREE.Mesh(new THREE.TorusGeometry(.24,.055,8,24),gold);badgeRing.position.set(0,3.35,.73);penguinGroup.add(badgeRing);
+const badgeStar=new THREE.Mesh(new THREE.OctahedronGeometry(.22,0),amber);badgeStar.position.set(0,3.35,.76);penguinGroup.add(badgeStar);
+penguinGroup.scale.setScalar(1.48);penguinGroup.position.y=-.55;scene.add(penguinGroup);
 // Đồng xu cầu nguyện: nằm ngang, rải tự nhiên dưới mặt nước như người chơi vừa thả xuống hồ
 for(let i=0;i<14;i++){
   const a=i*2.399963,rad=1.65+(i%4)*.48;
@@ -96,29 +104,67 @@ bench(-8,-5,0);bench(8,-5,Math.PI);bench(-8,5,0);bench(8,5,Math.PI);
 for(const [x,z] of [[-17,-8],[17,-8],[-17,8],[17,8],[-8,-17],[8,-17],[-8,17],[8,17]])lamp(x,z);
 // trees in perimeter landscaping
 for(const [x,z,s] of [[-20,-14,.9],[-20,14,.9],[20,-14,.9],[20,14,.9],[-14,-20,.8],[14,-20,.8],[-14,20,.8],[14,20,.8]])tree(x,z,s);
+// Tiện ích quanh quảng trường: máy bán nước tự động phong cách arcade
+function vendingMachine(x,z,accent,label){
+ const g=new THREE.Group();g.position.set(x,0,z);
+ box(0,.35,0,1.45,2.45,.72,'dark',g);box(0,.55,.39,1.18,1.82,.08,'purple',g);
+ box(0,.62,.46,.94,1.28,.045,accent,g);
+ for(let r=0;r<3;r++)for(let k=0;k<3;k++){box(-.31+k*.31,1.72-r*.34,.51,.17,.22,.045,[pink,cyan,amber][(r+k)%3],g)}
+ box(0,.52,.48,.48,.18,.06,'dark',g);box(.48,.62,.48,.12,.32,.07,amber,g);
+ const top=new THREE.Mesh(new THREE.PlaneGeometry(1.0,.2),textTexture(label,'#08152b','#ffffff'));top.position.set(0,2.42,.39);g.add(top);
+ box(0,.16,0,1.65,.16,.84,accent,g);scene.add(g);
+ const glow=new THREE.PointLight(0x16dfff,.7,5);glow.position.set(x,1.5,z+1);scene.add(glow);
+}
+vendingMachine(-13,-5,cyan,'DRINKS');vendingMachine(13,-5,pink,'DRINKS');vendingMachine(-13,5,amber,'SNACKS');
+// Bồn hoa pixel nhiều tầng và hoa neon nhỏ
+function flowerBed(x,z){
+ box(x,.38,z,3.2,.34,2.0,'green');box(x,.57,z,2.9,.12,1.7,'green2');
+ for(let i=0;i<9;i++){const px=x-1.15+(i%3)*1.15,pz=z-.55+Math.floor(i/3)*.55;
+   cylinder(px,.62,pz,.035,.035,.34,'green2',6);
+   const bloom=new THREE.Mesh(new THREE.BoxGeometry(.34,.18,.34),i%3===0?pink:i%3===1?amber:violet);bloom.position.set(px,.98,pz);scene.add(bloom);
+   const core=new THREE.Mesh(new THREE.BoxGeometry(.12,.12,.12),gold);core.position.set(px,1.08,pz);scene.add(core);
+ }
+}
+flowerBed(-9,-12);flowerBed(9,-12);flowerBed(-9,12);flowerBed(9,12);
+// Khu hút thuốc riêng, có mái che, ghế và thùng tàn thuốc
+function smokingZone(){
+ const x=14,z=9;
+ box(x,.34,z,6.8,.12,4.8,'dark');box(x,2.8,z,6.8,.18,4.8,violet);
+ for(const dx of [-3.2,3.2])for(const dz of [-2.1,2.1])box(x+dx,1.4,z+dz,.16,2.1,.16,cyan);
+ box(x,2.45,z-2.05,5.7,.62,.10,'dark');
+ const label=new THREE.Mesh(new THREE.PlaneGeometry(5.4,.48),textTexture('SMOKING AREA','#10133b','#ffcf69'));label.position.set(x,2.48,z-1.98);scene.add(label);
+ bench(x, z+.9,Math.PI/2);
+ cylinder(x+2.45,.35,z+.8,.22,.22,.7,'dark',12);cylinder(x+2.45,1.05,z+.8,.24,.24,.12,'gold',12);
+ // Biểu tượng điếu thuốc cách điệu trên bảng nhỏ
+ box(x-2.35,1.1,z-1.98,.75,.12,.12,cream);box(x-1.95,1.1,z-1.98,.18,.14,.14,pink);
+}
+smokingZone();
+
 // six labeled connections to surrounding future districts
 sign(0,-21.8,'KHU MUA SAM');// Lối vào phía trước dùng cổng chào chính; bỏ bảng nhỏ gây vướng tầm nhìn
 sign(-21.8,0,'STRESS BEAR CLUB',Math.PI/2);sign(21.8,0,'DOI TIEN',-Math.PI/2);
 sign(-15.7,-15.7,'APARTMENT',Math.PI/4);sign(15.7,-15.7,'PICKLEBALL',-Math.PI/4);
 // entry markers, paving lights and decorative low bollards
 for(const [x,z] of [[0,-17],[0,17],[-17,0],[17,0],[-12,-12],[12,-12]]){cylinder(x,.35,z,.28,.28,.45,'gold',8);cylinder(x,.8,z,.12,.12,.5,'cream',8)}
-// Cổng pixel neon 369 CITY: các khối vuông, biển hiệu LED
+// Cổng chào 369 CITY thu gọn: vòm pixel neon thanh thoát, không che quảng trường
 function entranceGate(){
  const z=20.2;
- for(const x of [-8.2,8.2]){
-   box(x,.35,z,2.25,.7,2.2,'dark');box(x,.95,z,1.9,.35,1.9,cyan);
-   box(x,1.25,z,1.55,4.6,1.55,'purple');
-   box(x,1.45,z+.82,.16,4.0,.12,pink);box(x,1.45,z-.82,.16,4.0,.12,cyan);
-   box(x,5.8,z,2.3,.5,2.3,amber);box(x,6.18,z,1.9,.28,1.9,violet);
-   box(x,3.2,z+.9,.9,1.2,.12,cyan);box(x,3.2,z+.99,.58,.8,.12,'dark');
+ for(const x of [-5.25,5.25]){
+   box(x,.34,z,1.05,.55,1.05,'dark');box(x,.78,z,1.0,.22,1.0,cyan);
+   box(x,1.0,z,.58,2.65,.58,'purple');
+   box(x,1.12,z+.34,.10,2.25,.08,pink);box(x,1.12,z-.34,.10,2.25,.08,cyan);
+   box(x,3.78,z,.92,.24,.92,amber);
+   for(let j=0;j<3;j++)box(x,.75+j*.72,z+.38,.12,.34,.1,j%2?cyan:pink);
  }
- box(0,7.1,z,18.5,1.1,1.65,'dark');box(0,7.72,z,18.9,.16,1.8,pink);box(0,6.52,z,18.9,.16,1.8,cyan);
- box(0,7.1,z+.88,15.5,.86,.12,violet);
- const board=new THREE.Mesh(new THREE.PlaneGeometry(14.8,.72),textTexture('WELCOME 369 CITY','#10133b','#ff64e8'));board.position.set(0,7.1,z+.96);scene.add(board);
- box(0,8.35,z,.95,.24,.7,amber);for(let i=0;i<5;i++)box(-.8+i*.4,8.68+(i%2)*.22,z,.22,.58,.62,i%2?amber:pink);
- for(const x of [-10.1,10.1]){for(let j=0;j<5;j++)box(x,.5+j*.75,z,.24,.45,.24,j%2?cyan:pink)}
- box(0,.38,23,12,.18,3.8,violet);box(0,.49,25,10,.12,2,cyan);
- for(let i=0;i<4;i++){box(0,.65,24.5-i*1.25,1.6,.12,.3,pink);box(0,.65,24.8-i*1.25,.3,.12,.9,pink)}
+ // Thanh ngang cong bậc pixel, tổng chiều rộng chỉ 12m
+ box(0,4.02,z,11.8,.58,.82,'dark');box(0,4.36,z,12,.12,.9,pink);box(0,3.68,z,12,.12,.9,cyan);
+ box(0,4.02,z+.44,9.5,.48,.10,violet);
+ const board=new THREE.Mesh(new THREE.PlaneGeometry(9.1,.40),textTexture('369 CITY','#10133b','#fff16a'));board.position.set(0,4.02,z+.52);scene.add(board);
+ // Dòng WELCOME nhỏ nằm ngay dưới bảng hiệu
+ const welcome=new THREE.Mesh(new THREE.PlaneGeometry(4.5,.22),textTexture('WELCOME','#10133b','#72f4ff'));welcome.position.set(0,3.55,z+.53);scene.add(welcome);
+ for(let i=0;i<5;i++){box(-.48+i*.24,4.48+(i%2)*.12,z,.14,.24,.22,i%2?amber:pink)}
+ box(0,.36,23,8,.14,2.8,violet);box(0,.48,24.25,7,.10,1.2,cyan);
+ for(let i=0;i<3;i++)box(0,.62,23.8-i*.82,1.1,.10,.22,pink);
 }
 entranceGate();
 // Pixel cyberpunk skyline blocks around the plaza
