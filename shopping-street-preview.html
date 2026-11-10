@@ -17,7 +17,7 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 #playerJoy{position:fixed;z-index:6;left:18px;bottom:24px;width:116px;height:116px;border-radius:50%;border:2px solid #46eaff;background:#07152caa;box-shadow:0 0 20px #00cfff88;touch-action:none;display:flex;align-items:center;justify-content:center}
 #playerKnob{width:48px;height:48px;border-radius:50%;background:linear-gradient(145deg,#43efff,#a32cff);border:2px solid #fff;box-shadow:0 0 15px #19e5ff;pointer-events:none}
 #playerActions{position:fixed;z-index:6;right:18px;bottom:28px;display:flex;flex-direction:column;gap:9px}
-#playerActions button{min-width:76px;min-height:48px}
+#playerActions button{min-width:76px;min-height:48px;font-size:11px;padding:9px 10px}
 #playerState{position:fixed;z-index:5;left:50%;transform:translateX(-50%);bottom:18px;background:#07152ce8;color:#c9f8ff;border:1px solid #22dfff;border-radius:9px;padding:7px 10px;font-size:10px;pointer-events:none}
 @media(min-width:700px){#playerJoy{width:100px;height:100px;left:24px;bottom:24px}#playerKnob{width:42px;height:42px}}
 </style>
@@ -28,7 +28,7 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 <div class="hint">Vuốt để xoay · Chụm 2 ngón để phóng to/thu nhỏ · Chạm cửa hàng để xem</div>
 <div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p></div>
 <div id="playerJoy" aria-label="Điều khiển di chuyển"><div id="playerKnob"></div></div>
-<div id="playerActions"><button id="playerJump">🐧 NHẢY</button><button id="playerCenter">📍 THEO NHÂN VẬT</button></div>
+<div id="playerActions"><button id="playerJump">🐧 NHẢY</button><button id="playerCenter">📍 THEO NHÂN VẬT</button><button id="playerPlaza">🏙️ ĐẾN QUẢNG TRƯỜNG</button></div>
 <div id="playerState">KÉO JOYSTICK ĐỂ DI CHUYỂN · CHẠM ĐỂ XEM CỬA HÀNG</div>
 <div class="bottom"><div class="pill">Bản thử nghiệm riêng · Chưa đưa vào game chính</div><button id="reset">ĐẶT LẠI GÓC NHÌN</button></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
@@ -383,6 +383,12 @@ pJoy.addEventListener('pointerup',pEndJoy);pJoy.addEventListener('pointercancel'
 const pKeys={};addEventListener('keydown',e=>{pKeys[e.key.toLowerCase()]=true});addEventListener('keyup',e=>{pKeys[e.key.toLowerCase()]=false});
 function pJump(){if(!pJumping){pJumpV=8;pJumping=true}}
 document.getElementById('playerJump').addEventListener('click',pJump);
+document.getElementById('playerPlaza').addEventListener('click',()=>{
+ pEndJoy();player.position.set(0,0,-50);pPrev.copy(player.position);
+ camera.position.set(0,23,-18);controls.target.set(0,2.2,-66);controls.update();
+ document.getElementById('playerState').textContent='ĐÃ ĐẾN CỔNG QUẢNG TRƯỜNG 369 CITY · DÙNG JOYSTICK ĐỂ KHÁM PHÁ';
+});
+
 document.getElementById('playerCenter').addEventListener('click',()=>{const dx=player.position.x-controls.target.x,dz=player.position.z-controls.target.z;camera.position.x+=dx;camera.position.z+=dz;controls.target.set(player.position.x,2.1,player.position.z);controls.update()});
 let pPrev=new THREE.Vector3();const pClock=new THREE.Clock();
 function updatePlayer(){
@@ -394,7 +400,7 @@ function updatePlayer(){
  const dir=new THREE.Vector3();camera.getWorldDirection(dir);dir.y=0;dir.normalize();
  const right=new THREE.Vector3(dir.z,0,-dir.x);
  const move=right.multiplyScalar(-ix).add(dir.multiplyScalar(-iy));
- const speed=7.2;const nx=THREE.MathUtils.clamp(player.position.x+move.x*speed*dt,-7.25,7.25);
+ const speed=12.5;const nx=THREE.MathUtils.clamp(player.position.x+move.x*speed*dt,-7.25,7.25);
  const nz=THREE.MathUtils.clamp(player.position.z+move.z*speed*dt,-99,29.5);
  player.position.x=nx;player.position.z=nz;
  if(len>.08){player.rotation.y=Math.atan2(move.x,move.z);pWings.forEach((w,i)=>w.rotation.z=(i===0?-.35:.35)+Math.sin(performance.now()*.012)*.16)}
