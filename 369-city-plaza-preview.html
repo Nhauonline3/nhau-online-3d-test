@@ -60,16 +60,31 @@ box(-14,.32,-14,6,.12,6,'cream');box(14,.32,-14,6,.12,6,'cream');
 // Fountain at center
 cylinder(0,.38,0,4.8,4.8,.38,'edge',32);cylinder(0,.76,0,4.25,4.25,.18,'blue',32);cylinder(0,.88,0,3.3,3.3,.12,'water',32);cylinder(0,1.0,0,.75,.95,1.25,'cream',16);cylinder(0,2.25,0,1.25,.75,.28,'blue',20);
 cylinder(0,2.53,0,.24,.24,.55,'gold',12);
-// Tượng chim bồ câu cách điệu trên đỉnh đài phun
-const birdMat=mat(0xf5f1df),beakMat=mat(0xf0bd48);
-const birdBody=new THREE.Mesh(new THREE.SphereGeometry(.62,16,12),birdMat);birdBody.scale.set(1.0,1.25,.72);birdBody.position.set(0,3.35,0);birdBody.castShadow=true;scene.add(birdBody);
-const birdHead=new THREE.Mesh(new THREE.SphereGeometry(.34,16,12),birdMat);birdHead.position.set(.05,4.12,0);birdHead.castShadow=true;scene.add(birdHead);
-const birdBeak=new THREE.Mesh(new THREE.ConeGeometry(.17,.42,8),beakMat);birdBeak.rotation.z=-Math.PI/2;birdBeak.position.set(.42,4.08,0);scene.add(birdBeak);
-for(const side of [-1,1]){const wing=new THREE.Mesh(new THREE.SphereGeometry(.28,12,10),birdMat);wing.scale.set(.45,1.1,.65);wing.position.set(side*.48,3.42,0);wing.rotation.z=side*.3;scene.add(wing)}
-const eyeMat=mat(0x26332f);for(const side of [-1,1]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.055,8,8),eyeMat);eye.position.set(.18,4.18,side*.27);scene.add(eye)}
-// Đồng xu vàng dựng đứng bao quanh lòng hồ
-for(let i=0;i<10;i++){const a=i*Math.PI*2/10;const coin=new THREE.Mesh(new THREE.CylinderGeometry(.48,.48,.14,24),M.gold);coin.rotation.x=Math.PI/2;coin.rotation.z=a;coin.position.set(Math.cos(a)*3.55,1.52,Math.sin(a)*3.55);coin.castShadow=true;scene.add(coin);
- const star=new THREE.Mesh(new THREE.SphereGeometry(.13,8,8),M.cream);star.position.set(coin.position.x,1.52,coin.position.z+.09);scene.add(star)}
+// Nhân vật chim cánh cụt của 369 CITY đứng trên bệ giữa hồ
+const penguinGroup=new THREE.Group();
+const penguinDark=mat(0x17283b),penguinWhite=mat(0xf7f4e8),penguinOrange=mat(0xffa928),penguinEye=mat(0x111820),penguinRed=mat(0xd94755);
+function pSphere(x,y,z,sx,sy,sz,material){const m=new THREE.Mesh(new THREE.SphereGeometry(1,20,16),material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=true;m.receiveShadow=true;penguinGroup.add(m);return m}
+pSphere(0,3.25,0,.82,1.05,.68,penguinDark);       // thân
+pSphere(0,3.18,.52,.53,.76,.20,penguinWhite);    // bụng trắng
+pSphere(0,4.18,0,.72,.68,.62,penguinDark);      // đầu
+pSphere(0,4.03,.51,.43,.43,.18,penguinWhite);   // mặt
+pSphere(-.22,4.25,.68,.075,.09,.055,penguinEye);pSphere(.22,4.25,.68,.075,.09,.055,penguinEye);
+const beak=new THREE.Mesh(new THREE.ConeGeometry(.19,.38,8),penguinOrange);beak.rotation.x=Math.PI/2;beak.position.set(0,4.02,.83);penguinGroup.add(beak);
+for(const side of [-1,1]){const wing=pSphere(side*.77,3.35,.02,.25,.66,.27,penguinDark);wing.rotation.z=side*.22;const foot=new THREE.Mesh(new THREE.SphereGeometry(.22,12,10),penguinOrange);foot.scale.set(1.25,.45,1);foot.position.set(side*.34,2.42,.25);penguinGroup.add(foot)}
+// Khăn choàng đỏ để nhận diện mascot trong game
+const scarf=new THREE.Mesh(new THREE.TorusGeometry(.58,.11,8,24),penguinRed);scarf.position.set(0,3.83,.03);scarf.rotation.x=Math.PI/2;penguinGroup.add(scarf);
+penguinGroup.position.y=.05;scene.add(penguinGroup);
+// Đồng xu cầu nguyện: nằm ngang, rải tự nhiên dưới mặt nước như người chơi vừa thả xuống hồ
+for(let i=0;i<14;i++){
+  const a=i*2.399963,rad=1.65+(i%4)*.48;
+  const coin=new THREE.Mesh(new THREE.CylinderGeometry(.32,.32,.085,24),M.gold);
+  coin.position.set(Math.cos(a)*rad,1.015,Math.sin(a)*rad);coin.rotation.y=a;coin.castShadow=true;scene.add(coin);
+  const mark=new THREE.Mesh(new THREE.TorusGeometry(.13,.035,6,12),M.cream);
+  mark.position.set(coin.position.x,1.065,coin.position.z);mark.rotation.x=Math.PI/2;scene.add(mark);
+  const ripple=new THREE.Mesh(new THREE.TorusGeometry(.48+(i%3)*.08,.018,6,32),new THREE.MeshBasicMaterial({color:0xb8efff,transparent:true,opacity:.55}));
+  ripple.position.set(coin.position.x,1.035,coin.position.z);ripple.rotation.x=Math.PI/2;scene.add(ripple);
+}
+
 
 for(let i=0;i<8;i++){const a=i*Math.PI/4;box(Math.cos(a)*3.6,1.05,Math.sin(a)*3.6,.22,.42,.22,'cream')}
 // Four garden beds and small shrubs around inner square
@@ -80,30 +95,54 @@ for(const [x,z] of [[-17,-8],[17,-8],[-17,8],[17,8],[-8,-17],[8,-17],[-8,17],[8,
 // trees in perimeter landscaping
 for(const [x,z,s] of [[-20,-14,.9],[-20,14,.9],[20,-14,.9],[20,14,.9],[-14,-20,.8],[14,-20,.8],[-14,20,.8],[14,20,.8]])tree(x,z,s);
 // six labeled connections to surrounding future districts
-sign(0,-21.8,'KHU MUA SAM');sign(0,21.8,'CONG VIEN',Math.PI);
+sign(0,-21.8,'KHU MUA SAM');// Lối vào phía trước dùng cổng chào chính; bỏ bảng nhỏ gây vướng tầm nhìn
 sign(-21.8,0,'STRESS BEAR CLUB',Math.PI/2);sign(21.8,0,'DOI TIEN',-Math.PI/2);
 sign(-15.7,-15.7,'APARTMENT',Math.PI/4);sign(15.7,-15.7,'PICKLEBALL',-Math.PI/4);
 // entry markers, paving lights and decorative low bollards
 for(const [x,z] of [[0,-17],[0,17],[-17,0],[17,0],[-12,-12],[12,-12]]){cylinder(x,.35,z,.28,.28,.45,'gold',8);cylinder(x,.8,z,.12,.12,.5,'cream',8)}
-// Cổng chào chính ở lối vào quảng trường
+// Cổng chào biểu tượng 369 CITY: khung vòm lớn, huy hiệu và mascot hai bên
 function entranceGate(){
-  const z=20.4;
-  for(const x of [-7.8,7.8]){
-    box(x,.35,z,1.45,6.0,1.55,'wood');
-    box(x,.55,z+.82,1.05,5.35,.16,'gold');
-    box(x,6.05,z,2.0,.55,1.9,'gold');
-    box(x,6.58,z,1.55,.35,1.55,'purple');
-    const cap=new THREE.Mesh(new THREE.ConeGeometry(.95,.85,4),M.gold);cap.position.set(x,7.1,z);cap.rotation.y=Math.PI/4;scene.add(cap);
+  const z=20.2;
+  // Hai trụ cổng nhiều tầng, đế rộng và chi tiết trang trí
+  for(const x of [-8.2,8.2]){
+    box(x,.36,z,2.05,.65,2.1,'dark');
+    box(x,.95,z,1.72,.35,1.82,'gold');
+    box(x,1.25,z,1.48,4.35,1.48,'purple');
+    box(x,1.55,z+.78,.2,3.7,.12,'gold');
+    box(x,1.55,z-.78,.2,3.7,.12,'gold');
+    box(x,5.55,z,2.05,.5,2.05,'gold');
+    box(x,5.92,z,1.65,.28,1.65,'purple');
+    // Huy hiệu chim cánh cụt ở mặt trước mỗi trụ
+    const badge=new THREE.Mesh(new THREE.CircleGeometry(.48,24),M.gold);badge.position.set(x,3.25,z+.82);scene.add(badge);
+    const face=new THREE.Mesh(new THREE.SphereGeometry(.32,16,12),penguinDark);face.scale.set(.8,1,.35);face.position.set(x,3.25,z+.91);scene.add(face);
+    const belly=new THREE.Mesh(new THREE.SphereGeometry(.17,12,10),penguinWhite);belly.scale.set(.85,1,.35);belly.position.set(x,3.19,z+1.02);scene.add(belly);
   }
-  box(0,6.15,z,17.2,1.35,1.5,'dark');
-  box(0,7.02,z,17.8,.22,1.72,'gold');
-  box(0,5.28,z,14.8,.18,1.62,'gold');
-  const board=new THREE.Mesh(new THREE.PlaneGeometry(15.8,1.65),textTexture('WELCOME 369 CITY','#241c36','#ffe16a'));
-  board.position.set(0,6.16,z+.79);scene.add(board);
-  // Hai dải đèn nổi bật chạy dọc cột cổng
-  for(const x of [-7.8,7.8])box(x,1.0,z+.92,.22,3.9,.12,'gold');
-  // Đường dẫn lát gạch dẫn từ cổng vào đài phun
-  for(let i=0;i<5;i++)box(0,.43,15.5-i*2.2,5.8,.09,1.65,i%2?'tile2':'cream');
+  // Vòm cổng đúc liền, cong mềm thay cho thanh ngang hình hộp
+  const archShape=new THREE.Shape();
+  archShape.moveTo(-8.2,0);archShape.lineTo(-8.2,5.1);
+  archShape.bezierCurveTo(-7.2,8.9,-3.7,9.25,0,9.25);
+  archShape.bezierCurveTo(3.7,9.25,7.2,8.9,8.2,5.1);
+  archShape.lineTo(8.2,0);archShape.lineTo(6.75,0);archShape.lineTo(6.75,4.9);
+  archShape.bezierCurveTo(5.8,7.55,2.9,7.85,0,7.85);
+  archShape.bezierCurveTo(-2.9,7.85,-5.8,7.55,-6.75,4.9);
+  archShape.lineTo(-6.75,0);archShape.closePath();
+  const archGeo=new THREE.ExtrudeGeometry(archShape,{depth:1.25,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.12,bevelThickness:.12});
+  const arch=new THREE.Mesh(archGeo,new THREE.MeshStandardMaterial({color:0x27334c,metalness:.28,roughness:.48}));
+  arch.position.set(0,.45,z-.62);arch.castShadow=true;arch.receiveShadow=true;scene.add(arch);
+  // Viền vàng chạy theo vòm
+  const curvePts=[];for(let i=0;i<=40;i++){const t=i/40;const x=-8.0+16*t;const y=5.55+3.25*Math.sin(Math.PI*t);curvePts.push(new THREE.Vector3(x,y,z+.78))}
+  const trim=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(curvePts),80,.16,8,false),M.gold);scene.add(trim);
+  // Bảng chữ nổi ở giữa vòm
+  const plate=new THREE.Mesh(new THREE.PlaneGeometry(12.8,2.15),textTexture('WELCOME 369 CITY','#111d3b','#ffe16a'));
+  plate.position.set(0,6.35,z+.78);scene.add(plate);
+  const glow=new THREE.Mesh(new THREE.PlaneGeometry(13.2,2.5),new THREE.MeshBasicMaterial({color:0x25c9ff,transparent:true,opacity:.22}));
+  glow.position.set(0,6.35,z+.72);scene.add(glow);
+  // Vương miện trên đỉnh vòm
+  const crownBase=new THREE.Mesh(new THREE.CylinderGeometry(.85,1.05,.22,8),M.gold);crownBase.position.set(0,9.0,z+.1);scene.add(crownBase);
+  for(let i=0;i<5;i++){const spike=new THREE.Mesh(new THREE.ConeGeometry(.22,.8,5),M.gold);spike.position.set(-.72+i*.36,9.45+(i%2)*.12,z+.1);scene.add(spike)}
+  // Bậc thềm và lối dẫn vào quảng trường
+  box(0,.38,23.0,12,.18,3.8,'gold');box(0,.48,25.0,10,.12,2.0,'cream');
+  for(let i=0;i<4;i++){const arrow=new THREE.Mesh(new THREE.ConeGeometry(.42,.8,3),M.gold);arrow.rotation.x=-Math.PI/2;arrow.position.set(0,.65,24.5-i*1.25);scene.add(arrow)}
 }
 entranceGate();
 // World ground guide ring outside platform
