@@ -184,7 +184,7 @@ function updatePlayer(){
 }
 
 const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
-const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.72,.62,.16);composer.addPass(bloom);
+const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.045,.22,.68);composer.addPass(bloom);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight)});
 function animate(){requestAnimationFrame(animate);controls.update();updatePlayer();composer.render()}animate();
 </script>
