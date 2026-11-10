@@ -53,7 +53,7 @@ const shopData=[
 ];
 const shopMeshes=[];
 function shop(d,index){
- const g=new THREE.Group();g.position.set(d.x,0,d.z);scene.add(g);const a=glow(d.color);
+ const g=new THREE.Group();g.position.set(d.x,0,d.z);g.rotation.y=d.x<0?Math.PI/2:-Math.PI/2;scene.add(g);const a=glow(d.color);
  // raised foundation, back wall, side walls and bright roof cornice
  box(0,.22,0,9.5,.45,8.4,M.dark,g);box(0,.52,0,9.15,.12,8.05,a,g);
  box(0,3.25,-3.7,9.1,5.1,.38,M.wall,g);box(-4.45,2.2,0,.32,3.5,7.6,M.dark,g);box(4.45,2.2,0,.32,3.5,7.6,M.dark,g);
