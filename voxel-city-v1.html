@@ -102,8 +102,9 @@ penguinPart(.72,.94,.015,.22,.59,.25,penguinDark,.28);
 penguinPart(-.205,2.19,.704,.085,.105,.075,penguinEye);
 penguinPart(.205,2.19,.704,.085,.105,.075,penguinEye);
 penguinPart(0,1.91,.755,.205,.125,.15,penguinYellow);
-penguinPart(-.29,.12,.22,.31,.105,.39,penguinYellow);
-penguinPart(.29,.12,.22,.31,.105,.39,penguinYellow);
+// Feet sit forward of the belly so they remain visible from the gameplay camera.
+penguinPart(-.30,.105,.57,.34,.13,.40,penguinYellow);
+penguinPart(.30,.105,.57,.34,.13,.40,penguinYellow);
 player.position.set(0,0,5);
 // Camera: free orbit around the player (drag to rotate, pinch/wheel to zoom).
 let yaw=0,pitch=.45,distance=13,drag=null,lastX=0,lastY=0,pinchStart=0;
