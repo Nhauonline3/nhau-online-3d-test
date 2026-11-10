@@ -52,7 +52,9 @@ box(0,.16,0,43.8,.18,43.8,'cream');
 // checker tiles border ring
 for(let i=-20;i<=20;i+=2){box(i,.26,-20.6,1.8,.08,.75,(i/2)%2?'tile':'tile2');box(i,.26,20.6,1.8,.08,.75,(i/2)%2?'tile2':'tile');box(-20.6,.26,i,.75,.08,1.8,(i/2)%2?'tile':'tile2');box(20.6,.26,i,.75,.08,1.8,(i/2)%2?'tile2':'tile')}
 // central square plaza, paved paths to six gateways
-box(0,.27,0,24,.10,24,'tile');\n// Bright readable paving under neon night lighting\nconst plazaFill=new THREE.MeshStandardMaterial({color:0x435780,roughness:.55,metalness:.16});box(0,.275,0,23.5,.06,23.5,plazaFill);
+box(0,.27,0,24,.10,24,'tile');
+// Bright readable paving under neon night lighting
+const plazaFill=new THREE.MeshStandardMaterial({color:0x435780,roughness:.55,metalness:.16});box(0,.275,0,23.5,.06,23.5,plazaFill);
 for(let i=-20;i<=20;i+=2){box(i,.29,-20.2,.08,.025,40,cyan);box(-20.2,.29,i,40,.025,.08,pink)}
 for(let i=-11;i<=11;i+=2){for(let j=-11;j<=11;j+=2){if((i+j)%4===0)box(i,.33,j,1.82,.045,1.82,'tile2')}}
 box(0,.32,-20,6,.12,10,'cream');box(0,.32,20,6,.12,10,'cream');box(-20,.32,0,10,.12,6,'cream');box(20,.32,0,10,.12,6,'cream');
@@ -131,7 +133,9 @@ neonBuilding(-15,-15,5.5,9,4,pink,'SHOP');neonBuilding(15,-15,5.5,11,4,cyan,'ARC
 neonBuilding(-15,14,5.5,8,4,cyan,'CLUB');neonBuilding(15,14,5.5,10,4,pink,'369');
 neonBuilding(-21,0,3.5,7,4,violet,'BAR');neonBuilding(21,0,3.5,7,4,cyan,'PLAY');
 for(const [x,z] of [[-8,-5],[8,-5],[-8,5],[8,5]]){box(x,.48,z,2.7,.12,.9,pink);box(x,.62,z,.12,.22,.9,cyan)}
-// Broad colored fill lights keep buildings, paths and the fountain visible on phones\nfor(const [x,z,color,intensity] of [[-16,-8,0xff35c9,4],[16,-8,0x21dfff,4],[-16,10,0x8a52ff,3],[16,10,0x21dfff,3],[0,0,0x4b9cff,2.2]]){const fill=new THREE.PointLight(color,intensity,34);fill.position.set(x,8,z);scene.add(fill)}\nconst rainGeo=new THREE.BufferGeometry(),rainPts=[];for(let i=0;i<260;i++)rainPts.push((Math.random()-.5)*90,Math.random()*32,(Math.random()-.5)*90);
+// Broad colored fill lights keep buildings, paths and the fountain visible on phones
+for(const [x,z,color,intensity] of [[-16,-8,0xff35c9,4],[16,-8,0x21dfff,4],[-16,10,0x8a52ff,3],[16,10,0x21dfff,3],[0,0,0x4b9cff,2.2]]){const fill=new THREE.PointLight(color,intensity,34);fill.position.set(x,8,z);scene.add(fill)}
+const rainGeo=new THREE.BufferGeometry(),rainPts=[];for(let i=0;i<260;i++)rainPts.push((Math.random()-.5)*90,Math.random()*32,(Math.random()-.5)*90);
 rainGeo.setAttribute('position',new THREE.Float32BufferAttribute(rainPts,3));const rain=new THREE.Points(rainGeo,new THREE.PointsMaterial({color:0x9eeeff,size:.11,transparent:true,opacity:.62}));scene.add(rain);
 // World ground guide ring outside platform
 for(let a=0;a<64;a++){const t=a*Math.PI*2/64;box(Math.cos(t)*31,-.02,Math.sin(t)*31,.35,.06,.35,'edge')}
