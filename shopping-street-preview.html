@@ -39,9 +39,9 @@ import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examp
 import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js';
 const host=document.getElementById('scene'),scene=new THREE.Scene();scene.background=new THREE.Color(0x080d29);scene.fog=new THREE.Fog(0x080d29,65,125);
-const camera=new THREE.PerspectiveCamera(43,innerWidth/innerHeight,.1,220);camera.position.set(0,22,-96);
-const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.72;renderer.shadowMap.enabled=false;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
-const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.065;controls.target.set(0,2.4,-76);controls.minDistance=18;controls.maxDistance=75;controls.maxPolarAngle=Math.PI*.48;controls.minPolarAngle=.18;
+const camera=new THREE.PerspectiveCamera(43,innerWidth/innerHeight,.1,220);camera.position.set(0,22,-111);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.0));renderer.setSize(innerWidth,innerHeight);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.72;renderer.shadowMap.enabled=false;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.065;controls.target.set(0,2.4,-91);controls.minDistance=18;controls.maxDistance=75;controls.maxPolarAngle=Math.PI*.48;controls.minPolarAngle=.18;
 scene.add(new THREE.AmbientLight(0xd5e7ff,.85));scene.add(new THREE.HemisphereLight(0x92caff,0x354a78,.75));const moon=new THREE.DirectionalLight(0xeaf4ff,1.0);moon.position.set(-25,42,22);moon.castShadow=true;moon.shadow.mapSize.set(1024,1024);scene.add(moon);
 const mat=c=>new THREE.MeshStandardMaterial({color:c,roughness:.46,metalness:.18}),glow=c=>new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:.12,roughness:.58});
 const M={ground:mat(0x253b68),road:mat(0x172b50),dark:mat(0x101b3b),wall:mat(0x253766),glass: new THREE.MeshStandardMaterial({color:0x173e70,emissive:0x0a3261,emissiveIntensity:.8,metalness:.45,roughness:.18}),floor:mat(0x435b8d),gold:glow(0xffc34d),cyan:glow(0x19e5ff),pink:glow(0xff28c8),purple:glow(0x913fff),lime:glow(0x7dff7a),white:mat(0xeaf5ff),wood:mat(0x87517d),leaf:mat(0x168c79)};
@@ -254,6 +254,14 @@ for(const [x,z] of [[0,-17],[0,17],[-17,0],[17,0],[-12,-12],[12,-12]]){cylinder(
 
 }
 
+
+// Broad, simple tiled pedestrian connection from plaza exit to shopping avenue
+{
+ const pathMat=new THREE.MeshStandardMaterial({color:0x344b76,roughness:.72});
+ const pathEdge=new THREE.MeshStandardMaterial({color:0x16294c,roughness:.85});
+ const base=new THREE.Mesh(new THREE.BoxGeometry(8.5,.22,25),pathEdge);base.position.set(0,-.12,-43.5);scene.add(base);
+ for(let z=-55;z<=-32;z+=2){for(let x=-3;x<=3;x+=2){const tile=new THREE.Mesh(new THREE.BoxGeometry(1.92,.08,1.92),pathMat);tile.position.set(x,.035,z);scene.add(tile)}}
+}
 // floating pixel lantern strings across the street
 for(let i=0;i<13;i++){const x=-9+i*1.5;const b=new THREE.Mesh(new THREE.BoxGeometry(.2,.2,.2),i%2?M.pink:M.cyan);b.position.set(x,10,-1+Math.sin(i*.65)*1.2);scene.add(b);point(x,10,-1+Math.sin(i*.65)*1.2,i%2?0xff28c8:0x19e5ff,.08,3)}
 // Removed vending machines to leave the walking avenue open.
@@ -279,7 +287,7 @@ pBall(player,.58,pBlack,0,2.25,0,.9,.88,.78,10);pBall(player,.48,pWhite,0,2.2,.2
 pBall(player,.12,pOrange,0,2.05,.78,1.2,.65,1,8);for(const x of [-.2,.2])pBall(player,.07,pEye,x,2.34,.73,1,1,.45,8);
 const pWings=[];for(const x of [-.66,.66]){const w=pBall(player,.25,pBlack,x,1.2,0,.55,1.4,.55,8);w.rotation.z=x<0?-.35:.35;pWings.push(w)}
 for(const x of [-.3,.3]){const foot=new THREE.Mesh(new THREE.BoxGeometry(.42,.16,.48),pOrange);foot.position.set(x,.12,.1);player.add(foot)}
-player.position.set(0,0,-76);pPrev.set(0,0,-76);
+player.position.set(0,0,-91);
 const pJoy=document.getElementById('playerJoy'),pKnob=document.getElementById('playerKnob');
 let pMoveX=0,pMoveY=0,pJoyActive=false,pJoyId=null,pJumpV=0,pJumping=false;
 function pSetJoy(e){const r=pJoy.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const max=Math.min(r.width,r.height)*.34,len=Math.hypot(dx,dy);if(len>max){dx=dx/len*max;dy=dy/len*max}pKnob.style.transform='translate('+dx+'px,'+dy+'px)';const mag=Math.hypot(dx,dy)/max;pMoveX=mag<.1?0:dx/max;pMoveY=mag<.1?0:dy/max}
@@ -291,13 +299,13 @@ const pKeys={};addEventListener('keydown',e=>{pKeys[e.key.toLowerCase()]=true});
 function pJump(){if(!pJumping){pJumpV=8;pJumping=true}}
 document.getElementById('playerJump').addEventListener('click',pJump);
 document.getElementById('playerPlaza').addEventListener('click',()=>{
- pEndJoy();player.position.set(0,0,-76);pPrev.copy(player.position);
- camera.position.set(0,22,-96);controls.target.set(0,2.2,-76);controls.update();
- document.getElementById('playerState').textContent='ĐÃ ĐẾN CỔNG QUẢNG TRƯỜNG 369 CITY · DÙNG JOYSTICK ĐỂ KHÁM PHÁ';
+ pEndJoy();player.position.set(0,0,-91);pPrev.copy(player.position);
+ camera.position.set(0,22,-111);controls.target.set(0,2.2,-91);controls.update();
+ document.getElementById('playerState').textContent='ĐANG Ở QUẢNG TRƯỜNG 369 CITY · DÙNG JOYSTICK ĐỂ KHÁM PHÁ';
 });
 
 document.getElementById('playerCenter').addEventListener('click',()=>{const dx=player.position.x-controls.target.x,dz=player.position.z-controls.target.z;camera.position.x+=dx;camera.position.z+=dz;controls.target.set(player.position.x,2.1,player.position.z);controls.update()});
-let pPrev=new THREE.Vector3();const pClock=new THREE.Clock();
+let pPrev=new THREE.Vector3();pPrev.copy(player.position);const pClock=new THREE.Clock();
 function updatePlayer(){
  const dt=Math.min(pClock.getDelta(),.04);
  let ix=pMoveX+(pKeys['d']||pKeys['arrowright']?1:0)-(pKeys['a']||pKeys['arrowleft']?1:0);
