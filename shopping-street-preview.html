@@ -131,6 +131,17 @@ for(const side of [-1,1]){
  const plazaGroup=new THREE.Group();
  plazaGroup.position.set(0,0,-76);
  scene.add(plazaGroup);
+
+ const mat=(color)=>new THREE.MeshStandardMaterial({color,roughness:.55,metalness:.12});
+ const M={grass:mat(0x263d66),edge:mat(0x46577e),cream:mat(0x53648b),tile:mat(0x34466f),tile2:mat(0x465a85),road:mat(0x263653),blue:mat(0x168dff),water:mat(0x0875d5),white:mat(0xf2f7ff),wood:mat(0x9b5592),green:mat(0x168f82),green2:mat(0x39c9a8),dark:mat(0x182747),gold:mat(0xffc44d),red:mat(0xff4b91),purple:mat(0x7540a8)};
+ function box(x,y,z,w,h,d,material,parent=plazaGroup){const m=typeof material==="string"?M[material]:material;if(!m)throw new Error("Unknown plaza material: "+material);const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y+h/2,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
+ function cylinder(x,y,z,r1,r2,h,material,seg=12){const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,seg),M[material]||material);o.position.set(x,y+h/2,z);o.castShadow=true;plazaGroup.add(o);return o}
+ function textTexture(txt,bg="#07152d",fg="#7cf5ff"){const c=document.createElement("canvas");c.width=512;c.height=160;const g=c.getContext("2d");g.fillStyle=bg;g.fillRect(0,0,512,160);g.strokeStyle="#25dfff";g.lineWidth=8;g.strokeRect(5,5,502,150);g.fillStyle=fg;g.font="bold 42px monospace";g.textAlign="center";g.textBaseline="middle";g.fillText(txt,256,82,470);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return new THREE.MeshStandardMaterial({map:t,roughness:.9})}
+ function sign(x,z,label,rot=0){box(x,1.5,z,5.2,2.2,.42,"dark");const p=new THREE.Mesh(new THREE.PlaneGeometry(4.9,1.8),textTexture(label));p.position.set(x,2.65,z+.225);p.rotation.y=rot;plazaGroup.add(p);for(const dx of [-2,2])box(x+dx,0,z,.18,1.6,.18,"wood")}
+ function tree(x,z,scale=1){const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);plazaGroup.add(g);box(0,0,0,.7,2,.7,"wood",g);for(let i=0;i<4;i++){const w=2.5-i*.48;box(0,1.25+i*.78,0,w,.78,w,i%2?"green2":"green",g)}}
+ function lamp(x,z){cylinder(x,0,z,.16,.21,5.2,"dark",8);box(x,5.05,z,1.05,.5,1.05,"gold");box(x,5.52,z,.72,.52,.72,amber);box(x,5.82,z,.9,.14,.9,cyan)}
+ function bench(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;box(0,.65,0,2.5,.22,.75,"wood",g);box(0,1.05,-.28,2.5,.8,.2,"wood",g);for(const dx of [-.9,.9])box(dx,.15,0,.18,.8,.18,"dark",g);plazaGroup.add(g)}
+
  // Surrounding lawn and raised square LEGO platform
 box(0,-.55,0,180,.5,180,'grass');
 const wet=new THREE.MeshStandardMaterial({color:0x405987,metalness:.38,roughness:.3});box(0,.12,0,43.8,.12,43.8,wet);
