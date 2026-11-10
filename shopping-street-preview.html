@@ -66,7 +66,8 @@ async function walletLoad(){
 }
 document.getElementById('walletLogin').onclick=async()=>{const email=document.getElementById('walletEmail').value.trim(),password=document.getElementById('walletPassword').value;if(!email||!password){walletMsg('Vui lòng nhập email và mật khẩu.');return}walletMsg('Đang đăng nhập...');const {data,error}=await walletClient.auth.signInWithPassword({email,password});if(error){walletMsg(error.message);return}walletSession=data.session;await walletLoad()};
 document.getElementById('walletSignup').onclick=async()=>{const email=document.getElementById('walletEmail').value.trim(),password=document.getElementById('walletPassword').value;if(!email||password.length<6){walletMsg('Nhập email và mật khẩu ít nhất 6 ký tự.');return}walletMsg('Đang tạo tài khoản...');const {data,error}=await walletClient.auth.signUp({email,password});if(error){walletMsg(error.message);return}if(data.session){walletSession=data.session;await walletLoad()}else walletMsg('Đã gửi email xác nhận. Hãy xác nhận email rồi đăng nhập.')};
-document.getElementById('walletRefresh').onclick=walletLoad;\ndocument.getElementById('walletTopup').onclick=()=>{const el=document.getElementById('walletTopupInfo');el.style.display=el.style.display==='none'?'block':'none'};
+document.getElementById('walletRefresh').onclick=walletLoad;
+document.getElementById('walletTopup').onclick=()=>{const el=document.getElementById('walletTopupInfo');el.style.display=el.style.display==='none'?'block':'none'};
 document.getElementById('walletLogout').onclick=async()=>{await walletClient.auth.signOut();walletSession=null;await walletLoad();walletMsg('Đã đăng xuất.')};
 walletClient.auth.getSession().then(({data})=>{walletSession=data.session;walletLoad()});
 walletClient.auth.onAuthStateChange((_event,session)=>{walletSession=session;walletLoad()});
