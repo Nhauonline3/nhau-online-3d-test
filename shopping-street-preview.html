@@ -169,7 +169,10 @@ pSphere(0,3.18,.52,.53,.76,.20,penguinWhite);    // bụng trắng
 pSphere(0,4.18,0,.72,.68,.62,penguinDark);      // đầu
 pSphere(0,4.03,.51,.43,.43,.18,penguinWhite);   // mặt
 pSphere(-.22,4.25,.68,.075,.09,.055,penguinEye);pSphere(.22,4.25,.68,.075,.09,.055,penguinEye);
-const beak=new THREE.Mesh(new THREE.ConeGeometry(.19,.38,8),penguinOrange);beak.rotation.x=Math.PI/2;beak.position.set(0,4.02,.83);penguinGroup.add(beak);\nconst jaw=new THREE.Mesh(new THREE.SphereGeometry(.16,12,10),penguinOrange);jaw.scale.set(1.25,.35,.8);jaw.position.set(0,3.91,.82);penguinGroup.add(jaw);\nconst statueWings=[];\nfor(const side of [-1,1]){const wing=pSphere(side*.77,3.35,.02,.25,.66,.27,penguinDark);wing.rotation.z=side*.22;statueWings.push({mesh:wing,side});const foot=new THREE.Mesh(new THREE.SphereGeometry(.22,12,10),penguinOrange);foot.scale.set(1.25,.45,1);foot.position.set(side*.34,2.42,.25);penguinGroup.add(foot)}
+const beak=new THREE.Mesh(new THREE.ConeGeometry(.19,.38,8),penguinOrange);beak.rotation.x=Math.PI/2;beak.position.set(0,4.02,.83);penguinGroup.add(beak);
+const jaw=new THREE.Mesh(new THREE.SphereGeometry(.16,12,10),penguinOrange);jaw.scale.set(1.25,.35,.8);jaw.position.set(0,3.91,.82);penguinGroup.add(jaw);
+const statueWings=[];
+for(const side of [-1,1]){const wing=pSphere(side*.77,3.35,.02,.25,.66,.27,penguinDark);wing.rotation.z=side*.22;statueWings.push({mesh:wing,side});const foot=new THREE.Mesh(new THREE.SphereGeometry(.22,12,10),penguinOrange);foot.scale.set(1.25,.45,1);foot.position.set(side*.34,2.42,.25);penguinGroup.add(foot)}
 // Khăn choàng đỏ, tai nghe neon và vương miện: mascot biểu tượng độc quyền 369 CITY
 const scarf=new THREE.Mesh(new THREE.TorusGeometry(.58,.11,8,24),penguinRed);scarf.position.set(0,3.83,.03);scarf.rotation.x=Math.PI/2;penguinGroup.add(scarf);
 const headphone=new THREE.Mesh(new THREE.TorusGeometry(.79,.13,8,32),cyan);headphone.position.set(0,4.18,0);headphone.rotation.x=Math.PI/2;penguinGroup.add(headphone);
