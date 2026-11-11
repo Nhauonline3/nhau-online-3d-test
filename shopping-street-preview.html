@@ -28,7 +28,7 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 <div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">PHỐ MUA SẮM + QUẢNG TRƯỜNG · PIXEL NEON</div></div><div class="card" style="text-align:right"><strong>🛍️ SHOPPING STREET</strong><div class="sub">8 gian hàng + quảng trường</div></div></div>
 
 <div id="walletBar"><div id="walletBalances"><b>🪙 XU: —</b><b>🟡 COIN: —</b></div><button id="walletOpen">👛 VÍ CỦA TÔI</button></div>
-<div id="walletModal"><div id="walletCard"><button id="walletClose">ĐÓNG</button><h2>👛 VÍ 369 CITY</h2><div id="walletSignedOut"><p>Đăng nhập để xem số dư XU và COIN của bạn.</p><label>Email</label><input id="walletEmail" type="email" autocomplete="email" placeholder="Email của bạn"><label>Mật khẩu</label><input id="walletPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu"><div class="walletActions"><button id="walletLogin">ĐĂNG NHẬP</button><button id="walletSignup">TẠO TÀI KHOẢN</button></div></div><div id="walletSignedIn" style="display:none"><p id="walletUserLabel"></p><div id="walletDetails"></div><div class="walletActions"><button id="walletTopup" type="button">💳 NẠP XU</button></div><div id="walletTopupInfo" style="display:none;background:#10284a;border:1px solid #42618b;border-radius:10px;padding:12px;margin-top:10px;font-size:13px;line-height:1.45"><b style="color:#ffe08a">NẠP XU CHƯA ĐƯỢC MỞ</b><p style="margin:7px 0">Khi kết nối cổng thanh toán doanh nghiệp, khoản thanh toán thành công sẽ được chuyển vào tài khoản merchant đã đăng ký của chủ dự án. XU chỉ được cộng sau khi máy chủ xác minh giao dịch.</p><p style="margin:0;color:#ffc979">Hiện chưa có cổng thanh toán hoặc tài khoản merchant được cấu hình. Vui lòng không chuyển tiền thủ công.</p></div><div id="walletLock">🔒 Đổi XU sang COIN và thanh toán hàng thật đang tạm khóa đến khi hoàn tất xác nhận pháp lý.</div><div class="walletActions"><button id="walletRefresh">LÀM MỚI SỐ DƯ</button><button id="walletLogout">ĐĂNG XUẤT</button></div><h3 style="font-size:14px;color:#8defff;margin:16px 0 4px">LỊCH SỬ GIAO DỊCH</h3><div id="walletHistory">Chưa tải lịch sử.</div></div><div id="walletStatus"></div></div></div>
+<div id="walletModal"><div id="walletCard"><button id="walletClose">ĐÓNG</button><h2>👛 VÍ 369 CITY</h2><div id="walletSignedOut"><p>Đăng nhập để xem số dư XU và COIN của bạn.</p><label>Email</label><input id="walletEmail" type="email" autocomplete="email" placeholder="Email của bạn"><label>Mật khẩu</label><input id="walletPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu"><div class="walletActions"><button id="walletLogin">ĐĂNG NHẬP</button><button id="walletSignup">TẠO TÀI KHOẢN</button></div></div><div id="walletSignedIn" style="display:none"><p id="walletUserLabel"></p><div id="walletDetails"></div><div class="walletActions"><button id="walletTopup" type="button">💳 NẠP XU</button></div><div id="walletTopupInfo" style="display:none;background:#10284a;border:1px solid #42618b;border-radius:10px;padding:12px;margin-top:10px;font-size:13px;line-height:1.45"><b style="color:#ffe08a">CHỌN GÓI NẠP XU</b><p style="margin:7px 0;color:#c7d9ef">Thanh toán qua PayPal. XU chỉ được cộng sau khi PayPal xác nhận giao dịch hoàn tất.</p><div id="walletTopupPackages" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><span style="color:#9fb9d4">Đang tải gói nạp...</span></div><p id="walletTopupMessage" style="margin:9px 0 0;color:#ffc979"></p></div><div id="walletLock">🔒 Đổi XU sang COIN và thanh toán hàng thật đang tạm khóa đến khi hoàn tất xác nhận pháp lý.</div><div class="walletActions"><button id="walletRefresh">LÀM MỚI SỐ DƯ</button><button id="walletLogout">ĐĂNG XUẤT</button></div><h3 style="font-size:14px;color:#8defff;margin:16px 0 4px">LỊCH SỬ GIAO DỊCH</h3><div id="walletHistory">Chưa tải lịch sử.</div></div><div id="walletStatus"></div></div></div>
 <div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p></div>
 <div id="playerJoy" aria-label="Điều khiển di chuyển"><div id="playerKnob"></div></div>
 <div id="playerActions"><button id="playerJump" aria-label="Nhảy" title="Nhảy">🐧</button><button id="playerCenter" aria-label="Theo nhân vật" title="Theo nhân vật">🎯</button><button id="playerPlaza" aria-label="Về quảng trường" title="Về quảng trường">🏙️</button></div>
@@ -64,10 +64,361 @@ async function walletLoad(){
  document.getElementById('walletHistory').innerHTML=historyError?'Không tải được lịch sử.':(history||[]).length?(history||[]).map(x=>'<div style="padding:8px 0;border-bottom:1px solid #29415f"><b>'+x.currency+'</b> · '+(Number(x.amount)>0?'+':'')+walletNum(x.amount)+'<br><span style="color:#9fb9d4">'+(x.reason||'Giao dịch')+' · '+new Date(x.created_at).toLocaleString('vi-VN')+'</span></div>').join(''):'Chưa có giao dịch.';
  walletMsg('Ví đã cập nhật.');
 }
-document.getElementById('walletLogin').onclick=async()=>{const email=document.getElementById('walletEmail').value.trim(),password=document.getElementById('walletPassword').value;if(!email||!password){walletMsg('Vui lòng nhập email và mật khẩu.');return}walletMsg('Đang đăng nhập...');const {data,error}=await walletClient.auth.signInWithPassword({email,password});if(error){walletMsg(error.message);return}walletSession=data.session;await walletLoad()};
+document.getElementById('walletLogin').onclick=async()=>{const email=document.getElementById('walletEmail').value.trim(),password=document.getElementById('walletPassword').value;if(!email||!password){walletMsg('Vui lòng nhập email và mật khẩu.');return}walletMsg('Đang đăng nhập...');const {data,error}=await walletClient.auth.signInWithPassword({email,password});if(error){walletMsg(error.message);return}walletSession=data.session;await walletLoad();await walletHandlePayPalReturn()};
 document.getElementById('walletSignup').onclick=async()=>{const email=document.getElementById('walletEmail').value.trim(),password=document.getElementById('walletPassword').value;if(!email||password.length<6){walletMsg('Nhập email và mật khẩu ít nhất 6 ký tự.');return}walletMsg('Đang tạo tài khoản...');const {data,error}=await walletClient.auth.signUp({email,password});if(error){walletMsg(error.message);return}if(data.session){walletSession=data.session;await walletLoad()}else walletMsg('Đã gửi email xác nhận. Hãy xác nhận email rồi đăng nhập.')};
 document.getElementById('walletRefresh').onclick=walletLoad;
-document.getElementById('walletTopup').onclick=()=>{const el=document.getElementById('walletTopupInfo');el.style.display=el.style.display==='none'?'block':'none'};
+async function walletLoadTopupPackages(){
+ const box=document.getElementById('walletTopupPackages'),msg=document.getElementById('walletTopupMessage');
+ box.innerHTML='<span style="color:#9fb9d4">Đang tải gói nạp...</span>';msg.textContent='';
+ const {data,error}=await walletClient.functions.invoke('paypal-list-packages',{method:'GET'});
+ if(error||!data?.configured||!Array.isArray(data.packages)||!data.packages.length){
+  box.innerHTML='<span style="color:#ffd08a;grid-column:1/-1">Chưa cấu hình gói nạp PayPal.</span>';
+  msg.textContent='Chủ dự án cần cấu hình gói XU và thông tin PayPal an toàn trong Supabase trước khi mở thanh toán.';
+  return;
+ }
+ box.innerHTML='';
+ data.packages.forEach(pack=>{
+  const btn=document.createElement('button');btn.type='button';
+  btn.style.cssText='background:#173d66;color:#fff;border:1px solid #4d83b8;border-radius:9px;padding:12px 8px;font-weight:700;cursor:pointer';
+  btn.textContent=Number(pack.xu).toLocaleString('vi-VN')+' XU · 
+document.getElementById('walletLogout').onclick=async()=>{await walletClient.auth.signOut();walletSession=null;await walletLoad();walletMsg('Đã đăng xuất.')};
+walletClient.auth.getSession().then(async({data})=>{walletSession=data.session;await walletLoad();await walletHandlePayPalReturn()});
+walletClient.auth.onAuthStateChange((_event,session)=>{walletSession=session;walletLoad()});
+
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js';
+const host=document.getElementById('scene'),scene=new THREE.Scene();scene.background=new THREE.Color(0x080d29);scene.fog=new THREE.Fog(0x080d29,65,125);
+const camera=new THREE.PerspectiveCamera(43,innerWidth/innerHeight,.1,220);camera.position.set(0,22,-111);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.0));renderer.setSize(innerWidth,innerHeight);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.72;renderer.shadowMap.enabled=false;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.065;controls.target.set(0,2.4,-91);controls.minDistance=18;controls.maxDistance=75;controls.maxPolarAngle=Math.PI*.48;controls.minPolarAngle=.18;
+scene.add(new THREE.AmbientLight(0xd5e7ff,.85));scene.add(new THREE.HemisphereLight(0x92caff,0x354a78,.75));const moon=new THREE.DirectionalLight(0xeaf4ff,1.0);moon.position.set(-25,42,22);moon.castShadow=true;moon.shadow.mapSize.set(1024,1024);scene.add(moon);
+const mat=c=>new THREE.MeshStandardMaterial({color:c,roughness:.46,metalness:.18}),glow=c=>new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:.12,roughness:.58});
+const M={ground:mat(0x253b68),road:mat(0x172b50),dark:mat(0x101b3b),wall:mat(0x253766),glass: new THREE.MeshStandardMaterial({color:0x173e70,emissive:0x0a3261,emissiveIntensity:.8,metalness:.45,roughness:.18}),floor:mat(0x435b8d),gold:glow(0xffc34d),cyan:glow(0x19e5ff),pink:glow(0xff28c8),purple:glow(0x913fff),lime:glow(0x7dff7a),white:mat(0xeaf5ff),wood:mat(0x87517d),leaf:mat(0x168c79)};
+function box(x,y,z,w,h,d,material,parent=scene){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);o.position.set(x,y+h/2,z);o.castShadow=false;o.receiveShadow=false;parent.add(o);return o}
+function point(x,y,z,color,intensity=1.5,dist=10){const l=new THREE.PointLight(color,intensity,dist);l.position.set(x,y,z);scene.add(l)}
+function labelTexture(text,bg='#091632',fg='#ffffff',small=false){const c=document.createElement('canvas');c.width=512;c.height=160;const g=c.getContext('2d');g.fillStyle=bg;g.fillRect(0,0,512,160);g.strokeStyle='#24dcff';g.lineWidth=7;g.strokeRect(5,5,502,150);g.fillStyle=fg;g.font='bold '+(small?34:46)+'px monospace';g.textAlign='center';g.textBaseline='middle';g.shadowColor=fg;g.shadowBlur=12;g.fillText(text,256,82,470);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return new THREE.MeshStandardMaterial({map:t,emissive:0xffffff,emissiveMap:t,emissiveIntensity:.06,roughness:.9})}
+function sign(parent,x,y,z,w,h,text,accent){box(x,y,z,w+.28,h+.28,.22,M.dark,parent);box(x,y,z+.14,w+.12,h+.12,.08,accent,parent);const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),labelTexture(text,'#091632','#ffffff'));p.position.set(x,y,z+.20);parent.add(p)}
+// broad street base: polished midnight-blue pixel tiles, not a flat asphalt strip
+box(0,-.55,0,110,.5,110,M.ground);box(0,-.18,0,37,.18,64,M.road);
+const roadTile=new THREE.MeshStandardMaterial({color:0x3c568b,roughness:.28,metalness:.38});const roadTileAlt=new THREE.MeshStandardMaterial({color:0x304675,roughness:.30,metalness:.35});const roadSeam=glow(0x365cff);
+for(let z=-31;z<=31;z+=2){for(let x=-7;x<=7;x+=2){box(x,.012,z,1.94,.07,1.94,((Math.round(x/2)+Math.round(z/2))%2===0)?roadTile:roadTileAlt)}}
+for(const x of [-8.15,8.15]){box(x,.02,0,.22,.12,64,M.dark);box(x,.11,0,.10,.07,64,x<0?M.cyan:M.pink)}
+// subtle central pixel motif and directional arrows
+for(let z=-25;z<=25;z+=5){box(0,.045,z,.10,.025,1.5,roadSeam)}
+function roadArrow(z){for(let k=0;k<3;k++){const y=.075+k*.62;const v=box(0,y,z+k*.72,1.25,.055,.18,M.pink);v.rotation.z=k%2?-.58:.58}}
+roadArrow(16);roadArrow(-15);
+// pixel-style shops: shop facades face the central avenue
+const shopData=[
+ {name:'NEON FASHION',desc:'Thời trang và phụ kiện avatar. Khu vực dự kiến cho người chơi thuê gian hàng.',x:-13,z:-19,color:0xff28c8,tag:'FASHION'},
+ {name:'369 BEAUTY',desc:'Mỹ phẩm, phụ kiện làm đẹp và vật phẩm trang trí nhân vật.',x:13,z:-19,color:0x18ddff,tag:'BEAUTY'},
+ {name:'PIXEL MARKET',desc:'Cửa hàng tổng hợp để trưng bày và bán vật phẩm.',x:-13,z:-6,color:0xffb936,tag:'MARKET'},
+ {name:'GAME STORE',desc:'Vật phẩm game, mini game và quà tặng trong thành phố.',x:13,z:-6,color:0x9c4cff,tag:'GAME'},
+ {name:'369 FOOD',desc:'Quầy đồ ăn và nước uống phong cách phố đêm.',x:-13,z:7,color:0x18ddff,tag:'FOOD'},
+ {name:'DRINK & TEA',desc:'Quầy trà và nước giải khát phong cách phố đêm.',x:13,z:7,color:0xff28c8,tag:'DRINK'},
+ {name:'KARAOKE BOX',desc:'Phòng karaoke riêng và khu giao lưu bằng giọng nói.',x:-13,z:20,color:0x9c4cff,tag:'KARAOKE'},
+ {name:'GIFT & TOYS',desc:'Quà lưu niệm, đồ sưu tầm và vật phẩm trang trí.',x:13,z:20,color:0xffb936,tag:'GIFTS'}
+];
+const shopMeshes=[];
+function shop(d,index){
+ const g=new THREE.Group();g.position.set(d.x,0,d.z);g.rotation.y=d.x<0?Math.PI/2:-Math.PI/2;scene.add(g);const a=glow(d.color);
+ // raised foundation, back wall, side walls and bright roof cornice
+ box(0,.22,0,9.5,.45,8.4,M.dark,g);box(0,.52,0,9.15,.12,8.05,a,g);
+ box(0,3.25,-3.7,9.1,5.1,.38,M.wall,g);box(-4.45,2.2,0,.32,3.5,7.6,M.dark,g);box(4.45,2.2,0,.32,3.5,7.6,M.dark,g);
+ box(0,5.9,-.1,9.8,.34,8.7,M.dark,g);box(0,6.1,-.1,9.95,.16,8.85,a,g);
+ // front-facing glowing fascia and large readable sign
+ box(0,4.95,3.86,8.9,1.3,.25,M.dark,g);sign(g,0,5.05,4.02,8.25,1.0,d.tag,a);
+ // glass shop front panels with mullions and a central door
+ for(const x of [-3.0,-1.5,1.5,3.0]){box(x,2.25,3.83,1.28,3.0,.18,M.glass,g);box(x-.68,2.25,3.96,.09,3.05,.08,a,g)}
+ box(0,2.15,3.9,1.3,2.9,.24,M.dark,g);box(0,2.2,4.05,1.08,2.55,.08,M.glass,g);box(.38,2.25,4.12,.08,.12,.06,M.gold,g);
+ // colorful awning stripe canopy above display windows
+ for(let i=0;i<9;i++){const xx=-4+i*.99;box(xx,3.85,4.42,.94,.28,1.25,i%2?a:M.pink,g)}
+ // shelves, display cubes and bright window props
+ for(let row=0;row<2;row++)for(let k=0;k<5;k++){const xx=-3.6+k*1.8;box(xx,1.05+row*1.15,3.25,.72,.62,.35,k%2?a:M.cyan,g)}
+ // pixel display plinths at each corner
+ for(const xx of [-3.7,3.7]){box(xx,.72,4.9,1.05,.65,.85,M.purple,g);box(xx,1.12,4.9,.72,.12,.62,a,g)}
+ // side-mounted mini LED sign
+ sign(g,5.0,3.6,.2,1.2,2.4,d.tag,a);
+ // neon side strips and glowing entrance step
+ box(0,.56,4.65,2.1,.16,1.1,M.cyan,g);box(0,.7,5.1,3.2,.12,.35,M.pink,g);
+ // clickable invisible-ish hit target, plus glow marker
+ const hit=new THREE.Mesh(new THREE.BoxGeometry(9.4,6.5,8.2),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));hit.position.set(0,3.1,0);hit.userData.shop=d;g.add(hit);shopMeshes.push(hit);
+ const glowLight=new THREE.PointLight(d.color,.12,6);glowLight.position.set(0,4,5.5);g.add(glowLight);
+ // side pixel roof antenna
+ for(let k=0;k<3;k++)box(-3.5+k*.35,6.5,-2,.16,.45+(k%2)*.3,.16,k%2?M.pink:M.cyan,g);
+}
+shopData.forEach(shop);
+// street lamps, lush pixel trees and flower beds keep the avenue green without blocking the shops
+function lamp(x,z){box(x,0,z,.22,4.5,.22,M.dark);box(x,4.45,z,.82,.38,.82,M.gold);box(x,4.85,z,.6,.35,.6,M.cyan);point(x,4.8,z,0xffb83e,.45,7)}
+function planter(x,z){box(x,.18,z,3.8,.48,2.1,M.dark);box(x,.42,z,3.55,.14,1.85,M.leaf);for(let i=0;i<11;i++){const px=x-1.55+(i%6)*.62,pz=z+(i%2?-.42:.42);box(px,.72,pz,.34,.34+(i%3)*.13,.34,i%2?M.pink:M.lime);box(px,.98,pz,.16,.16,.16,M.gold)}}
+function voxelTree(x,z,scale=1){const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);scene.add(g);box(0,.25,0,.52,2.1,.52,mat(0x82512f),g);for(const [y,sx,sz] of [[1.55,1.35,1.25],[2.25,1.65,1.45],[2.95,1.15,1.15]]){box(0,y,0,sx,.95,sz,M.leaf,g);box(0,y+.46,0,sx+.08,.10,sz+.08,M.lime,g)}for(let i=0;i<5;i++){const flower=new THREE.Mesh(new THREE.BoxGeometry(.18,.18,.18),i%2?M.pink:M.gold);flower.position.set((i-2)*.22,1.3,Math.sin(i*2)*.35);g.add(flower)}}
+function flowerIsland(x,z){box(x,.18,z,3.8,.48,2.1,M.dark);box(x,.42,z,3.55,.14,1.85,M.leaf);for(let i=0;i<14;i++){const px=x-1.5+(i%7)*.5,pz=z+(i%2?-.48:.48);box(px,.68,pz,.25,.25,.25,i%3===0?M.gold:i%3===1?M.pink:M.purple);box(px,.86,pz,.12,.12,.12,M.white)}}
+for(const z of [-25,-13,-.5,12,25]){lamp(-7.8,z);lamp(7.8,z);flowerIsland(-9.15,z);flowerIsland(9.15,z)}
+for(const z of [-19,-6,7,20]){voxelTree(-9.15,z,.78);voxelTree(9.15,z,.78)}
+
+// Extra visible green avenue: continuous planted strips, leafy trees and low flower beds
+const greenSoil=mat(0x263f39),greenLeaf=mat(0x187b50),greenBright=mat(0x36b96d),greenDark=mat(0x10563d);
+function avenueTree(x,z,s=1){
+ const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(s);scene.add(g);
+ box(0,.18,0,2.5,.36,2.0,M.dark,g);box(0,.38,0,2.25,.12,1.75,greenSoil,g);
+ box(0,.45,0,.38,1.8,.38,mat(0x80502f),g);
+ for(const [y,w,d] of [[1.25,1.45,1.25],[1.95,1.85,1.55],[2.65,1.35,1.25]]) {
+   box(0,y,0,w,.92,d,greenLeaf,g);box(-.12,y+.42,.08,w*.82,.12,d*.82,greenBright,g);
+ }
+ for(let k=0;k<4;k++){box((k-1.5)*.32,1.2,.48,.16,.16,.16,k%2?M.gold:M.pink,g)}
+}
+function greenBed(x,z){
+ box(x,.15,z,2.7,.3,3.0,M.dark);box(x,.32,z,2.5,.12,2.8,greenSoil);
+ for(let k=0;k<8;k++){const px=x+(k%2?-.62:.62),pz=z-1.05+Math.floor(k/2)*.7;box(px,.62,pz,.42,.55,.42,k%3?greenLeaf:greenBright);box(px,.93,pz,.2,.14,.2,k%2?M.pink:M.gold)}
+}
+for(const side of [-1,1]){
+ for(const z of [-25,-15,-5,5,15,25]){avenueTree(side*9.6,z,.9);greenBed(side*8.25,z+4.5)}
+}
+
+
+// Connected 369 CITY central plaza, imported as an adjacent world district
+{
+ const plazaGroup=new THREE.Group();
+ plazaGroup.position.set(0,0,-76);
+ scene.add(plazaGroup);
+
+ const mat=(color)=>new THREE.MeshStandardMaterial({color,roughness:.55,metalness:.12});
+ const M={grass:mat(0x263d66),edge:mat(0x46577e),cream:mat(0x53648b),tile:mat(0x34466f),tile2:mat(0x465a85),road:mat(0x263653),blue:mat(0x168dff),water:mat(0x0875d5),white:mat(0xf2f7ff),wood:mat(0x9b5592),green:mat(0x168f82),green2:mat(0x39c9a8),dark:mat(0x182747),gold:mat(0xffc44d),red:mat(0xff4b91),purple:mat(0x7540a8)};
+ const neon=(color)=>new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:.18,roughness:.5});
+ const cyan=neon(0x16dfff),pink=neon(0xff28c8),violet=neon(0x873cff),amber=neon(0xffa52b);
+ function box(x,y,z,w,h,d,material,parent=plazaGroup){const m=typeof material==="string"?M[material]:material;if(!m)throw new Error("Unknown plaza material: "+material);const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y+h/2,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
+ function cylinder(x,y,z,r1,r2,h,material,seg=12){const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,seg),M[material]||material);o.position.set(x,y+h/2,z);o.castShadow=true;plazaGroup.add(o);return o}
+ function textTexture(txt,bg="#07152d",fg="#7cf5ff"){const c=document.createElement("canvas");c.width=512;c.height=160;const g=c.getContext("2d");g.fillStyle=bg;g.fillRect(0,0,512,160);g.strokeStyle="#25dfff";g.lineWidth=8;g.strokeRect(5,5,502,150);g.fillStyle=fg;g.font="bold 42px monospace";g.textAlign="center";g.textBaseline="middle";g.fillText(txt,256,82,470);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return new THREE.MeshStandardMaterial({map:t,roughness:.9})}
+ function sign(x,z,label,rot=0){box(x,1.5,z,5.2,2.2,.42,"dark");const p=new THREE.Mesh(new THREE.PlaneGeometry(4.9,1.8),textTexture(label));p.position.set(x,2.65,z+.225);p.rotation.y=rot;plazaGroup.add(p);for(const dx of [-2,2])box(x+dx,0,z,.18,1.6,.18,"wood")}
+ function tree(x,z,scale=1){const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);plazaGroup.add(g);box(0,0,0,.7,2,.7,"wood",g);for(let i=0;i<4;i++){const w=2.5-i*.48;box(0,1.25+i*.78,0,w,.78,w,i%2?"green2":"green",g)}}
+ function lamp(x,z){cylinder(x,0,z,.16,.21,5.2,"dark",8);box(x,5.05,z,1.05,.5,1.05,"gold");box(x,5.52,z,.72,.52,.72,amber);box(x,5.82,z,.9,.14,.9,cyan)}
+ function bench(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;box(0,.65,0,2.5,.22,.75,"wood",g);box(0,1.05,-.28,2.5,.8,.2,"wood",g);for(const dx of [-.9,.9])box(dx,.15,0,.18,.8,.18,"dark",g);plazaGroup.add(g)}
+
+ // Surrounding lawn and raised square LEGO platform
+box(0,-.55,0,180,.5,180,'grass');
+const wet=new THREE.MeshStandardMaterial({color:0x405987,metalness:.38,roughness:.3});box(0,.12,0,43.8,.12,43.8,wet);
+box(0,-.12,0,46,.55,46,'edge');
+box(0,.16,0,43.8,.18,43.8,'cream');
+// checker tiles border ring
+for(let i=-20;i<=20;i+=2){box(i,.26,-20.6,1.8,.08,.75,(i/2)%2?'tile':'tile2');box(i,.26,20.6,1.8,.08,.75,(i/2)%2?'tile2':'tile');box(-20.6,.26,i,.75,.08,1.8,(i/2)%2?'tile':'tile2');box(20.6,.26,i,.75,.08,1.8,(i/2)%2?'tile2':'tile')}
+// central square plaza, paved paths to six gateways
+box(0,.27,0,24,.10,24,'tile');
+// Bright readable paving under neon night lighting
+const plazaFill=new THREE.MeshStandardMaterial({color:0x536a91,roughness:.55,metalness:.16});box(0,.275,0,23.5,.06,23.5,plazaFill);
+for(let i=-20;i<=20;i+=2){box(i,.29,-20.2,.08,.025,40,cyan);box(-20.2,.29,i,40,.025,.08,pink)}
+for(let i=-11;i<=11;i+=2){for(let j=-11;j<=11;j+=2){if((i+j)%4===0)box(i,.33,j,1.82,.045,1.82,'tile2')}}
+box(0,.32,-20,6,.12,10,'cream');box(0,.32,20,6,.12,10,'cream');box(-20,.32,0,10,.12,6,'cream');box(20,.32,0,10,.12,6,'cream');
+box(-14,.32,-14,6,.12,6,'cream');box(14,.32,-14,6,.12,6,'cream');
+// Fountain at center
+cylinder(0,.38,0,4.8,4.8,.38,'edge',32);cylinder(0,.76,0,4.25,4.25,.18,cyan,32);cylinder(0,.88,0,3.3,3.3,.12,'water',32);cylinder(0,1.0,0,.75,.95,1.25,'cream',16);cylinder(0,2.25,0,1.25,.75,.28,'blue',20);
+cylinder(0,2.53,0,.24,.24,.55,'gold',12);
+// Nhân vật chim cánh cụt của 369 CITY đứng trên bệ giữa hồ
+const penguinGroup=new THREE.Group();
+const penguinDark=mat(0x17283b),penguinWhite=mat(0xf7f4e8),penguinOrange=mat(0xffa928),penguinEye=mat(0x111820),penguinRed=mat(0xd94755);
+function pSphere(x,y,z,sx,sy,sz,material){const m=new THREE.Mesh(new THREE.SphereGeometry(1,20,16),material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=false;m.receiveShadow=false;penguinGroup.add(m);return m}
+pSphere(0,3.25,0,.82,1.05,.68,penguinDark);       // thân
+pSphere(0,3.18,.52,.53,.76,.20,penguinWhite);    // bụng trắng
+pSphere(0,4.18,0,.72,.68,.62,penguinDark);      // đầu
+pSphere(0,4.03,.51,.43,.43,.18,penguinWhite);   // mặt
+pSphere(-.22,4.25,.68,.075,.09,.055,penguinEye);pSphere(.22,4.25,.68,.075,.09,.055,penguinEye);
+const beak=new THREE.Mesh(new THREE.ConeGeometry(.19,.38,8),penguinOrange);beak.rotation.x=Math.PI/2;beak.position.set(0,4.02,.83);penguinGroup.add(beak);
+for(const side of [-1,1]){const wing=pSphere(side*.77,3.35,.02,.25,.66,.27,penguinDark);wing.rotation.z=side*.22;const foot=new THREE.Mesh(new THREE.SphereGeometry(.22,12,10),penguinOrange);foot.scale.set(1.25,.45,1);foot.position.set(side*.34,2.42,.25);penguinGroup.add(foot)}
+// Khăn choàng đỏ, tai nghe neon và vương miện: mascot biểu tượng độc quyền 369 CITY
+const scarf=new THREE.Mesh(new THREE.TorusGeometry(.58,.11,8,24),penguinRed);scarf.position.set(0,3.83,.03);scarf.rotation.x=Math.PI/2;penguinGroup.add(scarf);
+const headphone=new THREE.Mesh(new THREE.TorusGeometry(.79,.13,8,32),cyan);headphone.position.set(0,4.18,0);headphone.rotation.x=Math.PI/2;penguinGroup.add(headphone);
+for(const side of [-1,1]){const ear=new THREE.Mesh(new THREE.BoxGeometry(.24,.48,.34),violet);ear.position.set(side*.78,4.05,0);penguinGroup.add(ear)}
+// Vương miện pixel vàng với các đỉnh vuông
+const crownBase=new THREE.Mesh(new THREE.BoxGeometry(1.08,.18,.68),amber);crownBase.position.set(0,4.78,0);penguinGroup.add(crownBase);
+for(let i=0;i<5;i++){const spike=new THREE.Mesh(new THREE.BoxGeometry(.16,.42,.22),i%2?amber:M.gold);spike.position.set(-.42+i*.21,5.05,0);penguinGroup.add(spike)}
+// Huy hiệu ngôi sao phát sáng trên ngực
+const badgeRing=new THREE.Mesh(new THREE.TorusGeometry(.24,.055,8,24),M.gold);badgeRing.position.set(0,3.35,.73);penguinGroup.add(badgeRing);
+const badgeStar=new THREE.Mesh(new THREE.OctahedronGeometry(.22,0),amber);badgeStar.position.set(0,3.35,.76);penguinGroup.add(badgeStar);
+penguinGroup.scale.setScalar(1.48);penguinGroup.position.y=-.55;plazaGroup.add(penguinGroup);
+// Đồng xu cầu nguyện: nằm ngang, rải tự nhiên dưới mặt nước như người chơi vừa thả xuống hồ
+for(let i=0;i<14;i++){
+  const a=i*2.399963,rad=1.65+(i%4)*.48;
+  const coin=new THREE.Mesh(new THREE.CylinderGeometry(.32,.32,.085,24),M.gold);
+  coin.position.set(Math.cos(a)*rad,1.015,Math.sin(a)*rad);coin.rotation.y=a;coin.castShadow=true;plazaGroup.add(coin);
+  const mark=new THREE.Mesh(new THREE.TorusGeometry(.13,.035,6,12),M.cream);
+  mark.position.set(coin.position.x,1.065,coin.position.z);mark.rotation.x=Math.PI/2;plazaGroup.add(mark);
+  const ripple=new THREE.Mesh(new THREE.TorusGeometry(.48+(i%3)*.08,.018,6,32),new THREE.MeshBasicMaterial({color:0xb8efff,transparent:true,opacity:.55}));
+  ripple.position.set(coin.position.x,1.035,coin.position.z);ripple.rotation.x=Math.PI/2;plazaGroup.add(ripple);
+}
+
+
+for(let i=0;i<8;i++){const a=i*Math.PI/4;box(Math.cos(a)*3.6,1.05,Math.sin(a)*3.6,.22,.42,.22,'cream')}
+// Four garden beds and small shrubs around inner square
+for(const [x,z] of [[-13,-13],[13,-13],[-13,13],[13,13]]){box(x,.34,z,4.6,.3,4.6,'green');for(const dx of [-1,1])for(const dz of [-1,1])box(x+dx,.65,z+dz,1.1,1.1,1.1,'green2')}
+// benches and lamps along square edges
+bench(-8,-5,0);bench(8,-5,Math.PI);bench(-8,5,0);bench(8,5,Math.PI);
+for(const [x,z] of [[-17,-8],[17,-8],[-17,8],[17,8],[-8,-17],[8,-17],[-8,17],[8,17]])lamp(x,z);
+// trees in perimeter landscaping
+for(const [x,z,s] of [[-20,-14,.9],[-20,14,.9],[20,-14,.9],[20,14,.9],[-14,-20,.8],[14,-20,.8],[-14,20,.8],[14,20,.8]])tree(x,z,s);
+// Tiện ích quanh quảng trường: máy bán nước tự động phong cách arcade
+function vendingMachine(x,z,accent,label){
+ const g=new THREE.Group();g.position.set(x,0,z);
+ box(0,.35,0,1.45,2.45,.72,'dark',g);box(0,.55,.39,1.18,1.82,.08,'purple',g);
+ box(0,.62,.46,.94,1.28,.045,accent,g);
+ for(let r=0;r<3;r++)for(let k=0;k<3;k++){box(-.31+k*.31,1.72-r*.34,.51,.17,.22,.045,[pink,cyan,amber][(r+k)%3],g)}
+ box(0,.52,.48,.48,.18,.06,'dark',g);box(.48,.62,.48,.12,.32,.07,amber,g);
+ const top=new THREE.Mesh(new THREE.PlaneGeometry(1.0,.2),textTexture(label,'#08152b','#ffffff'));top.position.set(0,2.42,.39);g.add(top);
+ box(0,.16,0,1.65,.16,.84,accent,g);plazaGroup.add(g);
+ const glow=new THREE.PointLight(0x16dfff,.7,5);glow.position.set(x,1.5,z+1);plazaGroup.add(glow);
+}
+vendingMachine(-13,-5,cyan,'DRINKS');vendingMachine(13,-5,pink,'DRINKS');vendingMachine(-13,5,amber,'SNACKS');
+// Bồn hoa pixel nhiều tầng và hoa neon nhỏ
+function flowerBed(x,z){
+ box(x,.38,z,3.2,.34,2.0,'green');box(x,.57,z,2.9,.12,1.7,'green2');
+ for(let i=0;i<9;i++){const px=x-1.15+(i%3)*1.15,pz=z-.55+Math.floor(i/3)*.55;
+   cylinder(px,.62,pz,.035,.035,.34,'green2',6);
+   const bloom=new THREE.Mesh(new THREE.BoxGeometry(.34,.18,.34),i%3===0?pink:i%3===1?amber:violet);bloom.position.set(px,.98,pz);plazaGroup.add(bloom);
+   const core=new THREE.Mesh(new THREE.BoxGeometry(.12,.12,.12),M.gold);core.position.set(px,1.08,pz);plazaGroup.add(core);
+ }
+}
+flowerBed(-9,-12);flowerBed(9,-12);flowerBed(-9,12);flowerBed(9,12);
+// Khu hút thuốc riêng, có mái che, ghế và thùng tàn thuốc
+function smokingZone(){
+ const x=14,z=9;
+ box(x,.34,z,6.8,.12,4.8,'dark');box(x,2.8,z,6.8,.18,4.8,violet);
+ for(const dx of [-3.2,3.2])for(const dz of [-2.1,2.1])box(x+dx,1.4,z+dz,.16,2.1,.16,cyan);
+ box(x,2.45,z-2.05,5.7,.62,.10,'dark');
+ const label=new THREE.Mesh(new THREE.PlaneGeometry(5.4,.48),textTexture('SMOKING AREA','#10133b','#ffcf69'));label.position.set(x,2.48,z-1.98);plazaGroup.add(label);
+ bench(x, z+.9,Math.PI/2);
+ cylinder(x+2.45,.35,z+.8,.22,.22,.7,'dark',12);cylinder(x+2.45,1.05,z+.8,.24,.24,.12,'gold',12);
+ // Biểu tượng điếu thuốc cách điệu trên bảng nhỏ
+ box(x-2.35,1.1,z-1.98,.75,.12,.12,'cream');box(x-1.95,1.1,z-1.98,.18,.14,.14,pink);
+}
+smokingZone();
+
+// six labeled connections to surrounding future districts
+sign(0,-21.8,'KHU MUA SAM');// Lối vào phía trước dùng cổng chào chính; bỏ bảng nhỏ gây vướng tầm nhìn
+sign(-21.8,0,'STRESS BEAR CLUB',Math.PI/2);sign(21.8,0,'DOI TIEN',-Math.PI/2);
+sign(-15.7,-15.7,'APARTMENT',Math.PI/4);sign(15.7,-15.7,'PICKLEBALL',-Math.PI/4);
+// entry markers, paving lights and decorative low bollards
+for(const [x,z] of [[0,-17],[0,17],[-17,0],[17,0],[-12,-12],[12,-12]]){cylinder(x,.35,z,.28,.28,.45,'gold',8);cylinder(x,.8,z,.12,.12,.5,'cream',8)}
+// Cổng chào 369 CITY thu gọn: vòm pixel neon thanh thoát, không che quảng trường
+// Removed tall entrance gate, surrounding skyline towers and billboard screens
+// so the central plaza, fountain and gardens remain clearly visible.
+// Keep the plaza lightweight on mobile: no overhead point lights, rain particles or large fill-light arrays.
+
+
+}
+
+
+// Broad, simple tiled pedestrian connection from plaza exit to shopping avenue
+{
+ const pathMat=new THREE.MeshStandardMaterial({color:0x344b76,roughness:.72});
+ const pathEdge=new THREE.MeshStandardMaterial({color:0x16294c,roughness:.85});
+ const base=new THREE.Mesh(new THREE.BoxGeometry(8.5,.22,25),pathEdge);base.position.set(0,-.12,-43.5);scene.add(base);
+ for(let z=-55;z<=-32;z+=2){for(let x=-3;x<=3;x+=2){const tile=new THREE.Mesh(new THREE.BoxGeometry(1.92,.08,1.92),pathMat);tile.position.set(x,.035,z);scene.add(tile)}}
+}
+// floating pixel lantern strings across the street
+for(let i=0;i<13;i++){const x=-9+i*1.5;const b=new THREE.Mesh(new THREE.BoxGeometry(.2,.2,.2),i%2?M.pink:M.cyan);b.position.set(x,10,-1+Math.sin(i*.65)*1.2);scene.add(b);point(x,10,-1+Math.sin(i*.65)*1.2,i%2?0xff28c8:0x19e5ff,.08,3)}
+// Removed vending machines to leave the walking avenue open.
+// Removed the overhead portal and distant skyline wall to keep the plaza sightline open.
+const initial={pos:new THREE.Vector3(0,24,48),target:new THREE.Vector3(0,2.4,0)};
+document.getElementById('reset').onclick=()=>{camera.position.copy(initial.pos);controls.target.copy(initial.target);controls.update()};
+document.getElementById('closeInfo').onclick=()=>document.getElementById('shopInfo').style.display='none';
+const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();renderer.domElement.addEventListener('pointerup',e=>{if(Math.abs(e.clientX-(window._downX??e.clientX))>8||Math.abs(e.clientY-(window._downY??e.clientY))>8)return;pointer.x=e.clientX/innerWidth*2-1;pointer.y=-(e.clientY/innerHeight)*2+1;ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects(shopMeshes,false);if(hits.length){const d=hits[0].object.userData.shop;document.getElementById('shopTitle').textContent=d.name;document.getElementById('shopDesc').textContent=d.desc;document.getElementById('shopInfo').style.display='block'}});
+renderer.domElement.addEventListener('pointerdown',e=>{window._downX=e.clientX;window._downY=e.clientY});
+
+// 369 CITY player: penguin avatar + mobile joystick + keyboard + jump
+const player=new THREE.Group();scene.add(player);
+const pBlack=mat(0x171923),pWhite=mat(0xf4f1ec),pOrange=mat(0xffa32b),pEye=mat(0x090b12);
+function pBall(parent,r,material,x,y,z,sx=1,sy=1,sz=1,seg=10){const m=new THREE.Mesh(new THREE.SphereGeometry(r,seg,Math.max(6,seg-2)),material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=true;parent.add(m);return m}
+pBall(player,.72,pBlack,0,1.15,0,.88,1.2,.72,10);pBall(player,.59,pWhite,0,1.12,.28,.78,1.06,.56,10);
+pBall(player,.58,pBlack,0,2.25,0,.9,.88,.78,10);pBall(player,.48,pWhite,0,2.2,.28,.9,.86,.55,10);
+pBall(player,.12,pOrange,0,2.05,.78,1.2,.65,1,8);for(const x of [-.2,.2])pBall(player,.07,pEye,x,2.34,.73,1,1,.45,8);
+const pWings=[];for(const x of [-.66,.66]){const w=pBall(player,.25,pBlack,x,1.2,0,.55,1.4,.55,8);w.rotation.z=x<0?-.35:.35;pWings.push(w)}
+for(const x of [-.3,.3]){const leg=new THREE.Mesh(new THREE.CylinderGeometry(.075,.09,.34,8),pBlack);leg.position.set(x,.27,.10);player.add(leg);const foot=new THREE.Mesh(new THREE.BoxGeometry(.52,.20,.62),pOrange);foot.position.set(x,.12,.22);player.add(foot)}
+player.position.set(0,0,-91);
+const pJoy=document.getElementById('playerJoy'),pKnob=document.getElementById('playerKnob');
+let pMoveX=0,pMoveY=0,pJoyActive=false,pJoyId=null,pJumpV=0,pJumping=false;
+function pSetJoy(e){const r=pJoy.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const max=Math.min(r.width,r.height)*.34,len=Math.hypot(dx,dy);if(len>max){dx=dx/len*max;dy=dy/len*max}pKnob.style.transform='translate('+dx+'px,'+dy+'px)';const mag=Math.hypot(dx,dy)/max;pMoveX=mag<.1?0:dx/max;pMoveY=mag<.1?0:dy/max}
+pJoy.addEventListener('pointerdown',e=>{e.preventDefault();pJoyActive=true;pJoyId=e.pointerId;pJoy.setPointerCapture(e.pointerId);pSetJoy(e)});
+pJoy.addEventListener('pointermove',e=>{if(pJoyActive&&e.pointerId===pJoyId){e.preventDefault();pSetJoy(e)}});
+function pEndJoy(e){if(e&&pJoyId!==null&&e.pointerId!==pJoyId)return;pJoyActive=false;pJoyId=null;pMoveX=0;pMoveY=0;pKnob.style.transform='translate(0,0)'}
+pJoy.addEventListener('pointerup',pEndJoy);pJoy.addEventListener('pointercancel',pEndJoy);pJoy.addEventListener('lostpointercapture',()=>pEndJoy());
+const pKeys={};addEventListener('keydown',e=>{pKeys[e.key.toLowerCase()]=true});addEventListener('keyup',e=>{pKeys[e.key.toLowerCase()]=false});
+function pJump(){if(!pJumping){pJumpV=8;pJumping=true}}
+document.getElementById('playerJump').addEventListener('click',pJump);
+document.getElementById('playerPlaza').addEventListener('click',()=>{
+ pEndJoy();player.position.set(0,.46,-91);pPrev.copy(player.position);
+ camera.position.set(0,22,-111);controls.target.set(0,2.2,-91);controls.update();
+
+});
+
+document.getElementById('playerCenter').addEventListener('click',()=>{const dx=player.position.x-controls.target.x,dz=player.position.z-controls.target.z;camera.position.x+=dx;camera.position.z+=dz;controls.target.set(player.position.x,2.1,player.position.z);controls.update()});
+let pPrev=new THREE.Vector3();pPrev.copy(player.position);const pClock=new THREE.Clock();
+function updatePlayer(){
+ const dt=Math.min(pClock.getDelta(),.04);
+ let ix=pMoveX+(pKeys['d']||pKeys['arrowright']?1:0)-(pKeys['a']||pKeys['arrowleft']?1:0);
+ let iy=pMoveY+(pKeys['s']||pKeys['arrowdown']?1:0)-(pKeys['w']||pKeys['arrowup']?1:0);
+ const len=Math.hypot(ix,iy);if(len>1){ix/=len;iy/=len}
+ // Move along the avenue; the camera's horizontal viewing direction defines forward.
+ const dir=new THREE.Vector3();camera.getWorldDirection(dir);dir.y=0;dir.normalize();
+ const right=new THREE.Vector3(dir.z,0,-dir.x);
+ const move=right.multiplyScalar(-ix).add(dir.multiplyScalar(-iy));
+ const speed=15.5;const nx=THREE.MathUtils.clamp(player.position.x+move.x*speed*dt,-24,24);
+ const nz=THREE.MathUtils.clamp(player.position.z+move.z*speed*dt,-99,29.5);
+ player.position.x=nx;player.position.z=nz;
+ if(len>.08){player.rotation.y=Math.atan2(move.x,move.z);pWings.forEach((w,i)=>w.rotation.z=(i===0?-.35:.35)+Math.sin(performance.now()*.012)*.16)}
+ const floorY=player.position.z < -54.1 ? .46 : (player.position.z < -31 ? .08 : 0);
+ if(pJumping){pJumpV-=18*dt;player.position.y+=pJumpV*dt;if(player.position.y<=floorY){player.position.y=floorY;pJumpV=0;pJumping=false}}
+ else player.position.y=floorY+(len>.08?Math.abs(Math.sin(performance.now()*.012))*.035:0);
+ const dx=player.position.x-pPrev.x,dz=player.position.z-pPrev.z;
+ if(Math.abs(dx)+Math.abs(dz)>.00001){camera.position.x+=dx;camera.position.z+=dz;controls.target.x+=dx;controls.target.z+=dz;pPrev.copy(player.position)}
+ controls.update();
+}
+
+const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.045,.22,.68);composer.addPass(bloom);
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight)});
+function animate(){requestAnimationFrame(animate);controls.update();updatePlayer();composer.render()}animate();
+</script>
+</body></html>+Number(pack.amount).toFixed(2);
+  btn.addEventListener('click',()=>walletCreatePayPalOrder(String(pack.code),btn));
+  box.appendChild(btn);
+ });
+}
+async function walletCreatePayPalOrder(packageCode,button){
+ if(!walletSession?.access_token){walletMsg('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');return}
+ const msg=document.getElementById('walletTopupMessage');
+ button.disabled=true;button.style.opacity='.55';msg.textContent='Đang tạo đơn thanh toán PayPal...';
+ try{
+  const {data,error}=await walletClient.functions.invoke('paypal-create-order',{body:{package_code:packageCode}});
+  if(error)throw new Error(error.message||'Không tạo được đơn PayPal.');
+  if(!data?.approve_url)throw new Error(data?.error||'PayPal không trả về đường dẫn thanh toán.');
+  msg.textContent='Đang chuyển đến PayPal...';
+  window.location.href=data.approve_url;
+ }catch(e){msg.textContent=e.message||'Không thể tạo thanh toán. Vui lòng thử lại.';button.disabled=false;button.style.opacity='1'}
+}
+let paypalReturnOrder=new URLSearchParams(window.location.search).get('token');
+let paypalReturnHandled=false;
+async function walletHandlePayPalReturn(){
+ const params=new URLSearchParams(window.location.search);
+ if(params.get('paypal')==='cancel'){
+  document.getElementById('walletTopupMessage').textContent='Bạn đã hủy thanh toán. Ví chưa bị trừ XU.';
+  document.getElementById('walletTopupInfo').style.display='block';
+  window.history.replaceState({},document.title,window.location.pathname);
+  return;
+ }
+ if(params.get('paypal')!=='success'||!paypalReturnOrder||paypalReturnHandled||!walletSession)return;
+ paypalReturnHandled=true;
+ document.getElementById('walletTopupInfo').style.display='block';
+ document.getElementById('walletTopupMessage').textContent='Đang xác minh thanh toán với PayPal...';
+ try{
+  const {data,error}=await walletClient.functions.invoke('paypal-capture-order',{body:{order_id:paypalReturnOrder}});
+  if(error)throw new Error(error.message||'Không xác minh được giao dịch.');
+  if(!data?.ok)throw new Error(data?.error||'PayPal chưa xác nhận giao dịch.');
+  document.getElementById('walletTopupMessage').textContent='Thanh toán thành công! Đã cộng '+walletNum(data.xu_added||data.xu||0)+' XU vào ví.';
+  window.history.replaceState({},document.title,window.location.pathname);
+  paypalReturnOrder=null;await walletLoad();
+ }catch(e){document.getElementById('walletTopupMessage').textContent=(e.message||'Chưa xác minh được thanh toán.')+' Nếu tiền đã bị trừ, vui lòng không thanh toán lại và liên hệ quản trị viên để kiểm tra mã đơn.'}
+}
+document.getElementById('walletTopup').onclick=async()=>{const el=document.getElementById('walletTopupInfo');el.style.display=el.style.display==='none'?'block':'none';if(el.style.display==='block')await walletLoadTopupPackages()};
+
 document.getElementById('walletLogout').onclick=async()=>{await walletClient.auth.signOut();walletSession=null;await walletLoad();walletMsg('Đã đăng xuất.')};
 walletClient.auth.getSession().then(({data})=>{walletSession=data.session;walletLoad()});
 walletClient.auth.onAuthStateChange((_event,session)=>{walletSession=session;walletLoad()});
