@@ -71,16 +71,36 @@ async function walletLoadTopupPackages(){
  const box=document.getElementById('walletTopupPackages'),msg=document.getElementById('walletTopupMessage');
  box.innerHTML='<span style="color:#9fb9d4">Đang tải gói nạp...</span>';msg.textContent='';
  const {data,error}=await walletClient.functions.invoke('paypal-list-packages',{method:'GET'});
- if(error||!data?.configured||!Array.isArray(data.packages)||!data.packages.length){
-  box.innerHTML='<span style="color:#ffd08a;grid-column:1/-1">Chưa cấu hình gói nạp PayPal.</span>';
-  msg.textContent='Chủ dự án cần cấu hình gói XU và thông tin PayPal an toàn trong Supabase trước khi mở thanh toán.';
-  return;
- }
+ if(error||!data||!data.configured||!Array.isArray(data.packages)||!data.packages.length){box.innerHTML='<span style="color:#ffd08a;grid-column:1/-1">Chưa cấu hình gói nạp PayPal.</span>';msg.textContent='Cần cấu hình gói nạp và thông tin PayPal trong Supabase.';return}
  box.innerHTML='';
  data.packages.forEach(pack=>{
   const btn=document.createElement('button');btn.type='button';
   btn.style.cssText='background:#173d66;color:#fff;border:1px solid #4d83b8;border-radius:9px;padding:12px 8px;font-weight:700;cursor:pointer';
-  btn.textContent=Number(pack.xu).toLocaleString('vi-VN')+' XU · 
+  btn.textContent=Number(pack.xu).toLocaleString('vi-VN')+' XU - '+Number(pack.amount).toFixed(2)+' USD';
+  btn.addEventListener('click',()=>walletCreatePayPalOrder(String(pack.code),btn));box.appendChild(btn);
+ });
+}
+async function walletCreatePayPalOrder(code,button){
+ const msg=document.getElementById('walletTopupMessage');
+ button.disabled=true;msg.textContent='Đang tạo đơn PayPal...';
+ try{const {data,error}=await walletClient.functions.invoke('paypal-create-order',{body:{package_code:code}});
+  if(error)throw error;if(!data||!data.approve_url)throw new Error(data&&data.error?data.error:'Không tạo được đơn PayPal.');
+  window.location.href=data.approve_url;
+ }catch(e){msg.textContent=e.message||'Lỗi tạo thanh toán.';button.disabled=false}
+}
+let paypalReturnOrder=new URLSearchParams(window.location.search).get('token');
+let paypalReturnHandled=false;
+async function walletHandlePayPalReturn(){
+ const p=new URLSearchParams(window.location.search);
+ if(p.get('paypal')==='cancel'){document.getElementById('walletTopupInfo').style.display='block';document.getElementById('walletTopupMessage').textContent='Bạn đã hủy thanh toán.';window.history.replaceState({},document.title,window.location.pathname);return}
+ if(p.get('paypal')!=='success'||!paypalReturnOrder||paypalReturnHandled||!walletSession)return;
+ paypalReturnHandled=true;document.getElementById('walletTopupInfo').style.display='block';document.getElementById('walletTopupMessage').textContent='Đang xác minh PayPal...';
+ try{const {data,error}=await walletClient.functions.invoke('paypal-capture-order',{body:{order_id:paypalReturnOrder}});
+  if(error)throw error;if(!data||!data.ok)throw new Error(data&&data.error?data.error:'Thanh toán chưa được xác nhận.');
+  document.getElementById('walletTopupMessage').textContent='Đã xác nhận thanh toán. XU đã được cộng vào ví.';window.history.replaceState({},document.title,window.location.pathname);paypalReturnOrder=null;await walletLoad();
+ }catch(e){document.getElementById('walletTopupMessage').textContent=(e.message||'Chưa xác minh được.')+' Không thanh toán lại nếu tiền đã bị trừ.'}
+}
+document.getElementById('walletTopup').onclick=async()=>{const el=document.getElementById('walletTopupInfo');el.style.display=el.style.display==='none'?'block':'none';if(el.style.display==='block')await walletLoadTopupPackages()};
 document.getElementById('walletLogout').onclick=async()=>{await walletClient.auth.signOut();walletSession=null;await walletLoad();walletMsg('Đã đăng xuất.')};
 walletClient.auth.getSession().then(async({data})=>{walletSession=data.session;await walletLoad();await walletHandlePayPalReturn()});
 walletClient.auth.onAuthStateChange((_event,session)=>{walletSession=session;walletLoad()});
