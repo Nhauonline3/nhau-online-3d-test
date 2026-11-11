@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#14251e">
+<title>Nhậu Online 3D – Voxel Plaza V1</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#14251e;color:#fff;font-family:system-ui,-apple-system,Arial;touch-action:none}#game{position:fixed;inset:0}canvas{display:block;width:100%;height:100%;touch-action:none}
+.hud{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:10px;right:10px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.brand,.status,.hint{background:#14251ee8;border:1px solid #9ac49a;border-radius:12px;padding:9px 12px;box-shadow:0 3px 14px #0005;backdrop-filter:blur(8px)}.brand{font-weight:900;font-size:14px}.brand small{display:block;font-size:10px;font-weight:500;color:#c5e5c5}.status{font-size:10px;text-align:right;line-height:1.4}.hint{position:fixed;top:calc(env(safe-area-inset-top,0px) + 66px);left:50%;transform:translateX(-50%);font-size:11px;white-space:nowrap;pointer-events:none}
+.controls{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;justify-content:space-between;align-items:flex-end;pointer-events:none}.joy{width:112px;height:112px;border-radius:50%;background:#182b24c9;border:2px solid #d6ead2;position:relative;pointer-events:auto;touch-action:none}.knob{position:absolute;width:44px;height:44px;left:32px;top:32px;border-radius:50%;background:linear-gradient(#fff,#c6e3c2);border:2px solid #fff;box-shadow:0 3px 10px #0008}.actions{display:flex;gap:8px;pointer-events:auto}.action{border:1px solid #fff;border-radius:15px;min-width:58px;height:54px;background:#233f34eF;color:white;font-weight:900;font-size:11px}.action.primary{background:#f3b63f;color:#39290c;border-color:#fff0b7}.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 105px);transform:translateX(-50%);background:#15251fee;border:1px solid #f5d17c;border-radius:12px;padding:9px 13px;font-size:12px;max-width:88vw;text-align:center;display:none;pointer-events:none}.panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,340px);background:#14251ff5;border:1px solid #b8d6a7;border-radius:18px;padding:20px;text-align:center;display:none;box-shadow:0 12px 40px #0009}.panel h2{margin:0 0 8px}.panel p{font-size:13px;line-height:1.5;color:#d8ead5}.panel button{border:0;border-radius:10px;padding:10px 18px;background:#f3b63f;color:#39290c;font-weight:900}
+@media(min-width:700px){.controls{max-width:850px;margin:auto;left:0;right:0}.joy{width:120px;height:120px}.knob{left:36px;top:36px}.hint{top:78px}}
+</style>
+</head>
+<body>
+<div id="game"></div>
+<div class="hud"><div class="brand">🍻 NHẬU ONLINE 3D<small>VOXEL LEGO CITY · BẢN THỬ NGHIỆM V1</small></div><div class="status">🐧 Điểm xuất hiện<br>Quảng trường trung tâm</div></div>
+<div class="hint">Vuốt màn hình để xoay camera · Dùng cần điều khiển để di chuyển</div>
+<div class="toast" id="toast"></div>
+<div class="controls"><div class="joy" id="joy"><div class="knob" id="knob"></div></div><div class="actions"><button class="action" id="jump">NHẢY</button><button class="action primary" id="interact">KHÁM PHÁ</button></div></div>
+<div class="panel" id="panel"><h2 id="panelTitle">Chào mừng!</h2><p id="panelText">Bạn đang ở quảng trường Nhậu Online.</p><button id="closePanel">ĐÓNG</button></div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+(()=>{
+if(!window.THREE){document.getElementById('toast').textContent='Không tải được thư viện 3D. Hãy mở lại bằng Safari có Internet.';document.getElementById('toast').style.display='block';return}
+const THREE=window.THREE,host=document.getElementById('game');
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x9ac7d0);scene.fog=new THREE.Fog(0x9ac7d0,75,145);
+const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,220);
+const renderer=new THREE.WebGLRenderer({antialias:false,powerPreference:'low-power'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.35));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xe7f7ff,0x53634b,2.1));
+const sun=new THREE.DirectionalLight(0xfff0d4,2.0);sun.position.set(-35,65,28);scene.add(sun);
+const mats={grass:0x78ad58,grass2:0x8fc46a,road:0x424b50,side:0xc8c5ad,white:0xf5f0dc,black:0x27323a,wood:0x9a633a,leaf:0x3e9b53,leaf2:0x78c65b,glass:0x8dd9e4,brick:0xe8a45b,pink:0xf18ab7,purple:0x7444a7,gold:0xf0bd42,blue:0x3789d8};
+const material={};Object.keys(mats).forEach(k=>material[k]=new THREE.MeshLambertMaterial({color:mats[k],flatShading:true}));
+function cube(x,y,z,w,h,d,mat,group=scene){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),typeof mat==='string'?material[mat]:mat);m.position.set(x,y+h/2,z);m.castShadow=false;m.receiveShadow=false;group.add(m);return m}
+function ground(x,z,w,d,color='grass'){cube(x,-.3,z,w,.6,d,color)}
+function road(x,z,w,d){cube(x,0,z,w,.12,d,'road');if(w>d){for(let px=x-w/2+2;px<x+w/2-1;px+=4)cube(px,.13,z,.9,.035,.12,'white')}else{for(let pz=z-d/2+2;pz<z+d/2-1;pz+=4)cube(x,.13,pz,.12,.035,.9,'white')}}
+function crosswalk(x,z,horizontal=true){for(let i=-3;i<=3;i++){if(horizontal)cube(x+i*1.05,.15,z, .55,.045,2.1,'white');else cube(x,.15,z+i*1.05,2.1,.045,.55,'white')}}
+ground(0,0,112,112); 
+// Road network: a central cross and an outer loop, with pedestrian connections to every district.
+road(0,0,10,48);road(0,0,48,10);road(-20,0,5,70);road(20,0,5,70);road(0,-20,70,5);road(0,20,70,5);road(-27,0,10,5);road(27,0,10,5);road(-20,-26,5,10);road(20,-26,5,10);road(-20,26,5,10);road(20,26,5,10);
+road(0,0,0.01,0.01); // harmless alignment marker
+crosswalk(0,-9,true);crosswalk(0,9,true);crosswalk(-9,0,false);crosswalk(9,0,false);
+function tree(x,z,scale=1){cube(x,0,z,.9*scale,2.5*scale,.9*scale,'wood');cube(x,2.3*scale,z,2.7*scale,2.2*scale,2.7*scale,'leaf');cube(x-.7*scale,3.2*scale,z+.2*scale,1.5*scale,1.4*scale,1.5*scale,'leaf2')}
+function bench(x,z){cube(x,0.55,z,2.2,.25,.7,'wood');cube(x,.1,z-.25,.18,.8,.18,'black');cube(x,.1,z+.25,.18,.8,.18,'black')}
+function sign(text,color){const c=document.createElement('canvas');c.width=512;c.height=128;const ctx=c.getContext('2d');ctx.fillStyle='#20332b';ctx.fillRect(0,0,512,128);ctx.strokeStyle='#f4e3ad';ctx.lineWidth=8;ctx.strokeRect(5,5,502,118);ctx.font='bold 43px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=color;ctx.fillText(text,256,66);const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;const mesh=new THREE.Mesh(new THREE.PlaneGeometry(12,3),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));return mesh}
+const areas=[];
+function addArea(name,desc,x,z,color){areas.push({name,desc,x,z});const s=sign(name,color);s.position.set(x,7,z+8);scene.add(s)}
+// Medium-sized central plaza and fountain.
+cube(0,.05,0,23,.25,23,'side');cube(0,.2,0,20,.18,20,'white');
+cube(0,.4,0,7,.35,7,'blue');cube(0,.75,0,4,.45,4,'side');cube(0,1.2,0,1.4,1.0,1.4,'gold');
+for(let i=0;i<8;i++){const a=i*Math.PI/4;cube(Math.cos(a)*7,.32,Math.sin(a)*7,1.4,.3,1.4,'grass2');bench(Math.cos(a)*8.1,Math.sin(a)*8.1)}
+for(const [x,z] of [[-9,-9],[9,-9],[-9,9],[9,9]])tree(x,z,.7);
+const welcome=sign('QUẢNG TRƯỜNG','#ffe08a');welcome.position.set(0,5,10.5);scene.add(welcome);
+// Shopping district, northwest.
+function mall(){const x=-31,z=-30;cube(x,0,z,18,.7,15,'side');cube(x, .7,z,15,7,12,'brick');cube(x,7.7,z,16,1,13,'purple');for(let i=-5;i<=5;i+=2.5){cube(x+i,2.1,z+6.1,1.7,2.5,.22,'glass');cube(x+i,4.6,z+6.1,1.7,1.7,.22,'gold')}for(let i=-1;i<=1;i++)cube(x+i*4,8.2,z,2.2,.7,2,'gold');addArea('KHU MUA SẮM','Các cửa hàng, gian hàng do người chơi mở và khu mua sắm vật phẩm.',x,z,'#ffe5a0')}
+mall();
+// Stress Bear Club, northeast.
+function club(){const x=31,z=-30;cube(x,0,z,18,.7,15,'side');cube(x,.7,z,15,7,12,'purple');cube(x,7.7,z,16,1,13,'black');cube(x,2,z+6.2,4,3,.25,'pink');for(let i=-1;i<=1;i++)cube(x+i*4,3.3,z+6.2,2,3,.22,'glass');for(let i=-1;i<=1;i++)cube(x+i*5,8.2,z,2,.8,2,'pink');addArea('STRESS BEAR CLUB','Không gian âm nhạc, giao lưu, DJ và sự kiện cộng đồng.',x,z,'#ffd0ff')}
+club();
+// Park, west.
+function park(){const x=-39,z=0;cube(x,0,z,18,.5,25,'grass2');for(let i=-2;i<=2;i++){tree(x+i*3, z-8, .9);tree(x+i*3,z+8,.85)}cube(x,.25,z,7,.2,12,'blue');cube(x,.5,z-1,2,.3,2,'side');bench(x-5,z);bench(x+5,z);addArea('KHU CÔNG VIÊN','Vườn cây, hồ nước, ghế nghỉ và các hoạt động ngoài trời.',x,z,'#d4ffb0')}
+park();
+// Currency exchange, east.
+function exchange(){const x=39,z=0;cube(x,0,z,17,.6,19,'side');cube(x,.6,z,13,6,14,'gold');cube(x,6.6,z,14,.8,15,'white');cube(x,2.5,z+7.1,5,3,.2,'glass');cube(x,5,z+7.1,7,.7,.2,'purple');addArea('KHU ĐỔI TIỀN','Khu ví, đổi tiền tệ trong game và thông tin giao dịch.',x,z,'#fff0a8')}
+exchange();
+// Apartments, southwest.
+function apartments(){const x=-31,z=30;cube(x,0,z,19,.5,18,'side');for(let b=0;b<2;b++){const bx=x+(b?5:-5);cube(bx,.5,z,7,15,7,b?'glass':'brick');for(let y=2;y<15;y+=3)for(let xx=-2;xx<=2;xx+=2)cube(bx+xx,y,z+3.6,1.2,1.6,.15,'white');cube(bx,15.5,z,7,1,7,'gold')}addArea('KHU APARTMENT','Các tòa căn hộ và không gian riêng của người chơi.',x,z,'#e3f3ff')}
+apartments();
+// Pickleball, southeast.
+function pickle(){const x=31,z=30;cube(x,0,z,22,.5,20,'side');for(let i=-1;i<=1;i++){const cx=x+i*7;cube(cx,.5,z,6,.12,11,'blue');cube(cx,.65,z,5.7,.04,10.7,'white');cube(cx,.69,z,5.3,.04,10.3,'blue');cube(cx,.73,z, .08,.04,10,'white');cube(cx,.73,z,5.2,.04,.08,'white');cube(cx,.73,z-5,5.2,.04,.08,'white');cube(cx,.73,z+5,5.2,.04,.08,'white');cube(cx,.9,z, .12,1.2,10,'black')}addArea('KHU PICKLEBALL','Sân chơi thể thao, giao lưu và thi đấu giữa người chơi.',x,z,'#d5f5ff')}
+pickle();
+// More trees, shrubs and cube street lights around the blocks.
+for(let x=-48;x<=48;x+=12){for(let z=-48;z<=48;z+=12){if(Math.abs(x)<17&&Math.abs(z)<17)continue;if(Math.abs(x)<19&&Math.abs(z)<19)continue;if(Math.abs(x)>43||Math.abs(z)>43)tree(x,z,.65)}}
+function lamp(x,z){cube(x,0,z,.25,3,.25,'black');cube(x,3,z,.9,.55,.9,'gold')}
+for(let z=-42;z<=42;z+=12){lamp(-7,z);lamp(7,z)}for(let x=-42;x<=42;x+=12){lamp(x,-7);lamp(x,7)}
+// Blocky penguin avatar.
+const player=new THREE.Group();scene.add(player);
+// Rounded 3D penguin avatar, matching the earlier colored model reference.
+const penguinDark=new THREE.MeshLambertMaterial({color:0x10131f,flatShading:false});
+const penguinWhite=new THREE.MeshLambertMaterial({color:0xf3f3f7,flatShading:false});
+const penguinYellow=new THREE.MeshLambertMaterial({color:0xf2a900,flatShading:false});
+const penguinEye=new THREE.MeshLambertMaterial({color:0x080b12,flatShading:false});
+function penguinPart(x,y,z,sx,sy,sz,mat,rotationZ=0){
+  const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,24,18),mat);
+  mesh.position.set(x,y,z);
+  mesh.scale.set(sx,sy,sz);
+  mesh.rotation.z=rotationZ;
+  player.add(mesh);
+  return mesh;
+}
+// Smooth rounded black body and head.
+penguinPart(0,1.05,0,.77,.98,.59,penguinDark);
+penguinPart(0,2.12,0,.68,.69,.61,penguinDark);
+// White oval belly with visible black border.
+penguinPart(0,1.04,.505,.53,.71,.16,penguinWhite);
+// White face area.
+penguinPart(0,2.13,.565,.47,.435,.145,penguinWhite);
+// Short rounded flippers.
+penguinPart(-.72,.94,.015,.22,.59,.25,penguinDark,-.28);
+penguinPart(.72,.94,.015,.22,.59,.25,penguinDark,.28);
+// Eyes, yellow beak and yellow feet.
+penguinPart(-.205,2.19,.704,.085,.105,.075,penguinEye);
+penguinPart(.205,2.19,.704,.085,.105,.075,penguinEye);
+penguinPart(0,1.91,.755,.205,.125,.15,penguinYellow);
+// Balanced pair of feet: same depth, same height, mirrored left/right beneath the body.
+const footMaterial=new THREE.MeshLambertMaterial({color:0xffb400,flatShading:false});
+function penguinFoot(x){
+  const ankle=new THREE.Mesh(new THREE.BoxGeometry(.20,.30,.22),footMaterial);
+  ankle.position.set(x,.49,.20);
+  player.add(ankle);
+  const foot=new THREE.Mesh(new THREE.SphereGeometry(1,24,16),footMaterial);
+  foot.scale.set(.30,.16,.36);
+  foot.position.set(x,.43,.43);
+  player.add(foot);
+}
+penguinFoot(-.34);
+penguinFoot(.34);
+player.position.set(0,0,5);
+// Camera: free orbit around the player (drag to rotate, pinch/wheel to zoom).
+let yaw=0,pitch=.45,distance=13,drag=null,lastX=0,lastY=0,pinchStart=0;
+const pointers=new Map();
+renderer.domElement.addEventListener('pointerdown',e=>{pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===1){drag=e.pointerId;lastX=e.clientX;lastY=e.clientY;renderer.domElement.setPointerCapture(e.pointerId)}else if(pointers.size===2){const a=[...pointers.values()];pinchStart=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)}}); 
+renderer.domElement.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===1&&drag===e.pointerId){yaw-=(e.clientX-lastX)*.006;pitch=THREE.MathUtils.clamp(pitch+(e.clientY-lastY)*.004,-.05,1.05);lastX=e.clientX;lastY=e.clientY}else if(pointers.size===2){const a=[...pointers.values()];const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(pinchStart){distance=THREE.MathUtils.clamp(distance-(d-pinchStart)*.035,7,27)}pinchStart=d}});
+function clearPointer(e){pointers.delete(e.pointerId);if(drag===e.pointerId)drag=null;if(pointers.size<2)pinchStart=0}
+renderer.domElement.addEventListener('pointerup',clearPointer);renderer.domElement.addEventListener('pointercancel',clearPointer);renderer.domElement.addEventListener('wheel',e=>{distance=THREE.MathUtils.clamp(distance+e.deltaY*.015,7,27)},{passive:true});
+// Joystick and keyboard.
+const joy=document.getElementById('joy'),knob=document.getElementById('knob');let moveX=0,moveY=0,joyActive=false,joyId=null;
+function setJoy(e){const r=joy.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),max=34,len=Math.hypot(dx,dy),scale=len>max?max/len:1;const x=dx*scale,y=dy*scale;knob.style.transform='translate('+x+'px,'+y+'px)';moveX=x/max;moveY=y/max}
+joy.addEventListener('pointerdown',e=>{joyActive=true;joyId=e.pointerId;joy.setPointerCapture(e.pointerId);setJoy(e)});joy.addEventListener('pointermove',e=>{if(joyActive&&e.pointerId===joyId)setJoy(e)});function endJoy(){joyActive=false;moveX=moveY=0;knob.style.transform='translate(0,0)'}joy.addEventListener('pointerup',endJoy);joy.addEventListener('pointercancel',endJoy);
+const keys={};addEventListener('keydown',e=>keys[e.key.toLowerCase()]=true);addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+let vy=0,jumping=false;document.getElementById('jump').onclick=()=>{if(!jumping){vy=6;jumping=true}};
+function panel(title,text){document.getElementById('panelTitle').textContent=title;document.getElementById('panelText').textContent=text;document.getElementById('panel').style.display='block'}
+document.getElementById('closePanel').onclick=()=>document.getElementById('panel').style.display='none';
+document.getElementById('interact').onclick=()=>{let nearest=null,dist=1e9;for(const a of areas){const d=Math.hypot(player.position.x-a.x,player.position.z-a.z);if(d<dist){dist=d;nearest=a}}if(nearest&&dist<18)panel(nearest.name,nearest.desc);else panel('Quảng trường trung tâm','Chào mừng bạn! Hãy đi bộ đến một trong sáu khu vực xung quanh quảng trường để khám phá.')};
+const clock=new THREE.Clock(),target=new THREE.Vector3();
+function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.04);let ix=moveX+(keys.d?1:0)-(keys.a?1:0),iz=moveY+(keys.s?1:0)-(keys.w?1:0);const len=Math.hypot(ix,iz);if(len>1){ix/=len;iz/=len}const forward=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw)),right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));const delta=forward.multiplyScalar(-iz*8*dt).add(right.multiplyScalar(ix*8*dt));player.position.x=THREE.MathUtils.clamp(player.position.x+delta.x,-48,48);player.position.z=THREE.MathUtils.clamp(player.position.z+delta.z,-48,48);if(len>.08)player.rotation.y=Math.atan2(delta.x,-delta.z);
+if(jumping){vy-=15*dt;player.position.y+=vy*dt;if(player.position.y<=0){player.position.y=0;vy=0;jumping=false}}
+target.set(player.position.x,player.position.y+1.3,player.position.z);const cp=Math.cos(pitch),sp=Math.sin(pitch);camera.position.set(target.x+Math.sin(yaw)*distance*cp,target.y+Math.max(2,distance*sp),target.z+Math.cos(yaw)*distance*cp);camera.lookAt(target);renderer.render(scene,camera)}
+animate();addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+})();
+</script>
+</body></html>
