@@ -148,9 +148,20 @@ body.ui-modal-open #shopInfo{z-index:20;bottom:18px;max-height:calc(100dvh - 300
 #pdEta{font-size:11px;color:#60758c}
 .pdCheckoutTotal{display:grid;grid-template-columns:1fr auto;gap:8px;padding:12px 0;border-top:1px solid #e5edf4;font-size:13px}
 .pdCheckoutTotal strong{color:#e34c9b}
-</style>
+#authGate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;background:rgba(3,10,28,.96);color:#fff;font-family:inherit}#authGate[hidden]{display:none}#authGateCard{width:min(100%,460px);background:#0b1c38;border:1px solid #22dfff;border-radius:22px;padding:24px;box-shadow:0 0 35px #00d9ff35}#authGateCard h1{font-size:25px;margin:0 0 8px;color:#7deaff}#authGateCard p{color:#c3d9f0;line-height:1.5}#authGateCard label{display:block;margin:12px 0 6px;color:#b9d7f2}#authGateCard input{width:100%;box-sizing:border-box;padding:14px;border-radius:11px;border:1px solid #41688f;background:#06142c;color:white;font:inherit;font-size:16px}#authGateActions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}#authGateActions button{padding:13px 8px;border:1px solid #f38bff;border-radius:11px;background:#d82bd5;color:white;font-weight:900;font-size:14px}#authGateMsg{min-height:24px;margin:12px 0 0;color:#ffd16a;font-size:13px;overflow-wrap:anywhere}</style>
 </head>
 <body>
+<div id="authGate">
+ <div id="authGateCard">
+  <h1>🐧 CHÀO MỪNG ĐẾN 369 CITY</h1>
+  <p>Đăng ký hoặc đăng nhập một lần để vào thành phố, sử dụng ví, mua hàng và quản lý gian hàng bằng cùng một tài khoản.</p>
+  <label for="gateEmail">Email</label><input id="gateEmail" type="email" autocomplete="email" placeholder="Nhập email của bạn">
+  <label for="gatePassword">Mật khẩu</label><input id="gatePassword" type="password" autocomplete="new-password" placeholder="Ít nhất 6 ký tự">
+  <div id="authGateActions"><button id="gateLogin" type="button">ĐĂNG NHẬP</button><button id="gateSignup" type="button">TẠO TÀI KHOẢN</button></div>
+  <div id="authGateMsg" role="status">Vui lòng đăng nhập hoặc tạo tài khoản để bắt đầu.</div>
+ </div>
+</div>
+
 <div id="scene"></div>
 <div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">PHỐ MUA SẮM + QUẢNG TRƯỜNG · PIXEL NEON</div></div><div class="card" style="text-align:right"><strong>🛍️ SHOPPING STREET</strong><div class="sub">8 gian hàng + quảng trường</div></div></div>
 
@@ -248,8 +259,34 @@ async function walletHandlePayPalReturn(){
 }
 document.getElementById('walletTopup').onclick=async()=>{const el=document.getElementById('walletTopupInfo');el.style.display=el.style.display==='none'?'block':'none';if(el.style.display==='block')await walletLoadTopupPackages()};
 document.getElementById('walletLogout').onclick=async()=>{await walletClient.auth.signOut();walletSession=null;await walletLoad();walletMsg('Đã đăng xuất.')};
-walletClient.auth.getSession().then(async({data})=>{walletSession=data.session;await walletLoad();await walletHandlePayPalReturn()});
-walletClient.auth.onAuthStateChange((_event,session)=>{walletSession=session;walletLoad()});
+walletClient.auth.getSession().then(async({data})=>{walletSession=data.session;await walletLoad();if(walletSession)authGateHide();else authGateShow();await walletHandlePayPalReturn()});
+function authGateShow(message){document.getElementById('authGate').hidden=false;if(message)document.getElementById('authGateMsg').textContent=message}
+function authGateHide(){document.getElementById('authGate').hidden=true}
+async function authGateLogin(){
+ const email=document.getElementById('gateEmail').value.trim(),password=document.getElementById('gatePassword').value;
+ const msg=document.getElementById('authGateMsg');
+ if(!email||!password){msg.textContent='Vui lòng nhập email và mật khẩu.';return}
+ msg.textContent='Đang đăng nhập...';
+ const {data,error}=await walletClient.auth.signInWithPassword({email,password});
+ if(error){msg.textContent='Đăng nhập chưa thành công: '+error.message;return}
+ walletSession=data.session;await walletLoad();authGateHide();
+}
+async function authGateSignup(){
+ const email=document.getElementById('gateEmail').value.trim(),password=document.getElementById('gatePassword').value;
+ const msg=document.getElementById('authGateMsg');
+ if(!email||!/^\\S+@\\S+\\.\\S+$/.test(email)){msg.textContent='Vui lòng nhập địa chỉ email hợp lệ.';return}
+ if(password.length<6){msg.textContent='Mật khẩu cần có ít nhất 6 ký tự.';return}
+ msg.textContent='Đang tạo tài khoản...';
+ const {data,error}=await walletClient.auth.signUp({email,password});
+ if(error){msg.textContent='Chưa tạo được tài khoản: '+error.message;return}
+ if(data.session){walletSession=data.session;await walletLoad();authGateHide();msg.textContent='Tài khoản đã sẵn sàng.'}
+ else{msg.textContent='Đã gửi email xác nhận đến '+email+'. Hãy mở email, bấm xác nhận rồi quay lại đây để đăng nhập.'}
+}
+document.getElementById('gateLogin').onclick=authGateLogin;
+document.getElementById('gateSignup').onclick=authGateSignup;
+document.getElementById('gatePassword').addEventListener('keydown',e=>{if(e.key==='Enter')authGateLogin()});
+walletClient.auth.onAuthStateChange((_event,session)=>{walletSession=session;walletLoad()}); 
+
 async function sellerOrdersLoad(){
  const root=document.getElementById('sellerOrdersList');
  if(!walletSession){root.textContent='Bạn cần đăng nhập trước.';return}
