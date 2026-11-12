@@ -739,22 +739,39 @@ function flowerBed(x,z){
   box(0,y,z,9.8,.38,1.05,k%2?"purple":"dark",stage);
   box(0,y+.21,z+.48,9.65,.07,.09,k%2?pink:cyan,stage);
  }
- // Main portal: clean, matching columns and one continuous header beam.
+ // Main portal frame remains clean; replace plain side columns with layered icon towers.
  for(const side of [-1,1]){
   box(side*5.35,3.65,-1.65,.72,6.1,3.25,"dark",stage);
   box(side*5.35,3.65,-1.65,.20,5.72,.20,side<0?cyan:pink,stage);
-  box(side*5.35,6.55,-1.65,.92,.22,3.45,side<0?pink:amber,stage);
-  // Colorful decorative tower panels sit on the outside, not as bulky black blocks.
-  box(side*6.35,2.65,-.2,1.55,5.15,2.65,side<0?pink:amber,stage);
-  box(side*6.35,2.65,-.2,1.28,4.82,2.35,"purple",stage);
-  box(side*6.35,4.55,1.02,1.18,.16,.10,side<0?cyan:pink,stage);
-  const icon=new THREE.Mesh(new THREE.PlaneGeometry(1.05,1.05),textTexture(side<0?"♫":"★","#20103d",side<0?"#8dfaff":"#ffe36a"));
-  icon.position.set(side*6.35,3.25,1.0);stage.add(icon);
-  // Speaker rings are mounted flush on the front of the tower.
-  for(const y of [1.35,1.95]){
-   const ring=new THREE.Mesh(new THREE.TorusGeometry(.27,.07,8,20),new THREE.MeshStandardMaterial({color:side<0?0xff38cb:0xffd05c,emissive:side<0?0xff38cb:0xffd05c,emissiveIntensity:1.2}));
-   ring.position.set(side*6.35,y,1.08);stage.add(ring);
+  // Three stacked illuminated display blocks on each wing, like the supplied festival reference.
+  const blocks=side<0?[
+   {y:5.25,c:0xff27c8,t:"♫",tc:"#fff0ff"},
+   {y:3.85,c:0x19dff5,t:"☺",tc:"#062d4a"},
+   {y:2.45,c:0xffca35,t:"♥",tc:"#fff8dc"},
+   {y:1.05,c:0xff9b27,t:"369",tc:"#fff4b0"}
+  ]:[
+   {y:5.25,c:0xffb52f,t:"MIC",tc:"#fff8d5"},
+   {y:3.85,c:0x20dff0,t:"♪",tc:"#07324a"},
+   {y:2.45,c:0xff36ca,t:"▶",tc:"#fff0ff"},
+   {y:1.05,c:0xffca35,t:"✿",tc:"#fff8dc"}
+  ];
+  for(const item of blocks){
+   const w=item.t==="369"||item.t==="MIC"?1.7:1.55;
+   box(side*6.35,item.y,-.12,w,1.22,2.2,item.c,stage);
+   box(side*6.35,item.y,-.12,w-.18,1.04,2.02,"dark",stage);
+   const panel=new THREE.Mesh(new THREE.PlaneGeometry(w-.32,.86),textTexture(item.t,"#211039",item.tc));
+   panel.position.set(side*6.35,item.y,1.00);stage.add(panel);
+   box(side*6.35,item.y+.53,1.04,w-.28,.07,.07,item.c,stage);
   }
+  // Visible speaker rings mounted in front of the lower display blocks.
+  for(const y of [2.0,2.38,3.55,3.93]){
+   const ring=new THREE.Mesh(new THREE.TorusGeometry(.22,.065,8,20),new THREE.MeshStandardMaterial({color:side<0?0xff39ce:0x25eaff,emissive:side<0?0xff39ce:0x25eaff,emissiveIntensity:1.5}));
+   ring.position.set(side*6.35,y,1.18);stage.add(ring);
+  }
+  // Small neon starburst above each wing.
+  const burst=new THREE.Group();burst.position.set(side*6.35,6.2,.95);stage.add(burst);
+  const burstMat=new THREE.MeshBasicMaterial({color:side<0?0xff35d4:0x4defff});
+  for(let a=0;a<8;a++){const ray=new THREE.Mesh(new THREE.BoxGeometry(.055,.48,.055),burstMat);ray.rotation.z=a*Math.PI/4;burst.add(ray)}
  }
  box(0,6.78,-1.65,10.95,.38,3.45,"dark",stage);
  box(0,6.99,-1.55,10.5,.12,3.25,amber,stage);
