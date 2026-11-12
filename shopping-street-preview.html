@@ -783,18 +783,21 @@ renderGiftProducts();
 let mallProductCache=[];
 async function loadMallProducts(){
  const root=document.getElementById('giftItems');
- root.querySelectorAll('[data-mall-product]').forEach(n=>n.remove());
+ root.querySelectorAll('[data-mall-product], [data-mall-heading]').forEach(n=>n.remove());
  const {data,error}=await walletClient.from('mall_products').select('id,name,description,price_coin,stock,image_url,seller_id,store_id').eq('active',true).gt('stock',0).order('created_at',{ascending:false}).limit(50);
- if(error){console.warn('Không tải được sản phẩm từ gian hàng:',error.message);return}
+ if(error){const warning=document.createElement('p');warning.dataset.mallHeading='1';warning.style.cssText='grid-column:1/-1;padding:10px;color:#b45309;background:#fff7ed;border-radius:10px';warning.textContent='Chưa tải được sản phẩm từ gian hàng. Hãy tải lại trang.';root.prepend(warning);console.warn('Không tải được sản phẩm từ gian hàng:',error.message);return}
  mallProductCache=data||[];
- mallProductCache.forEach(p=>{
+ if(mallProductCache.length){
+  const heading=document.createElement('div');heading.dataset.mallHeading='1';heading.style.cssText='grid-column:1/-1;padding:10px 12px;border-radius:10px;background:#e0f7ff;color:#087b9b;font-weight:900;font-size:14px';heading.textContent='🛍️ SẢN PHẨM THẬT TỪ GIAN HÀNG · CHỌN SẢN PHẨM BÊN DƯỚI ĐỂ GỬI ĐƠN';root.prepend(heading);
+ }
+ [...mallProductCache].reverse().forEach(p=>{
   const card=document.createElement('div');card.className='giftItem';card.dataset.mallProduct=p.id;
   const art=document.createElement('div');art.className='giftProductArt';
   if(p.image_url){const img=document.createElement('img');img.src=p.image_url;img.alt=p.name;img.style.cssText='width:100%;height:100%;object-fit:contain';art.appendChild(img)}else art.textContent='🛍️';
   const name=document.createElement('div');name.className='giftProductName';name.textContent=p.name;
   const price=document.createElement('b');price.textContent=Number(p.price_coin||0).toLocaleString('vi-VN')+' COIN';
-  const seller=document.createElement('small');seller.textContent='Sản phẩm từ gian hàng · Còn '+p.stock;
-  card.append(art,name,price,seller);root.appendChild(card);
+  const seller=document.createElement('small');seller.textContent='SẢN PHẨM THẬT · Còn '+p.stock;
+  card.append(art,name,price,seller);root.insertBefore(card,heading.nextSibling);
  });
 }
 loadMallProducts();
