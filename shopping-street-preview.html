@@ -172,10 +172,10 @@ function shop(d,index){
   const cream=mat(0xfff3df),blackGlass=new THREE.MeshStandardMaterial({color:0x233451,metalness:.28,roughness:.24});
   const goldMetal=new THREE.MeshStandardMaterial({color:0xe7b85c,metalness:.82,roughness:.24});
   const velvet=mat(0xffc5df),softPink=mat(0xff79c8),giftPaper=mat(0xfff1f7);
-  const floorCanvas=document.createElement('canvas');floorCanvas.width=512;floorCanvas.height=512;const fc=floorCanvas.getContext('2d');fc.fillStyle='#f7e9ef';fc.fillRect(0,0,512,512);
-  for(let y=0;y<512;y+=64)for(let x=0;x<512;x+=64){fc.fillStyle=((x+y)/64)%2?'#f8dbe9':'#fff3df';fc.fillRect(x+2,y+2,60,60);fc.strokeStyle='#d58eaf';fc.lineWidth=2;fc.strokeRect(x+3,y+3,58,58);fc.fillStyle='rgba(255,255,255,.035)';fc.fillRect(x+8,y+8,44,5)}
+  const floorCanvas=document.createElement('canvas');floorCanvas.width=512;floorCanvas.height=512;const fc=floorCanvas.getContext('2d');fc.fillStyle='#e9d8ec';fc.fillRect(0,0,512,512);
+  for(let y=0;y<512;y+=64)for(let x=0;x<512;x+=64){fc.fillStyle=((x+y)/64)%2?'#d8c4e6':'#f5dfc9';fc.fillRect(x+2,y+2,60,60);fc.strokeStyle='#a77fae';fc.lineWidth=2;fc.strokeRect(x+3,y+3,58,58);fc.fillStyle='rgba(255,255,255,.035)';fc.fillRect(x+8,y+8,44,5)}
   const floorTex=new THREE.CanvasTexture(floorCanvas);floorTex.colorSpace=THREE.SRGBColorSpace;
-  const boutiqueFloor=new THREE.MeshStandardMaterial({map:floorTex,roughness:.34,metalness:.04,emissive:0x49303b,emissiveIntensity:.12});
+  const boutiqueFloor=new THREE.MeshStandardMaterial({map:floorTex,roughness:.34,metalness:.04,emissive:0x201329,emissiveIntensity:.035});
   const panel=(x,y,z,w,h,material,parent=g)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),material);m.position.set(x,y,z);parent.add(m);return m};
   const rounded=(x,y,z,w,h,dep,r,material,parent=g)=>{const shape=new THREE.Shape();const a=-w/2,b=-dep/2;
    shape.moveTo(a+r,b);shape.lineTo(a+w-r,b);shape.quadraticCurveTo(a+w,b,a+w,b+r);shape.lineTo(a+w,b+dep-r);shape.quadraticCurveTo(a+w,b+dep,a+w-r,b+dep);shape.lineTo(a+r,b+dep);shape.quadraticCurveTo(a,b+dep,a,b+dep-r);shape.lineTo(a,b+r);shape.quadraticCurveTo(a,b,a+r,b);
@@ -185,10 +185,10 @@ function shop(d,index){
   const floor=new THREE.Mesh(new THREE.PlaneGeometry(8.35,7.25),boutiqueFloor);floor.rotation.x=-Math.PI/2;floor.position.set(0,.64,-.05);g.add(floor);
   box(0,.655,.95,4.5,.035,2.15,velvet,g);box(0,.68,.95,4.34,.025,2.0,goldMetal,g);
   // Soft ambient pools and ceiling feature lights.
-  const ceilingGlow=new THREE.Mesh(new THREE.PlaneGeometry(8.1,7.1),new THREE.MeshBasicMaterial({color:0xc5f5ff,transparent:true,opacity:.82,side:THREE.DoubleSide}));ceilingGlow.rotation.x=Math.PI/2;ceilingGlow.position.set(0,4.9,-.1);g.add(ceilingGlow);
+  const ceilingGlow=new THREE.Mesh(new THREE.PlaneGeometry(8.1,7.1),new THREE.MeshBasicMaterial({color:0xc5f5ff,transparent:true,opacity:.14,side:THREE.DoubleSide}));ceilingGlow.rotation.x=Math.PI/2;ceilingGlow.position.set(0,4.9,-.1);g.add(ceilingGlow);
   for(const [lx,lz,col] of [[-2.7,-1.4,0xffa7d8],[2.7,-1.4,0x7cecff],[0,2.1,0xffdf9c]]){const lamp=new THREE.Mesh(new THREE.CylinderGeometry(.48,.48,.055,32),new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:1.5,metalness:.08,roughness:.3}));lamp.position.set(lx,4.72,lz);g.add(lamp);const light=new THREE.PointLight(col,1.65,7);light.position.set(lx,4.3,lz);g.add(light)}
   // Back feature wall with fluted panels and illuminated brand plaque.
-  box(0,2.55,-3.62,8.45,3.75,.22,mat(0x55cbdc),g);
+  box(0,2.55,-3.62,8.45,3.75,.22,mat(0x247f9b),g);
   for(let x=-3.85;x<=3.86;x+=.42){box(x,2.6,-3.48,.035,3.35,.055,goldMetal,g)}
   box(0,3.88,-3.39,5.5,1.02,.12,blackGlass,g);
   panel(0,3.88,-3.31,5.25,.78,labelTexture('GIFT  •  MARKET','#ff4eae','#fff8d9',false));
@@ -212,8 +212,12 @@ function shop(d,index){
   box(0,1.36,-.01,3.55,.045,.045,goldMetal,g);
   const pos=new THREE.Group();pos.position.set(1.12,1.39,-.72);g.add(pos);
   rounded(0,.32,0,.62,.52,.16,.045,blackGlass,pos);
-  const screenMat=labelTexture('369 PAY','#07182c','#54efff',true);panel(0,.34,.09,.49,.32,screenMat,pos);
+  const screenMat=labelTexture('369 PAY  •  CHECKOUT','#07182c','#54efff',true);panel(0,.34,.09,.49,.32,screenMat,pos);
   box(0,.045,.02,.78,.08,.48,goldMetal,pos);
+  // Clearly visible POS keypad and contactless payment pad.
+  for(let row=0;row<3;row++)for(let col=0;col<4;col++){const key=new THREE.Mesh(new THREE.BoxGeometry(.075,.026,.06),mat((row+col)%3===0?0xff69bd:0x79d9e8));key.position.set(-.23+col*.105,.105,-.13+row*.085);pos.add(key)}
+  const tapPad=new THREE.Mesh(new THREE.CircleGeometry(.07,20),new THREE.MeshStandardMaterial({color:0x5be6f2,emissive:0x1c9cae,emissiveIntensity:.65}));tapPad.position.set(.25,.12,.10);pos.add(tapPad);
+  const receipt=new THREE.Mesh(new THREE.BoxGeometry(.18,.018,.34),cream);receipt.position.set(-.42,.10,-.08);pos.add(receipt);
   // Illustrated product artwork: original canvas-drawn packaging graphics, not plain colored cubes.
   function productArtwork(kind,accent,title){
    const c=document.createElement('canvas');c.width=384;c.height=512;const q=c.getContext('2d');
@@ -256,7 +260,7 @@ function shop(d,index){
   function shelfTeddy(x,y,z,scale=.34){const toy=new THREE.Group();toy.position.set(x,y,z);toy.scale.setScalar(scale);g.add(toy);sphere(toy,0,.28,0,.27,.30,.22,plushMat);sphere(toy,0,.67,0,.23,.23,.20,plushMat);for(const ex of [-.17,.17])sphere(toy,ex,.83,0,.105,.11,.09,plushMat);sphere(toy,-.075,.69,.18,.025,.03,.02,blackGlass);sphere(toy,.075,.69,.18,.025,.03,.02,blackGlass);sphere(toy,0,.59,.20,.09,.065,.035,cream);const bow=new THREE.Mesh(new THREE.TorusGeometry(.10,.025,7,14),softPink);bow.position.set(0,.48,.2);toy.add(bow)}
   function shelfGift(x,y,z,color){const pack=new THREE.Group();pack.position.set(x,y,z);g.add(pack);rounded(0,.19,0,.42,.38,.32,.045,mat(color),pack);box(0,.39,.01,.055,.035,.34,goldMetal,pack);box(0,.39,.01,.42,.035,.05,goldMetal,pack);const loop=new THREE.Mesh(new THREE.TorusGeometry(.09,.025,7,14),M.pink);loop.position.set(0,.43,0);pack.add(loop)}
   function shelfKeychain(x,y,z){const key=new THREE.Group();key.position.set(x,y,z);g.add(key);const ring=new THREE.Mesh(new THREE.TorusGeometry(.09,.018,8,16),goldMetal);ring.position.y=.24;key.add(ring);const charm=new THREE.Mesh(new THREE.SphereGeometry(.13,16,12),plushMat);charm.scale.set(.9,1.1,.55);charm.position.y=.04;key.add(charm);sphere(key,0,.04,.08,.075,.09,.035,cream)}
-  for(const side of [-1,1])for(let level=0;level<3;level++){const sx=side*3.34,sy=.98+level*.88,sz=-.86;shelfTeddy(sx-.38,sy+.16,sz,.34);shelfGift(sx,sy+.13,sz,level%2?0x8f72cf:0xff78bd);shelfKeychain(sx+.38,sy+.30,sz)}
+  for(const side of [-1,1])for(let level=0;level<3;level++){const sx=side*3.34,sy=.98+level*.88,sz=-.86;shelfTeddy(sx-.38,sy+.18,sz,.48);shelfGift(sx,sy+.16,sz,level%2?0x8f72cf:0xff78bd);shelfKeychain(sx+.38,sy+.34,sz)}
   // Rounded plush penguin toys displayed as actual character-shaped merchandise.
   const toyDark=mat(0x18243b),toyWhite=mat(0xfffaf0),toyOrange=mat(0xffa72f),toyPink=mat(0xff68b8);
   function plushPenguin(x,y,z,scale=1){
@@ -292,6 +296,13 @@ function shop(d,index){
   const handle=new THREE.Mesh(new THREE.TorusGeometry(.22,.055,10,24,Math.PI),goldMetal);handle.position.set(0,.88,.01);bag.add(handle);
   panel(0,.38,.18,.48,.27,labelTexture('369 GIFT','#311b42','#ffe2fa',true),bag);
   artCard(0,.39,.185,.44,.25,artGift,bag);
+  // Gift Shop merchandising details: hanging price tags, plush penguins, wrapped gift bags and display lighting.
+  function hangTag(parent,x,y,z,text,color){const tag=new THREE.Group();tag.position.set(x,y,z);parent.add(tag);const card=new THREE.Mesh(new THREE.BoxGeometry(.22,.28,.025),mat(color));card.position.y=-.08;tag.add(card);const hole=new THREE.Mesh(new THREE.TorusGeometry(.035,.012,6,12),goldMetal);hole.position.set(0,.08,.02);tag.add(hole);const thread=new THREE.Mesh(new THREE.CylinderGeometry(.008,.008,.16,6),goldMetal);thread.position.y=.14;tag.add(thread);const print=new THREE.Mesh(new THREE.PlaneGeometry(.16,.12),labelTexture(text,'#fff7ef','#57324f',true));print.position.set(0,-.08,.02);tag.add(print);return tag}
+  for(const [x,y,z] of [[-3.35,1.48,-.66],[-3.35,2.36,-.66],[3.35,1.48,-.66],[3.35,2.36,-.66]])hangTag(g,x,y,z,'369',0xffd36e);
+  // Branded gift bags beside checkout, with cord handles and printed front artwork.
+  for(const [x,z,c] of [[-1.72,-.42,0xff79c8],[1.82,-.42,0x6ccfe0]]){const bag=new THREE.Group();bag.position.set(x,.72,z);g.add(bag);rounded(0,.28,0,.48,.55,.20,.045,mat(c),bag);box(0,.3,.11,.28,.22,.018,cream,bag);const logo=new THREE.Mesh(new THREE.PlaneGeometry(.23,.17),labelTexture('369','#fff4fb','#a52c86',true));logo.position.set(0,.30,.125);bag.add(logo);for(const hx of [-.13,.13]){const h=new THREE.Mesh(new THREE.TorusGeometry(.11,.018,7,16,Math.PI),goldMetal);h.position.set(hx,.64,0);bag.add(h)}}
+  // Extra plush penguin souvenir on the front display, posed upright with a tiny bow.
+  plushPenguin(-2.15,1.12,-.45,.62);
   // Decorative framed art and neon vertical accent at entrance.
   box(-2.2,2.75,3.34,1.28,1.45,.12,blackGlass,g);
   panel(-2.2,2.75,3.42,1.12,1.28,labelTexture('GIVE JOY','#1b1734','#ff9be7',true));
