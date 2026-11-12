@@ -779,16 +779,24 @@ function flowerBed(x,z){
  // Use the two dedicated neon graphic panels as real transparent textures on 3D side structures.
  const wingLoader=new THREE.TextureLoader();
  const addWing=(url,x,width,height,edgeColor)=>{
-  // Deep backing gives the cut-out graphic a physical 3D side profile.
-  box(x,height/2+.35,.72,width+.28,height+.34,.62,"dark",stage);
-  box(x,height/2+.35,1.04,width+.12,height+.16,.12,"purple",stage);
+  // No solid rectangular billboard behind the artwork: the gaps stay transparent.
+  // A narrow 3D chassis and raised luminous rails give the cut-out graphics real depth.
+  box(x-width/2-.10,height/2+.35,.70,.22,height+.48,.46,"dark",stage);
+  box(x+width/2+.10,height/2+.35,.70,.22,height+.48,.46,"dark",stage);
+  box(x,height+.35,.70,width+.30,.22,.46,"dark",stage);
+  box(x,.35,.70,width+.30,.22,.46,"dark",stage);
   const tex=wingLoader.load(url,(loaded)=>{loaded.colorSpace=THREE.SRGBColorSpace;loaded.needsUpdate=true;});
   tex.colorSpace=THREE.SRGBColorSpace;
   const art=new THREE.Mesh(new THREE.PlaneGeometry(width,height),new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide,depthWrite:false}));
-  art.position.set(x,height/2+.35,1.18);art.renderOrder=8;stage.add(art);
-  // Thin luminous rails frame the artwork without covering its icons.
-  box(x-width/2-.07,height/2+.35,1.2,.09,height+.18,.10,edgeColor,stage);
-  box(x+width/2+.07,height/2+.35,1.2,.09,height+.18,.10,edgeColor,stage);
+  art.position.set(x,height/2+.35,1.02);art.renderOrder=8;stage.add(art);
+  // Raised corner posts, top cap and lower plinth are separate 3D pieces.
+  box(x-width/2-.10,height/2+.35,1.08,.13,height+.30,.20,edgeColor,stage);
+  box(x+width/2+.10,height/2+.35,1.08,.13,height+.30,.20,edgeColor,stage);
+  box(x,height+.35,1.08,width+.26,.13,.20,edgeColor,stage);
+  box(x,.35,1.08,width+.26,.13,.20,edgeColor,stage);
+  // Small projecting studs make the structure read as a built stage prop.
+  for(const yy of [.62,height+.08])for(const side of [-1,1])
+   box(x+side*(width/2+.10),yy,1.20,.22,.16,.28,edgeColor,stage);
  };
  addWing("./stage-left-wing.svg",-7.55,3.48,6.18,pink);
  addWing("./stage-right-wing.svg",7.55,3.48,6.18,cyan);
