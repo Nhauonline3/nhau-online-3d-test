@@ -316,7 +316,7 @@ import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/exampl
 import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js';
-const host=document.getElementById('scene'),scene=new THREE.Scene();scene.background=new THREE.Color(0x080d29);scene.fog=new THREE.Fog(0x080d29,65,125);
+const host=document.getElementById('scene'),scene=new THREE.Scene();scene.background=new THREE.Color(0x111329);scene.fog=new THREE.Fog(0x111329,78,145);
 const camera=new THREE.PerspectiveCamera(43,innerWidth/innerHeight,.1,220);camera.position.set(0,22,-111);
 const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.0));renderer.setSize(innerWidth,innerHeight);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.72;renderer.shadowMap.enabled=false;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
 const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.065;controls.target.set(0,2.4,-91);controls.minDistance=18;controls.maxDistance=75;controls.maxPolarAngle=Math.PI*.48;controls.minPolarAngle=.18;
@@ -632,8 +632,9 @@ const plazaActionMeshes=[];
  const plazaGroup=new THREE.Group();
  plazaGroup.position.set(0,0,-76);
  scene.add(plazaGroup);
- const plazaAmbient=new THREE.HemisphereLight(0xa7dcff,0x35416d,1.05);plazaGroup.add(plazaAmbient);
- const plazaWash=new THREE.PointLight(0x438cff,7,62);plazaWash.position.set(0,13,0);plazaGroup.add(plazaWash);
+ const plazaAmbient=new THREE.HemisphereLight(0xe0d5ff,0x65556f,1.35);plazaGroup.add(plazaAmbient);
+ const plazaWash=new THREE.PointLight(0xffb8df,8.5,68);plazaWash.position.set(0,15,0);plazaGroup.add(plazaWash);
+ const plazaWarm=new THREE.PointLight(0xffd18a,4.5,48);plazaWarm.position.set(-13,8,10);plazaGroup.add(plazaWarm);
 
  const mat=(color)=>new THREE.MeshStandardMaterial({color,roughness:.55,metalness:.12});
  const M={grass:mat(0x263d66),edge:mat(0x46577e),cream:mat(0x53648b),tile:mat(0x34466f),tile2:mat(0x465a85),road:mat(0x263653),blue:mat(0x168dff),water:mat(0x0875d5),white:mat(0xf2f7ff),wood:mat(0x9b5592),green:mat(0x168f82),green2:mat(0x39c9a8),dark:mat(0x182747),gold:mat(0xffc44d),red:mat(0xff4b91),purple:mat(0x7540a8)};
@@ -652,14 +653,12 @@ box(0,-.55,0,180,.5,180,'grass');
 const wet=new THREE.MeshStandardMaterial({color:0x405987,metalness:.38,roughness:.3});box(0,.12,0,43.8,.12,43.8,wet);
 box(0,-.12,0,46,.55,46,'edge');
 box(0,.16,0,43.8,.18,43.8,'cream');
-// checker tiles border ring
-for(let i=-20;i<=20;i+=2){box(i,.26,-20.6,1.8,.08,.75,(i/2)%2?'tile':'tile2');box(i,.26,20.6,1.8,.08,.75,(i/2)%2?'tile2':'tile');box(-20.6,.26,i,.75,.08,1.8,(i/2)%2?'tile':'tile2');box(20.6,.26,i,.75,.08,1.8,(i/2)%2?'tile2':'tile')}
-// central square plaza, paved paths to six gateways
-box(0,.27,0,24,.10,24,'tile');
-// Bright readable paving under neon night lighting
-const plazaFill=new THREE.MeshStandardMaterial({color:0x536a91,roughness:.55,metalness:.16});box(0,.275,0,23.5,.06,23.5,plazaFill);
-for(let i=-20;i<=20;i+=2){box(i,.29,-20.2,.08,.025,40,cyan);box(-20.2,.29,i,40,.025,.08,pink)}
-for(let i=-11;i<=11;i+=2){for(let j=-11;j<=11;j+=2){if((i+j)%4===0)box(i,.33,j,1.82,.045,1.82,'tile2')}}
+// Clean contemporary plaza paving: smooth warm graphite-violet surface, no blue checker squares.
+const plazaFill=new THREE.MeshStandardMaterial({color:0x55516f,roughness:.72,metalness:.08});box(0,.275,0,43.2,.08,43.2,plazaFill);
+const plazaInset=new THREE.MeshStandardMaterial({color:0x68617e,roughness:.78,metalness:.05});box(0,.32,0,22,.035,22,plazaInset);
+// Subtle perimeter light strips replace the old blue square-tile pattern.
+for(const x of [-20.2,20.2])box(x,.34,0,.055,.035,39.5,pink);
+for(const z of [-20.2,20.2])box(0,.34,z,39.5,.035,.055,amber);
 box(0,.32,-20,6,.12,10,'cream');box(0,.32,20,6,.12,10,'cream');box(-20,.32,0,10,.12,6,'cream');box(20,.32,0,10,.12,6,'cream');
 box(-14,.32,-14,6,.12,6,'cream');box(14,.32,-14,6,.12,6,'cream');
 // Fountain at center
@@ -686,7 +685,7 @@ for(let i=0;i<5;i++){const spike=new THREE.Mesh(new THREE.BoxGeometry(.16,.42,.2
 // Huy hiệu ngôi sao phát sáng trên ngực
 const badgeRing=new THREE.Mesh(new THREE.TorusGeometry(.24,.055,8,24),M.gold);badgeRing.position.set(0,3.35,.73);penguinGroup.add(badgeRing);
 const badgeStar=new THREE.Mesh(new THREE.OctahedronGeometry(.22,0),amber);badgeStar.position.set(0,3.35,.76);penguinGroup.add(badgeStar);
-penguinGroup.scale.setScalar(1.48);penguinGroup.position.y=-.55;plazaGroup.add(penguinGroup);
+penguinGroup.scale.setScalar(1.48);penguinGroup.position.y=-.55;penguinGroup.rotation.y=Math.PI;plazaGroup.add(penguinGroup);
 // Đồng xu cầu nguyện: nằm ngang, rải tự nhiên dưới mặt nước như người chơi vừa thả xuống hồ
 for(let i=0;i<14;i++){
   const a=i*2.399963,rad=1.65+(i%4)*.48;
@@ -702,8 +701,7 @@ for(let i=0;i<14;i++){
 for(let i=0;i<8;i++){const a=i*Math.PI/4;box(Math.cos(a)*3.6,1.05,Math.sin(a)*3.6,.22,.42,.22,'cream')}
 // Four garden beds and small shrubs around inner square
 for(const [x,z] of [[-13,-13],[13,-13],[-13,13],[13,13]]){box(x,.34,z,4.6,.3,4.6,'green');for(const dx of [-1,1])for(const dz of [-1,1])box(x+dx,.65,z+dz,1.1,1.1,1.1,'green2')}
-// benches and lamps along square edges
-bench(-8,-5,0);bench(8,-5,Math.PI);bench(-8,5,0);bench(8,5,Math.PI);
+// Lamps along square edges; wooden benches removed for a cleaner open plaza.
 for(const [x,z] of [[-17,-8],[17,-8],[-17,8],[17,8],[-8,-17],[8,-17],[-8,17],[8,17]])lamp(x,z);
 // trees in perimeter landscaping
 for(const [x,z,s] of [[-20,-14,.9],[-20,14,.9],[20,-14,.9],[20,14,.9],[-14,-20,.8],[14,-20,.8],[-14,20,.8],[14,20,.8]])tree(x,z,s);
@@ -732,7 +730,7 @@ flowerBed(-9,-12);flowerBed(9,-12);flowerBed(-9,12);flowerBed(9,12);
 
 // 369 CITY SOCIAL STAGE — compact open-air performance space at the north edge.
 {
- const stage=new THREE.Group();stage.position.set(0,0,15.8);stage.scale.setScalar(1.25);plazaGroup.add(stage);
+ const stage=new THREE.Group();stage.position.set(0,0,15.8);stage.rotation.y=Math.PI;stage.scale.setScalar(1.25);plazaGroup.add(stage);
  // Extra local lighting makes the plaza readable on phone screens without flattening the neon night look.
  const stageFill=new THREE.PointLight(0x5edfff,5.5,28);stageFill.position.set(0,8,5);stage.add(stageFill);
  const stagePink=new THREE.PointLight(0xff35d2,3.8,20);stagePink.position.set(-7,5,1);stage.add(stagePink);
@@ -809,7 +807,7 @@ function smokingZone(){
  for(const dx of [-3.2,3.2])for(const dz of [-2.1,2.1])box(x+dx,1.4,z+dz,.16,2.1,.16,cyan);
  box(x,2.45,z-2.05,5.7,.62,.10,'dark');
  const label=new THREE.Mesh(new THREE.PlaneGeometry(5.4,.48),textTexture('SMOKING AREA','#10133b','#ffcf69'));label.position.set(x,2.48,z-1.98);plazaGroup.add(label);
- bench(x, z+.9,Math.PI/2);
+ // Smoking zone bench removed to keep the plaza free of wooden seating.
  cylinder(x+2.45,.35,z+.8,.22,.22,.7,'dark',12);cylinder(x+2.45,1.05,z+.8,.24,.24,.12,'gold',12);
  // Biểu tượng điếu thuốc cách điệu trên bảng nhỏ
  box(x-2.35,1.1,z-1.98,.75,.12,.12,'cream');box(x-1.95,1.1,z-1.98,.18,.14,.14,pink);
