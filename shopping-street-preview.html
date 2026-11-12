@@ -752,7 +752,7 @@ flowerBed(-9,-12);flowerBed(9,-12);flowerBed(-9,12);flowerBed(9,12);
   const beam=new THREE.Mesh(new THREE.ConeGeometry(1.0,4.8,16,1,true),new THREE.MeshBasicMaterial({color:side<0?0x24dfff:0xff42d7,transparent:true,opacity:.10,side:THREE.DoubleSide,depthWrite:false}));beam.position.set(side*3.7,3.3,.6);beam.rotation.x=.25;stage.add(beam);
  }
  const title=new THREE.Mesh(new THREE.PlaneGeometry(4.7,.55),textTexture("369 LIVE STAGE","#160e35","#ffe27a"));title.position.set(0,5.2,-1.46);stage.add(title);
- for(const x of [-4.5,-1.5,1.5,4.5]){const mic=cylinder(x,1.18,.55,.045,.045,.55,"gold",8);mic.rotation.z=Math.PI/2}
+ for(const x of [-4.5,-1.5,1.5,4.5]){const mic=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.55,8),M.gold);mic.position.set(x,1.48,.55);mic.rotation.z=Math.PI/2;stage.add(mic)}
  // Audience benches face the stage; keep the fountain approach clear.
  bench(-5.6,8.7,0);bench(5.6,8.7,0);
  for(const x of [-7.5,7.5]){box(x,.35,11.4,1.0,.7,1.0,"dark");box(x,.76,11.4,.82,.12,.82,x<0?cyan:pink)}
