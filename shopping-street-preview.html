@@ -160,19 +160,33 @@ function shop(d,index){
  for(const xx of [-3.7,3.7]){box(xx,.72,4.9,1.05,.65,.85,M.purple,g);box(xx,1.12,4.9,.72,.12,.62,a,g)}
  // Gift Shop interior display and friendly pixel shopkeeper
  if(d.tag==='GIFTS'){
-  box(-2.75,1.15,-1.95,1.05,2.0,.42,M.dark,g);box(-2.75,2.22,-1.95,1.18,.12,.5,a,g);
-  box(0,1.0,-2.0,3.1,1.15,.72,M.wood,g);box(0,1.62,-2.0,3.25,.12,.82,M.gold,g);
-  for(let row=0;row<2;row++)for(let k=0;k<4;k++){
-   const xx=-3.45+k*2.3,yy=1.05+row*1.15;
-   box(xx,yy,-3.0,1.55,.12,.5,M.gold,g);
-   box(xx-.38,yy+.18,-3.0,.42,.42,.42,[M.pink,M.cyan,M.purple,M.lime][(k+row)%4],g);
-   box(xx+.28,yy+.18,-3.0,.38,.38,.38,[M.cyan,M.gold,M.pink,M.purple][(k+row)%4],g);
+  // A visible floor pattern inside the shop.
+  box(0,.59,-.05,8.35,.035,7.25,M.floor,g);
+  for(let ix=0;ix<7;ix++)for(let iz=0;iz<6;iz++){
+   box(-3.55+ix*1.18,.615,-3.05+iz*1.15,1.12,.025,1.08,(ix+iz)%2?M.roadTileAlt||M.dark:M.roadTile||M.wall,g);
   }
-  box(0,1.35,-2.75,.58,.92,.42,a,g);box(0,2.05,-2.75,.55,.55,.5,M.white,g);box(0,2.34,-2.75,.62,.16,.56,M.dark,g);
-  for(const ex of [-.13,.13])box(ex,2.1,-2.48,.07,.07,.04,M.dark,g);
-  box(-.36,1.55,-2.72,.16,.58,.18,a,g);box(.36,1.55,-2.72,.16,.58,.18,a,g);
-  box(0,.78,1.15,2.9,.48,.62,M.purple,g);
-  for(let k=0;k<3;k++)box(-.85+k*.85,1.12,1.15,.42,.34,.38,k%2?M.cyan:M.pink,g);
+  // Left and right product display shelves, facing the customer entrance.
+  for(const sx of [-3.25,3.25]){
+   box(sx,1.45,-1.15,.28,2.25,.32,M.dark,g);
+   for(let level=0;level<3;level++){
+    box(sx,0.78+level*.72,-1.15,1.35,.12,.72,M.gold,g);
+    for(let k=0;k<3;k++)box(sx-.42+k*.42,1.02+level*.72,-1.12,.30,.34,.30,[M.pink,M.cyan,M.purple,M.lime][(k+level)%4],g);
+   }
+  }
+  // Rear wall feature display and neon welcome sign.
+  box(0,3.45,-3.55,5.8,.12,.18,M.cyan,g);
+  sign(g,0,3.85,-3.48,5.2,.8,'PLAYER MARKET',a);
+  // Checkout counter in the middle with gift boxes.
+  box(0,.95,-.55,3.65,.82,.92,M.wood,g);box(0,1.39,-.55,3.8,.12,1.02,M.gold,g);
+  for(let k=0;k<4;k++){box(-1.25+k*.82,1.58,-.55,.48,.38,.46,[M.pink,M.cyan,M.purple,M.lime][k],g);box(-1.25+k*.82,1.80,-.55,.18,.08,.50,M.gold,g)}
+  // Pixel shopkeeper behind the counter, facing the entry.
+  box(0,1.85,-1.65,.62,1.0,.48,a,g);box(0,2.62,-1.65,.60,.58,.54,M.white,g);
+  box(0,2.91,-1.65,.66,.18,.58,M.dark,g);
+  for(const ex of [-.14,.14])box(ex,2.66,-1.37,.07,.07,.04,M.dark,g);
+  box(-.38,2.0,-1.65,.18,.68,.22,a,g);box(.38,2.0,-1.65,.18,.68,.22,a,g);
+  // A small seating / gift-wrapping table near the entrance.
+  box(0,.86,2.65,2.3,.52,.72,M.purple,g);box(0,1.16,2.65,2.42,.10,.82,M.cyan,g);
+  for(let k=0;k<3;k++)box(-.72+k*.72,1.42,2.65,.42,.42,.42,k%2?M.pink:M.gold,g);
  }
  // side-mounted mini LED sign
  sign(g,5.0,3.6,.2,1.2,2.4,d.tag,a);
@@ -366,10 +380,12 @@ function openShopCard(d){
 }
 function enterShop(d){
  document.getElementById('shopInfo').style.display='none';insideShop=d;
- player.position.set(d.x,0,d.z);pPrev.copy(player.position);
- const side=d.x<0?1:-1;
- camera.position.set(d.x+side*6.2,4.6,d.z+.4);
- controls.target.set(d.x,1.45,d.z);controls.update();
+ const shopGroup=scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-d.x)<.01&&Math.abs(o.position.z-d.z)<.01);
+ const toWorld=(x,y,z)=>shopGroup?shopGroup.localToWorld(new THREE.Vector3(x,y,z)):new THREE.Vector3(d.x+x,y,d.z+z);
+ // Put the penguin just inside the front doorway; camera stays inside the shop and looks toward the back counter.
+ player.position.copy(toWorld(0,0,2.15));pPrev.copy(player.position);
+ const cam=toWorld(0,4.65,7.15),look=toWorld(0,1.55,-1.35);
+ camera.position.copy(cam);controls.target.copy(look);controls.update();
  document.getElementById('playerShop').style.display='none';
  document.getElementById('playerLeaveShop').style.display='flex';
 }
