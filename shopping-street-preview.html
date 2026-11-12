@@ -779,27 +779,26 @@ function flowerBed(x,z){
  // Use the two dedicated neon graphic panels as real transparent textures on 3D side structures.
  const wingLoader=new THREE.TextureLoader();
  const addWing=(url,x,width,height,edgeColor)=>{
-  // No solid rectangular billboard behind the artwork: the gaps stay transparent.
-  // A narrow 3D chassis and raised luminous rails give the cut-out graphics real depth.
-  box(x-width/2-.10,height/2+.35,.70,.22,height+.48,.46,"dark",stage);
-  box(x+width/2+.10,height/2+.35,.70,.22,height+.48,.46,"dark",stage);
-  box(x,height+.35,.70,width+.30,.22,.46,"dark",stage);
-  box(x,.35,.70,width+.30,.22,.46,"dark",stage);
+  // Compact 3D side frame: no empty top/bottom slabs or oversized flat backplate.
+  box(x-width/2-.12,height/2+.35,.68,.24,height+.38,.58,"dark",stage);
+  box(x+width/2+.12,height/2+.35,.68,.24,height+.38,.58,"dark",stage);
   const tex=wingLoader.load(url,(loaded)=>{loaded.colorSpace=THREE.SRGBColorSpace;loaded.needsUpdate=true;});
   tex.colorSpace=THREE.SRGBColorSpace;
   const art=new THREE.Mesh(new THREE.PlaneGeometry(width,height),new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide,depthWrite:false}));
   art.position.set(x,height/2+.35,1.02);art.renderOrder=8;stage.add(art);
-  // Raised corner posts, top cap and lower plinth are separate 3D pieces.
-  box(x-width/2-.10,height/2+.35,1.08,.13,height+.30,.20,edgeColor,stage);
-  box(x+width/2+.10,height/2+.35,1.08,.13,height+.30,.20,edgeColor,stage);
-  box(x,height+.35,1.08,width+.26,.13,.20,edgeColor,stage);
-  box(x,.35,1.08,width+.26,.13,.20,edgeColor,stage);
-  // Small projecting studs make the structure read as a built stage prop.
-  for(const yy of [.62,height+.08])for(const side of [-1,1])
-   box(x+side*(width/2+.10),yy,1.20,.22,.16,.28,edgeColor,stage);
+  // Raised side rails, layered neon edges and small depth spacers.
+  for(const side of [-1,1]){
+   box(x+side*(width/2+.12),height/2+.35,1.10,.14,height+.22,.24,edgeColor,stage);
+   box(x+side*(width/2+.23),height/2+.35,.94,.10,height+.06,.30,"pink",stage);
+   for(let yy=.85;yy<height;yy+=1.25)
+    box(x+side*(width/2+.12),yy+.35,1.24,.22,.18,.34,edgeColor,stage);
+  }
+  // Floating lower plinths support the towers without covering their artwork.
+  box(x,.20,.62,width*.72,.24,.70,"dark",stage);
+  box(x,.34,1.04,width*.68,.09,.26,edgeColor,stage);
  };
- addWing("./stage-left-wing.svg",-7.55,3.48,6.18,pink);
- addWing("./stage-right-wing.svg",7.55,3.48,6.18,cyan);
+ addWing("./stage-left-wing.svg",-7.45,4.05,7.25,pink);
+ addWing("./stage-right-wing.svg",7.45,4.05,7.25,cyan);
  // Side LED bars and footlights.
  for(const side of [-1,1])for(let y=1.0;y<5.8;y+=.35)box(side*5.48,y,.1,.09,.19,.12,y%0.7?cyan:pink,stage);
  for(let x=-5.2;x<=5.2;x+=.65)box(x,1.18,3.15,.42,.08,.08,Math.round(x*10)%2?pink:cyan,stage);
