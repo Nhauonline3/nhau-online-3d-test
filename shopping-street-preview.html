@@ -158,6 +158,8 @@ function shop(d,index){
  for(let row=0;row<2;row++)for(let k=0;k<5;k++){const xx=-3.6+k*1.8;box(xx,1.05+row*1.15,3.25,.72,.62,.35,k%2?a:M.cyan,g)}
  // pixel display plinths at each corner
  for(const xx of [-3.7,3.7]){box(xx,.72,4.9,1.05,.65,.85,M.purple,g);box(xx,1.12,4.9,.72,.12,.62,a,g)}
+ // Record the interior objects separately from the exterior storefront.
+ const interiorStart=g.children.length;
  // Gift Shop interior display and friendly pixel shopkeeper
  if(d.tag==='GIFTS'){
   // A visible floor pattern inside the shop.
@@ -188,6 +190,7 @@ function shop(d,index){
   box(0,.86,2.65,2.3,.52,.72,M.purple,g);box(0,1.16,2.65,2.42,.10,.82,M.cyan,g);
   for(let k=0;k<3;k++)box(-.72+k*.72,1.42,2.65,.42,.42,.42,k%2?M.pink:M.gold,g);
  }
+ if(d.tag==='GIFTS')g.userData.interiorChildren=g.children.slice(interiorStart);
  // side-mounted mini LED sign
  sign(g,5.0,3.6,.2,1.2,2.4,d.tag,a);
  // neon side strips and glowing entrance step
@@ -381,10 +384,12 @@ function openShopCard(d){
 function enterShop(d){
  document.getElementById('shopInfo').style.display='none';insideShop=d;
  const shopGroup=scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-d.x)<.01&&Math.abs(o.position.z-d.z)<.01);
+ if(shopGroup){
+  shopGroup.userData.savedVisibility=shopGroup.children.map(o=>o.visible);
+  const inside=new Set(shopGroup.userData.interiorChildren||[]);
+  shopGroup.children.forEach(o=>{o.visible=inside.has(o)});
+ }
  const toWorld=(x,y,z)=>shopGroup?shopGroup.localToWorld(new THREE.Vector3(x,y,z)):new THREE.Vector3(d.x+x,y,d.z+z);
- // Lift the roof and entrance canopy out of view while inside so the ceiling cannot cover the room.
- if(shopGroup){shopGroup.userData.roofHidden=[];for(const obj of shopGroup.children){if(obj.isMesh&&obj.position.y>3.55&&(obj.position.y>5.45||obj.position.z>3.95)){shopGroup.userData.roofHidden.push([obj,obj.visible]);obj.visible=false;}}}
- // Stand just inside the front entrance; look straight across the shop at the product shelves and cashier.
  player.position.copy(toWorld(0,0,1.25));pPrev.copy(player.position);
  const cam=toWorld(0,3.05,5.9),look=toWorld(0,1.75,-1.45);
  camera.position.copy(cam);controls.target.copy(look);controls.update();
@@ -396,7 +401,7 @@ function leaveShop(){
  if(!insideShop)return;
  const d=insideShop,side=d.x<0?1:-1;
  const shopGroup=scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-d.x)<.01&&Math.abs(o.position.z-d.z)<.01);
- if(shopGroup&&shopGroup.userData.roofHidden){for(const [obj,wasVisible] of shopGroup.userData.roofHidden)obj.visible=wasVisible;shopGroup.userData.roofHidden=[];}
+ if(shopGroup&&shopGroup.userData.savedVisibility){shopGroup.children.forEach((obj,i)=>{obj.visible=shopGroup.userData.savedVisibility[i]??true});shopGroup.userData.savedVisibility=null;}
  player.position.set(d.x+side*5.7,0,d.z);pPrev.copy(player.position);
  camera.position.set(player.position.x+side*7,8,player.position.z+9);
  controls.target.set(player.position.x,1.6,player.position.z);controls.update();
