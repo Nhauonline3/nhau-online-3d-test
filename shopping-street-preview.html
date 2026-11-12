@@ -163,6 +163,7 @@ body.ui-modal-open #shopInfo{z-index:20;bottom:18px;max-height:calc(100dvh - 300
 </div>
 
 <div id="scene"></div>
+<div id="sceneError" role="alert" style="display:none;position:fixed;z-index:9999;left:12px;right:12px;top:50%;transform:translateY(-50%);padding:16px;background:#230d20;border:2px solid #ff6b9d;border-radius:14px;color:#fff;font:14px/1.5 system-ui;white-space:pre-wrap;overflow-wrap:anywhere;max-height:70vh;overflow:auto"><b>369 CITY chưa khởi tạo được cảnh 3D</b><div id="sceneErrorText" style="margin-top:8px"></div></div>
 <div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">PHỐ MUA SẮM + QUẢNG TRƯỜNG · PIXEL NEON</div></div><div class="card" style="text-align:right"><strong>🛍️ SHOPPING STREET</strong><div class="sub">8 gian hàng + quảng trường</div></div></div>
 
 <div id="walletBar"><div id="walletBalances"><b>🪙 XU: —</b><b>🟡 COIN: —</b></div><button id="walletOpen">👛 VÍ CỦA TÔI</button></div>
@@ -193,9 +194,22 @@ body.ui-modal-open #shopInfo{z-index:20;bottom:18px;max-height:calc(100dvh - 300
 <div class="bottom"><div class="pill">Bản thử nghiệm riêng · Chưa đưa vào game chính</div><button id="reset">ĐẶT LẠI GÓC NHÌN</button></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-// 369 CITY wallet: authenticated balance and transaction history
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+const sceneError=document.getElementById('sceneError');
+function showSceneError(error){sceneError.style.display='block';document.getElementById('sceneErrorText').textContent=(error&&error.message?error.message:String(error))+'\\nHãy chụp màn hình thông báo này gửi em để em sửa đúng lỗi.';}
+let THREE,createClient;
+try {
+ const modules=await Promise.all([
+  import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js'),
+  import('https://esm.sh/@supabase/supabase-js@2'),
+  import('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js'),
+  import('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js'),
+  import('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js'),
+  import('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js')
+ ]);
+ THREE=modules[0];createClient=modules[1].createClient;
+ var OrbitControls=modules[2].OrbitControls,EffectComposer=modules[3].EffectComposer,RenderPass=modules[4].RenderPass,UnrealBloomPass=modules[5].UnrealBloomPass;
+} catch(error){showSceneError(error);throw error;}
+try {
 const walletClient=createClient('https://pazfwdgmojkdblfgikwg.supabase.co','sb_publishable__2bDRA8f4ar1Q7O1u9jqCw_j9sA5MNv');
 const walletModal=document.getElementById('walletModal'),walletStatus=document.getElementById('walletStatus');
 let walletSession=null;
@@ -1080,5 +1094,6 @@ function animate(){requestAnimationFrame(animate);const t=animClock.getElapsedTi
  const giftGroup=scene.children.find(o=>o.type==='Group'&&o.userData.giftSeller);
  if(giftGroup&&giftGroup.userData.giftSeller){const seller=giftGroup.userData.giftSeller;seller.position.y=.035+Math.sin(t*2.4)*.045;seller.rotation.y=Math.sin(t*1.1)*.10;const w=seller.userData.animated;if(w){w.leftWing.rotation.z=Math.sin(t*3.1)*.28-.12;w.rightWing.rotation.z=-Math.sin(t*3.1)*.28+.12;}}
  composer.render()}animate();
+} catch(error){console.error('369 CITY scene initialization failed:',error);showSceneError(error);}
 </script>
 </body></html><script async data-explicit-opt-in="true" data-deployment-id="dpl_D592Jxd9qoEM1gJh9C2HGdRfNZ12" src="https://vercel.live/_next-live/feedback/feedback.js"></script>
