@@ -368,7 +368,7 @@ function enterShop(d){
  document.getElementById('shopInfo').style.display='none';insideShop=d;
  player.position.set(d.x,0,d.z);pPrev.copy(player.position);
  const side=d.x<0?1:-1;
- camera.position.set(d.x+side*3.2,5.2,d.z+7.2);
+ camera.position.set(d.x+side*6.2,4.6,d.z+.4);
  controls.target.set(d.x,1.45,d.z);controls.update();
  document.getElementById('playerShop').style.display='none';
  document.getElementById('playerLeaveShop').style.display='flex';
@@ -425,9 +425,10 @@ function shopBlocked(x,z){
   const insideX=x+radius>d.x-halfX&&x-radius<d.x+halfX;
   const insideZ=z+radius>d.z-halfZ&&z-radius<d.z+halfZ;
   if(!insideX||!insideZ)continue;
-  const front=d.x<0?d.x+halfX:d.x-halfX;
-  const atFront=Math.abs(x-front)<.8,doorway=Math.abs(z-d.z)<.82;
-  if(atFront&&doorway)continue;
+  const back=d.x<0?d.x-halfX:d.x+halfX;
+  const doorway=Math.abs(z-d.z)<.82;
+  // The central doorway is a corridor through the front wall, but the rear wall stays solid.
+  if(doorway&&(d.x<0?x>back+.7:x<back-.7))continue;
   return true;
  }
  return false;
