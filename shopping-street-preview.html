@@ -215,6 +215,35 @@ function shop(d,index){
   rounded(0,.32,0,.62,.52,.16,.045,blackGlass,pos);
   const screenMat=labelTexture('369 PAY','#07182c','#54efff',true);panel(0,.34,.09,.49,.32,screenMat,pos);
   box(0,.045,.02,.78,.08,.48,goldMetal,pos);
+  // Illustrated product artwork: original canvas-drawn packaging graphics, not plain colored cubes.
+  function productArtwork(kind,accent,title){
+   const c=document.createElement('canvas');c.width=384;c.height=512;const q=c.getContext('2d');
+   const grad=q.createLinearGradient(0,0,384,512);grad.addColorStop(0,'#fff4fb');grad.addColorStop(1,'#d9eaff');q.fillStyle=grad;q.fillRect(0,0,384,512);
+   q.fillStyle=accent;q.fillRect(0,0,384,78);q.fillStyle='#ffffff';q.font='bold 29px Arial';q.textAlign='center';q.fillText('369  GIFT SHOP',192,51);
+   q.shadowColor=accent;q.shadowBlur=18;
+   if(kind==='penguin'){
+    q.fillStyle='#171b2c';q.beginPath();q.ellipse(192,265,92,125,0,0,Math.PI*2);q.fill();q.fillStyle='#fff';q.beginPath();q.ellipse(192,283,59,88,0,0,Math.PI*2);q.fill();
+    q.fillStyle='#ffad36';q.beginPath();q.moveTo(176,246);q.lineTo(208,246);q.lineTo(192,264);q.fill();q.fillRect(148,376,34,18);q.fillRect(206,376,34,18);
+   }else if(kind==='teddy'){
+    q.fillStyle='#bb825e';q.beginPath();q.arc(192,270,92,0,Math.PI*2);q.fill();q.beginPath();q.arc(122,192,38,0,Math.PI*2);q.arc(262,192,38,0,Math.PI*2);q.fill();q.fillStyle='#f8e4d3';q.beginPath();q.ellipse(192,294,53,39,0,0,Math.PI*2);q.fill();q.fillStyle='#201b2c';q.beginPath();q.arc(160,255,8,0,Math.PI*2);q.arc(224,255,8,0,Math.PI*2);q.fill();
+   }else{
+    q.fillStyle=accent;q.fillRect(102,168,180,188);q.fillStyle='#ffffff';q.fillRect(180,168,26,188);q.fillRect(102,246,180,24);q.strokeStyle='#fff';q.lineWidth=13;q.beginPath();q.ellipse(168,158,40,28,-.4,Math.PI,Math.PI*2);q.ellipse(220,158,40,28,.4,Math.PI,Math.PI*2);q.stroke();
+   }
+   q.shadowBlur=0;q.fillStyle='#18223d';q.font='bold 34px Arial';q.fillText(title,192,452);q.fillStyle=accent;q.fillRect(45,470,294,9);
+   const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+   return new THREE.MeshStandardMaterial({map:tex,roughness:.58,metalness:.04});
+  }
+  const artPenguin=productArtwork('penguin','#ef4ebd','PENGUIN FRIEND');
+  const artTeddy=productArtwork('teddy','#b77a55','TEDDY PLUSH');
+  const artGift=productArtwork('gift','#8e67ce','HAPPY GIFT');
+  function artCard(x,y,z,w,h,material,parent=g){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),material);m.position.set(x,y,z);parent.add(m);return m}
+  // Printed product sleeves and branded boxes across the display shelves.
+  for(const [x,y,z,kind] of [[-3.25,1.55,-1.18,'penguin'],[-3.25,2.43,-1.18,'gift'],[-3.25,3.31,-1.18,'teddy'],[3.25,1.55,-1.18,'teddy'],[3.25,2.43,-1.18,'penguin'],[3.25,3.31,-1.18,'gift']]){
+   const texMat=kind==='penguin'?artPenguin:kind==='teddy'?artTeddy:artGift;
+   artCard(x,y,z+.20,.42,.58,texMat);
+  }
+  // Checkout front receives a branded photographic-style panel.
+  artCard(0,1.05,-.035,2.8,.52,labelTexture('369 GIFT MARKET','#40204d','#ffe6fa',true));
   // Product plinths and gift boxes with ribbons and bow loops.
   const gift=(x,y,z,size,paper,ribbon)=>{rounded(x,y,z,size,size*.72,size*.72,.07,paper,g);box(x,y+size*.38,z,size*.13,.035,size*.78,ribbon,g);box(x,y+size*.38,z,size*.78,.035,size*.13,ribbon,g);
    const bow1=new THREE.Mesh(new THREE.TorusGeometry(size*.14,size*.035,7,18,Math.PI*1.55),ribbon);bow1.position.set(x-size*.1,y+size*.48,z);bow1.rotation.x=Math.PI/2;g.add(bow1);
@@ -226,15 +255,19 @@ function shop(d,index){
   sphere(plush,0,.32,0,.34,.38,.27,plushMat);sphere(plush,0,.78,0,.29,.3,.25,plushMat);
   for(const ex of [-.22,.22]){sphere(plush,ex,1.0,0,.12,.14,.12,plushMat);sphere(plush,ex,1.0,.1,.07,.08,.06,softPink);sphere(plush,ex*.58,.8,.23,.035,.04,.025,blackGlass)}
   sphere(plush,0,.72,.26,.10,.07,.05,cream);
-  // Display pedestal and ceramic plant.
+  // Small branded neck bow and stitched fabric patch.
+  const plushBow=new THREE.Mesh(new THREE.TorusGeometry(.13,.045,8,18),M.pink);plushBow.position.set(0,.98,.23);plush.add(plushBow);
+  artCard(0,.34,.275,.34,.20,artTeddy,plush);
+  // Replace bulky plant with a compact glass display pedestal for small merchandise.
   rounded(1.35,.69,-2.65,1.12,.16,.94,.06,blackGlass,g);
-  const pot=new THREE.Mesh(new THREE.CylinderGeometry(.24,.34,.42,24),mat(0xe6a5c7));pot.position.set(1.35,.98,-2.65);g.add(pot);
-  for(let k=0;k<7;k++){const leaf=new THREE.Mesh(new THREE.SphereGeometry(.17,12,10),k%2?M.leaf:M.lime);leaf.scale.set(.65,1.5,.55);leaf.position.set(1.35+Math.cos(k*6.28/7)*.2,1.35+(k%3)*.06,-2.65+Math.sin(k*6.28/7)*.2);g.add(leaf)}
+  const glassCase=new THREE.Mesh(new THREE.BoxGeometry(.88,.72,.72),new THREE.MeshPhysicalMaterial({color:0x8bdfff,transparent:true,opacity:.16,roughness:.08,metalness:.1,transmission:.65,thickness:.18}));glassCase.position.set(1.35,1.18,-2.65);g.add(glassCase);
+  for(const [gx,gz,gc] of [[1.12,-2.65,softPink],[1.38,-2.65,M.cyan],[1.64,-2.65,mat(0xb998f5)]]){const mini=new THREE.Mesh(new THREE.SphereGeometry(.13,16,12),gc);mini.position.set(gx,1.18,gz);g.add(mini)}
   // Floating handbags and accessories on the front display.
   const bag=new THREE.Group();bag.position.set(2.45,1.05,1.65);g.add(bag);
   rounded(0,.36,0,.72,.72,.34,.09,softPink,bag);
   const handle=new THREE.Mesh(new THREE.TorusGeometry(.22,.055,10,24,Math.PI),goldMetal);handle.position.set(0,.88,.01);bag.add(handle);
-  panel(0,.38,.18,.48,.27,labelTexture('369','#311b42','#ffe2fa',true),bag);
+  panel(0,.38,.18,.48,.27,labelTexture('369 GIFT','#311b42','#ffe2fa',true),bag);
+  artCard(0,.39,.185,.44,.25,artGift,bag);
   // Decorative framed art and neon vertical accent at entrance.
   box(-2.2,2.75,3.34,1.28,1.45,.12,blackGlass,g);
   panel(-2.2,2.75,3.42,1.12,1.28,labelTexture('GIVE JOY','#1b1734','#ff9be7',true));
