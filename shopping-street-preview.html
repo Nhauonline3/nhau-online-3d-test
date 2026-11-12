@@ -31,7 +31,7 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 <div id="walletModal"><div id="walletCard"><button id="walletClose">ĐÓNG</button><h2>👛 VÍ 369 CITY</h2><div id="walletSignedOut"><p>Đăng nhập để xem số dư XU và COIN của bạn.</p><label>Email</label><input id="walletEmail" type="email" autocomplete="email" placeholder="Email của bạn"><label>Mật khẩu</label><input id="walletPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu"><div class="walletActions"><button id="walletLogin">ĐĂNG NHẬP</button><button id="walletSignup">TẠO TÀI KHOẢN</button></div></div><div id="walletSignedIn" style="display:none"><p id="walletUserLabel"></p><div id="walletDetails"></div><div class="walletActions"><button id="walletTopup" type="button">💳 NẠP XU</button></div><div id="walletTopupInfo" style="display:none;background:#10284a;border:1px solid #42618b;border-radius:10px;padding:12px;margin-top:10px;font-size:13px;line-height:1.45"><b style="color:#ffe08a">CHỌN GÓI NẠP XU</b><p style="margin:7px 0;color:#c7d9ef">Thanh toán qua PayPal. XU chỉ được cộng sau khi PayPal xác nhận giao dịch hoàn tất.</p><div id="walletTopupPackages" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><span style="color:#9fb9d4">Đang tải gói nạp...</span></div><p id="walletTopupMessage" style="margin:9px 0 0;color:#ffc979"></p></div><div id="walletLock">🔒 Đổi XU sang COIN và thanh toán hàng thật đang tạm khóa đến khi hoàn tất xác nhận pháp lý.</div><div class="walletActions"><button id="walletRefresh">LÀM MỚI SỐ DƯ</button><button id="walletLogout">ĐĂNG XUẤT</button></div><h3 style="font-size:14px;color:#8defff;margin:16px 0 4px">LỊCH SỬ GIAO DỊCH</h3><div id="walletHistory">Chưa tải lịch sử.</div></div><div id="walletStatus"></div></div></div>
 <div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p><div id="giftActions"><button id="giftBrowse">🎁 XEM ĐỒ ĐANG BÁN</button><button id="giftPostOpen">＋ ĐĂNG MÓN ĐỒ</button><div id="giftItems"><div class="giftItem">🧸 Gấu bông Pixel<br><b>120 COIN</b><br><small>Người bán: Mèo Xanh</small></div><div class="giftItem">🎒 Ba lô Neon<br><b>90 COIN</b><br><small>Người bán: Bắp Rang</small></div><div class="giftItem">🪴 Chậu cây mini<br><b>45 COIN</b><br><small>Người bán: Hana</small></div><div class="giftItem">🎧 Tai nghe ảo<br><b>150 COIN</b><br><small>Người bán: Ken</small></div></div><div style="margin-top:10px"><button id="giftEnter">🚪 VÀO GIFT SHOP</button></div><div id="giftPost"><p>ĐĂNG SẢN PHẨM THỬ NGHIỆM</p><input id="giftName" placeholder="Tên món đồ"><input id="giftPrice" placeholder="Giá COIN"><button id="giftPublish">ĐĂNG THỬ</button><small id="giftPostMsg">Bản xem trước chưa lưu sản phẩm lên máy chủ.</small></div></div></div>
 <div id="playerJoy" aria-label="Điều khiển di chuyển"><div id="playerKnob"></div></div>
-<div id="playerActions"><button id="playerJump" aria-label="Nhảy" title="Nhảy">🐧</button><button id="playerShop" aria-label="Tương tác cửa hàng" title="Tương tác cửa hàng" style="display:none">🛍️</button><button id="playerLeaveShop" aria-label="Ra khỏi cửa hàng" title="Ra khỏi cửa hàng" style="display:none">🚪</button><button id="shopZoomIn" aria-label="Phóng to" title="Phóng to cửa hàng" style="display:none">＋</button><button id="shopZoomOut" aria-label="Thu nhỏ" title="Thu nhỏ cửa hàng" style="display:none">－</button><button id="playerCenter" aria-label="Theo nhân vật" title="Theo nhân vật">🎯</button><button id="playerPlaza" aria-label="Về quảng trường" title="Về quảng trường">🏙️</button></div>
+<div id="playerActions"><button id="playerJump" aria-label="Nhảy" title="Nhảy">🐧</button><button id="playerShop" aria-label="Tương tác cửa hàng" title="Tương tác cửa hàng" style="display:none">🛍️</button><button id="playerLeaveShop" aria-label="Ra khỏi cửa hàng" title="Ra khỏi cửa hàng" style="display:none">🚪</button><button id="playerCenter" aria-label="Theo nhân vật" title="Theo nhân vật">🎯</button><button id="playerPlaza" aria-label="Về quảng trường" title="Về quảng trường">🏙️</button></div>
 
 <div class="bottom"><div class="pill">Bản thử nghiệm riêng · Chưa đưa vào game chính</div><button id="reset">ĐẶT LẠI GÓC NHÌN</button></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
@@ -197,9 +197,7 @@ function shop(d,index){
   const apronText=new THREE.Mesh(new THREE.PlaneGeometry(.55,.18),labelTexture('GIFT SHOP','#ff28c8','#ffffff',true));apronText.position.set(0,1.02,.65);seller.add(apronText);
   const leftWing=sellerBall(seller,.22,sellerBlack,-.55,1.08,0,.48,1.3,.5),rightWing=sellerBall(seller,.22,sellerBlack,.55,1.08,0,.48,1.3,.5);
   seller.userData.animated={leftWing,rightWing};g.userData.giftSeller=seller;
-  // A small seating / gift-wrapping table near the entrance.
-  box(0,.86,2.65,2.3,.52,.72,M.purple,g);box(0,1.16,2.65,2.42,.10,.82,M.cyan,g);
-  for(let k=0;k<3;k++)box(-.72+k*.72,1.42,2.65,.42,.42,.42,k%2?M.pink:M.gold,g);
+  // Keep the entrance aisle completely clear for the player.
  }
  if(d.tag==='GIFTS')g.userData.interiorChildren=g.children.slice(interiorStart);
  // side-mounted mini LED sign
@@ -409,7 +407,7 @@ function enterShop(d){
  controls.enablePan=false;renderer.domElement.style.touchAction='none';
  document.getElementById('playerShop').style.display='none';
  document.getElementById('playerLeaveShop').style.display='flex';
- document.getElementById('shopZoomIn').style.display='flex';document.getElementById('shopZoomOut').style.display='flex';
+
 }
 function leaveShop(){
  if(!insideShop)return;
@@ -420,7 +418,7 @@ function leaveShop(){
  camera.position.set(player.position.x+side*7,8,player.position.z+9);
  controls.target.set(player.position.x,1.6,player.position.z);controls.update();
  controls.enableZoom=true;controls.enablePan=true;controls.minDistance=3;controls.maxDistance=65;
- insideShop=null;document.getElementById('playerLeaveShop').style.display='none';document.getElementById('shopZoomIn').style.display='none';document.getElementById('shopZoomOut').style.display='none';
+ insideShop=null;document.getElementById('playerLeaveShop').style.display='none';
 }
 document.getElementById('giftEnter').onclick=()=>{const d=shopData.find(x=>x.tag==='GIFTS');if(d)enterShop(d)};
 document.getElementById('giftBrowse').onclick=()=>{document.getElementById('giftItems').style.display='grid';document.getElementById('giftPost').style.display='none'};
@@ -449,8 +447,7 @@ pJoy.addEventListener('pointerup',pEndJoy);pJoy.addEventListener('pointercancel'
 const pKeys={};addEventListener('keydown',e=>{pKeys[e.key.toLowerCase()]=true});addEventListener('keyup',e=>{pKeys[e.key.toLowerCase()]=false});
 function pJump(){if(!pJumping){pJumpV=8;pJumping=true}}
 document.getElementById('playerJump').addEventListener('click',pJump);
-document.getElementById('shopZoomIn').addEventListener('click',()=>{if(insideShop){controls.dollyIn(1.35);controls.update()}});
-document.getElementById('shopZoomOut').addEventListener('click',()=>{if(insideShop){controls.dollyOut(1.35);controls.update()}});
+
 document.getElementById('playerShop').addEventListener('click',()=>{if(nearbyShop)openShopCard(nearbyShop)});
 document.getElementById('playerLeaveShop').addEventListener('click',leaveShop);
 document.getElementById('playerPlaza').addEventListener('click',()=>{
@@ -490,8 +487,11 @@ function updatePlayer(){
   const d=insideShop,sg=scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-d.x)<.01&&Math.abs(o.position.z-d.z)<.01);
   const candidate=player.position.clone().addScaledVector(move,speed*dt);
   const local=sg?sg.worldToLocal(candidate.clone()):candidate.clone().sub(new THREE.Vector3(d.x,0,d.z));
-  local.x=THREE.MathUtils.clamp(local.x,-3.55,3.55);local.z=THREE.MathUtils.clamp(local.z,-2.8,3.35);local.y=0;
-  player.position.copy(sg?sg.localToWorld(local):local.add(new THREE.Vector3(d.x,0,d.z)));
+  local.x=THREE.MathUtils.clamp(local.x,-3.85,3.85);local.z=THREE.MathUtils.clamp(local.z,-3.05,3.55);local.y=0;
+  // Solid local-space collision boxes: side shelving, central checkout and shopkeeper.
+  const obstacles=[[-3.25,-1.15,.88,.72],[3.25,-1.15,.88,.72],[0,-.55,2.0,.72],[0,-1.35,.62,.62]];
+  const blocked=obstacles.some(([ox,oz,hx,hz])=>Math.abs(local.x-ox)<hx+.38&&Math.abs(local.z-oz)<hz+.38);
+  if(!blocked)player.position.copy(sg?sg.localToWorld(local):local.add(new THREE.Vector3(d.x,0,d.z)));
  }else{
   const nx=THREE.MathUtils.clamp(player.position.x+move.x*speed*dt,-24,24);
   const nz=THREE.MathUtils.clamp(player.position.z+move.z*speed*dt,-99,29.5);
@@ -507,7 +507,7 @@ function updatePlayer(){
  }
  document.getElementById('playerShop').style.display=nearbyShop?'flex':'none';
  if(len>.08){player.rotation.y=Math.atan2(move.x,move.z);pWings.forEach((w,i)=>w.rotation.z=(i===0?-.35:.35)+Math.sin(performance.now()*.012)*.16)}
- const floorY=insideShop?.tag==='GIFTS'?0:(player.position.z < -54.1 ? .46 : (player.position.z < -31 ? .08 : 0));
+ const floorY=insideShop?.tag==='GIFTS'?.625:(player.position.z < -54.1 ? .46 : (player.position.z < -31 ? .08 : 0));
  if(pJumping){pJumpV-=18*dt;player.position.y+=pJumpV*dt;if(player.position.y<=floorY){player.position.y=floorY;pJumpV=0;pJumping=false}}
  else player.position.y=floorY+(len>.08?Math.abs(Math.sin(performance.now()*.012))*.035:0);
  const dx=player.position.x-pPrev.x,dz=player.position.z-pPrev.z;
