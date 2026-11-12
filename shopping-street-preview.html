@@ -21,6 +21,29 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 @media(min-width:700px){#playerJoy{width:100px;height:100px;left:24px;bottom:24px}#playerKnob{width:42px;height:42px}#playerActions{right:18px;bottom:24px}#playerActions button{width:44px;height:44px;min-width:44px;min-height:44px}}
 
 #walletBar{position:fixed;z-index:8;top:68px;right:12px;display:flex;align-items:center;gap:8px;background:#07152cf2;border:1px solid #f4bf43;border-radius:12px;padding:8px 11px;color:#fff;box-shadow:0 0 16px #ffbd3d55;font-size:12px;max-width:calc(100vw - 24px)}#walletBar button{padding:7px 10px;font-size:11px;white-space:nowrap}#walletBalances{display:flex;gap:10px;align-items:center;flex-wrap:wrap}#walletBalances b{white-space:nowrap}#walletModal{display:none;position:fixed;z-index:20;inset:0;background:#020817dd;align-items:center;justify-content:center;padding:16px}#walletModal.open{display:flex}#walletCard{width:min(420px,100%);max-height:85vh;overflow:auto;background:#091832;border:1px solid #31dcff;border-radius:18px;padding:18px;color:#fff;box-shadow:0 0 32px #00cfff66}#walletCard h2{margin:0 0 12px;color:#8defff;font-size:20px}#walletCard label{display:block;font-size:12px;color:#b8d9ee;margin:10px 0 5px}#walletCard input{width:100%;padding:12px;border-radius:9px;border:1px solid #3c648a;background:#061126;color:white;font-size:16px}#walletCard .walletActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}#walletCard .walletActions button{flex:1}#walletHistory{font-size:12px;color:#d6eaff;margin-top:12px;max-height:180px;overflow:auto}#walletStatus{font-size:12px;color:#ffdc8a;min-height:18px;margin-top:8px}#walletClose{float:right;background:#253a5b;border-color:#6283aa}#walletLock{font-size:11px;color:#ffc979;line-height:1.4;margin-top:10px}@media(max-width:520px){#walletBar{top:64px;left:12px;right:12px;justify-content:space-between;font-size:10px;padding:7px 8px}#walletBalances{gap:7px}#walletBar button{font-size:10px;padding:7px}}
+
+/* 369 CITY marketplace product page inspired by familiar shopping apps */
+#productDetail{display:none;position:fixed;z-index:30;inset:0;background:#f7f8fc;color:#202638;font-family:system-ui,-apple-system,sans-serif}
+#productDetail.open{display:flex;flex-direction:column}
+.pdTop{height:54px;flex:none;display:flex;align-items:center;gap:9px;padding:8px 12px;background:#fff;border-bottom:1px solid #e8eaf0}
+.pdTop button{background:#f1f4f8;color:#26334b;border:0;box-shadow:none;border-radius:50%;width:38px;height:38px;padding:0;font-size:20px}
+#pdBack{font-size:30px}.pdSearch{flex:1;min-width:0;background:#f1f2f5;border-radius:9px;padding:10px;color:#858b98;font-size:13px;white-space:nowrap;overflow:hidden}
+#pdCart{position:relative}#pdCartCount{position:absolute;right:-4px;top:-5px;background:#ee4a37;color:white;border-radius:12px;font-size:10px;padding:1px 5px}
+.pdScroll{overflow:auto;overscroll-behavior:contain;flex:1;padding-bottom:12px}
+.pdHero{height:min(43vh,390px);min-height:235px;background:linear-gradient(145deg,#d9f6ff,#fff0f9 58%,#e9eaff);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pdBadge{position:absolute;top:14px;left:14px;background:#ffffffd9;color:#197b9b;border-radius:16px;padding:6px 10px;font-weight:800;font-size:11px}
+.pdArt{font-size:clamp(100px,28vw,190px);filter:drop-shadow(0 20px 12px #27324b33);transform:translateY(-4px)}
+.pdDots{position:absolute;bottom:13px;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:6px;color:#7b83a0}
+.pdPhotoCount{position:absolute;right:12px;bottom:10px;background:#26334bb8;color:#fff;border-radius:15px;padding:4px 9px;font-size:11px}
+.pdPrice{padding:13px 16px;background:#fff;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.pdPrice strong{font-size:23px;color:#ed513b}.pdPrice span{font-size:13px;color:#a3a8b2;text-decoration:line-through}.pdPrice em{font-style:normal;background:#fff0eb;color:#e65a43;padding:3px 6px;font-size:11px}.pdPrice small{width:100%;font-size:11px;color:#8a909c}
+.pdTitle,.pdSection{background:#fff;margin-top:7px;padding:14px 16px}
+.pdTitle h2{margin:0 0 6px;font-size:18px;color:#202638}.pdTitle div{font-size:12px;color:#e89a22}.pdTitle p,.pdSection p{font-size:13px;line-height:1.5;color:#667084;margin:8px 0 0}
+.pdSection>b{font-size:14px}.pdSection p+p{margin-top:7px}
+#pdVariants{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.pdVariant{background:#f3f5f9;color:#43516a;border:1px solid #dce2eb;box-shadow:none;font-size:12px;padding:8px 12px}.pdVariant.selected{border-color:#ed4a9d;color:#df368e;background:#fff3fa}
+.pdBottom{flex:none;display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid #e7e9ef}
+.pdBottom button{flex:1;min-height:46px;border-radius:9px;font-size:13px}.pdBottom #pdAddCart{background:#17a995;border-color:#17a995;box-shadow:none}.pdBottom #pdBuy{background:#ef513b;border-color:#ef513b;box-shadow:none}
+#pdToast{display:none;position:absolute;bottom:78px;left:50%;transform:translateX(-50%);background:#17243c;color:#fff;padding:10px 16px;border-radius:22px;font-size:12px;white-space:nowrap;z-index:3}
 </style>
 </head>
 <body>
@@ -30,6 +53,20 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 <div id="walletBar"><div id="walletBalances"><b>🪙 XU: —</b><b>🟡 COIN: —</b></div><button id="walletOpen">👛 VÍ CỦA TÔI</button></div>
 <div id="walletModal"><div id="walletCard"><button id="walletClose">ĐÓNG</button><h2>👛 VÍ 369 CITY</h2><div id="walletSignedOut"><p>Đăng nhập để xem số dư XU và COIN của bạn.</p><label>Email</label><input id="walletEmail" type="email" autocomplete="email" placeholder="Email của bạn"><label>Mật khẩu</label><input id="walletPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu"><div class="walletActions"><button id="walletLogin">ĐĂNG NHẬP</button><button id="walletSignup">TẠO TÀI KHOẢN</button></div></div><div id="walletSignedIn" style="display:none"><p id="walletUserLabel"></p><div id="walletDetails"></div><div class="walletActions"><button id="walletTopup" type="button">💳 NẠP XU</button></div><div id="walletTopupInfo" style="display:none;background:#10284a;border:1px solid #42618b;border-radius:10px;padding:12px;margin-top:10px;font-size:13px;line-height:1.45"><b style="color:#ffe08a">CHỌN GÓI NẠP XU</b><p style="margin:7px 0;color:#c7d9ef">Thanh toán qua PayPal. XU chỉ được cộng sau khi PayPal xác nhận giao dịch hoàn tất.</p><div id="walletTopupPackages" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><span style="color:#9fb9d4">Đang tải gói nạp...</span></div><p id="walletTopupMessage" style="margin:9px 0 0;color:#ffc979"></p></div><div id="walletLock">🔒 Đổi XU sang COIN và thanh toán hàng thật đang tạm khóa đến khi hoàn tất xác nhận pháp lý.</div><div class="walletActions"><button id="walletRefresh">LÀM MỚI SỐ DƯ</button><button id="walletLogout">ĐĂNG XUẤT</button></div><h3 style="font-size:14px;color:#8defff;margin:16px 0 4px">LỊCH SỬ GIAO DỊCH</h3><div id="walletHistory">Chưa tải lịch sử.</div></div><div id="walletStatus"></div></div></div>
 <div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p><div id="giftActions"><button id="giftBrowse">🎁 XEM ĐỒ ĐANG BÁN</button><button id="giftPostOpen">＋ ĐĂNG MÓN ĐỒ</button><div id="giftItems"><div class="giftItem">🧸 Gấu bông Pixel<br><b>120 COIN</b><br><small>Người bán: Mèo Xanh</small></div><div class="giftItem">🎒 Ba lô Neon<br><b>90 COIN</b><br><small>Người bán: Bắp Rang</small></div><div class="giftItem">🪴 Chậu cây mini<br><b>45 COIN</b><br><small>Người bán: Hana</small></div><div class="giftItem">🎧 Tai nghe ảo<br><b>150 COIN</b><br><small>Người bán: Ken</small></div></div><div style="margin-top:10px"><button id="giftEnter">🚪 VÀO GIFT SHOP</button></div><div id="giftPost"><p>ĐĂNG SẢN PHẨM THỬ NGHIỆM</p><input id="giftName" placeholder="Tên món đồ"><input id="giftPrice" placeholder="Giá COIN"><button id="giftPublish">ĐĂNG THỬ</button><small id="giftPostMsg">Bản xem trước chưa lưu sản phẩm lên máy chủ.</small></div></div></div>
+<div id="productDetail" aria-hidden="true">
+ <div class="pdTop"><button id="pdBack" aria-label="Quay lại">‹</button><div class="pdSearch">⌕　Tìm sản phẩm trong 369 CITY</div><button id="pdShare">↗</button><button id="pdCart">🛒<span id="pdCartCount">0</span></button></div>
+ <div class="pdScroll">
+  <div class="pdHero"><div class="pdBadge">369 CITY · GIFT SHOP</div><div id="pdArt" class="pdArt">🧸</div><div class="pdDots">● ● ● ●</div><div class="pdPhotoCount">1/4</div></div>
+  <div class="pdPrice"><strong id="pdPrice">120 COIN</strong><span id="pdOldPrice">150 COIN</span><em>−20%</em><small>Giá trong thế giới ảo 369 CITY</small></div>
+  <div class="pdTitle"><h2 id="pdName">Gấu bông Pixel</h2><div>⭐ 4.9　|　Đã có người sưu tầm</div><p id="pdDesc">Gấu bông mềm mại phong cách Pixel, món quà đáng yêu để trang trí căn phòng của bạn.</p></div>
+  <div class="pdSection"><b>Phân loại</b><div id="pdVariants"><button class="pdVariant selected">Mặc định</button><button class="pdVariant">Phiên bản Neon</button></div></div>
+  <div class="pdSection"><b>Thông tin giao nhận</b><p>📦 Vật phẩm ảo sẽ được thêm vào kho đồ sau khi tính năng mua hàng được kích hoạt.</p><p>🛡️ Giao dịch thử nghiệm · Chưa trừ COIN thật</p></div>
+  <div class="pdSection"><b>Chi tiết sản phẩm</b><p id="pdDetails">Thiết kế độc quyền của cư dân 369 CITY. Có thể dùng để trang trí không gian cá nhân.</p></div>
+  <div class="pdSection"><b>Đánh giá sản phẩm　⭐ 4.9</b><p>“Hình ảnh dễ thương, màu sắc đẹp.”</p><p>“Rất hợp để sưu tầm trong 369 CITY.”</p></div>
+ </div>
+ <div class="pdBottom"><button id="pdAddCart">＋ Thêm vào giỏ</button><button id="pdBuy">Mua ngay</button></div>
+ <div id="pdToast"></div>
+</div>
 <div id="playerJoy" aria-label="Điều khiển di chuyển"><div id="playerKnob"></div></div>
 <div id="playerActions"><button id="playerJump" aria-label="Nhảy" title="Nhảy">🐧</button><button id="playerShop" aria-label="Tương tác cửa hàng" title="Tương tác cửa hàng" style="display:none">🛍️</button><button id="playerLeaveShop" aria-label="Ra khỏi cửa hàng" title="Ra khỏi cửa hàng" style="display:none">🚪</button><button id="playerCenter" aria-label="Theo nhân vật" title="Theo nhân vật">🎯</button><button id="playerPlaza" aria-label="Về quảng trường" title="Về quảng trường">🏙️</button></div>
 
@@ -573,6 +610,21 @@ function leaveShop(){
  insideShop=null;document.getElementById('playerLeaveShop').style.display='none';
 }
 document.getElementById('giftEnter').onclick=()=>{const d=shopData.find(x=>x.tag==='GIFTS');if(d)enterShop(d)};
+const giftCatalog=[
+ {name:'Gấu bông Pixel',price:120,old:150,emoji:'🧸',seller:'Mèo Xanh',desc:'Gấu bông mềm mại phong cách Pixel, món quà đáng yêu để trang trí căn phòng của bạn.',detail:'Gấu bông sưu tầm phong cách Pixel. Phù hợp trang trí phòng và làm quà tặng cho bạn bè trong 369 CITY.'},
+ {name:'Ba lô Neon',price:90,old:120,emoji:'🎒',seller:'Bắp Rang',desc:'Ba lô neon nổi bật dành cho chuyến dạo phố mua sắm.',detail:'Ba lô thời trang phong cách neon, phụ kiện trang trí nhân vật.'},
+ {name:'Chậu cây mini',price:45,old:60,emoji:'🪴',seller:'Hana',desc:'Chậu cây mini xanh mát cho góc phòng thêm sinh động.',detail:'Cây cảnh mini để bàn, vật phẩm trang trí không gian riêng.'},
+ {name:'Tai nghe ảo',price:150,old:180,emoji:'🎧',seller:'Ken',desc:'Tai nghe phong cách tương lai dành cho cư dân thành phố.',detail:'Phụ kiện tai nghe ảo phong cách công nghệ, dùng để làm đẹp nhân vật.'}
+];
+let pdCartCount=0,pdCurrent=null;
+function pdOpen(item){pdCurrent=item;document.getElementById('pdName').textContent=item.name;document.getElementById('pdPrice').textContent=item.price+' COIN';document.getElementById('pdOldPrice').textContent=item.old+' COIN';document.getElementById('pdArt').textContent=item.emoji;document.getElementById('pdDesc').textContent=item.desc;document.getElementById('pdDetails').textContent=item.detail;document.getElementById('productDetail').classList.add('open');document.getElementById('productDetail').setAttribute('aria-hidden','false')}
+function pdClose(){document.getElementById('productDetail').classList.remove('open');document.getElementById('productDetail').setAttribute('aria-hidden','true')}
+document.getElementById('giftItems').addEventListener('click',e=>{const card=e.target.closest('.giftItem');if(!card)return;const cards=[...document.querySelectorAll('#giftItems .giftItem')],n=cards.indexOf(card);if(giftCatalog[n])pdOpen(giftCatalog[n])});
+document.getElementById('pdBack').onclick=pdClose;
+document.getElementById('pdAddCart').onclick=()=>{pdCartCount++;document.getElementById('pdCartCount').textContent=pdCartCount;const t=document.getElementById('pdToast');t.textContent='Đã thêm vào giỏ hàng thử nghiệm';t.style.display='block';setTimeout(()=>t.style.display='none',1800)};
+document.getElementById('pdBuy').onclick=()=>{const t=document.getElementById('pdToast');t.textContent='Chức năng thanh toán đang trong giai đoạn thử nghiệm';t.style.display='block';setTimeout(()=>t.style.display='none',2200)};
+document.getElementById('pdShare').onclick=()=>{const t=document.getElementById('pdToast');t.textContent='Chia sẻ sản phẩm sẽ được bổ sung';t.style.display='block';setTimeout(()=>t.style.display='none',1800)};
+document.querySelectorAll('.pdVariant').forEach(b=>b.onclick=()=>{document.querySelectorAll('.pdVariant').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')});
 document.getElementById('giftBrowse').onclick=()=>{document.getElementById('giftItems').style.display='grid';document.getElementById('giftPost').style.display='none'};
 document.getElementById('giftPostOpen').onclick=()=>{document.getElementById('giftItems').style.display='none';document.getElementById('giftPost').style.display='block'};
 document.getElementById('giftPublish').onclick=()=>{const n=document.getElementById('giftName').value.trim(),p=document.getElementById('giftPrice').value.trim();document.getElementById('giftPostMsg').textContent=n&&p?'Đã tạo bản xem trước: '+n+' · '+p+' COIN. Chưa lưu lên máy chủ.':'Bạn hãy nhập tên món đồ và giá.'};
