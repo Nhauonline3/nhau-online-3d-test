@@ -29,9 +29,9 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 
 <div id="walletBar"><div id="walletBalances"><b>🪙 XU: —</b><b>🟡 COIN: —</b></div><button id="walletOpen">👛 VÍ CỦA TÔI</button></div>
 <div id="walletModal"><div id="walletCard"><button id="walletClose">ĐÓNG</button><h2>👛 VÍ 369 CITY</h2><div id="walletSignedOut"><p>Đăng nhập để xem số dư XU và COIN của bạn.</p><label>Email</label><input id="walletEmail" type="email" autocomplete="email" placeholder="Email của bạn"><label>Mật khẩu</label><input id="walletPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu"><div class="walletActions"><button id="walletLogin">ĐĂNG NHẬP</button><button id="walletSignup">TẠO TÀI KHOẢN</button></div></div><div id="walletSignedIn" style="display:none"><p id="walletUserLabel"></p><div id="walletDetails"></div><div class="walletActions"><button id="walletTopup" type="button">💳 NẠP XU</button></div><div id="walletTopupInfo" style="display:none;background:#10284a;border:1px solid #42618b;border-radius:10px;padding:12px;margin-top:10px;font-size:13px;line-height:1.45"><b style="color:#ffe08a">CHỌN GÓI NẠP XU</b><p style="margin:7px 0;color:#c7d9ef">Thanh toán qua PayPal. XU chỉ được cộng sau khi PayPal xác nhận giao dịch hoàn tất.</p><div id="walletTopupPackages" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><span style="color:#9fb9d4">Đang tải gói nạp...</span></div><p id="walletTopupMessage" style="margin:9px 0 0;color:#ffc979"></p></div><div id="walletLock">🔒 Đổi XU sang COIN và thanh toán hàng thật đang tạm khóa đến khi hoàn tất xác nhận pháp lý.</div><div class="walletActions"><button id="walletRefresh">LÀM MỚI SỐ DƯ</button><button id="walletLogout">ĐĂNG XUẤT</button></div><h3 style="font-size:14px;color:#8defff;margin:16px 0 4px">LỊCH SỬ GIAO DỊCH</h3><div id="walletHistory">Chưa tải lịch sử.</div></div><div id="walletStatus"></div></div></div>
-<div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p></div>
+<div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p><div id="shopActions"></div></div>
 <div id="playerJoy" aria-label="Điều khiển di chuyển"><div id="playerKnob"></div></div>
-<div id="playerActions"><button id="playerJump" aria-label="Nhảy" title="Nhảy">🐧</button><button id="playerCenter" aria-label="Theo nhân vật" title="Theo nhân vật">🎯</button><button id="playerPlaza" aria-label="Về quảng trường" title="Về quảng trường">🏙️</button></div>
+<div id="playerActions"><button id="playerJump" aria-label="Nhảy" title="Nhảy">🐧</button><button id="playerInteract" aria-label="Tương tác" title="Tương tác" style="display:none">🤝</button><button id="playerCenter" aria-label="Theo nhân vật" title="Theo nhân vật">🎯</button><button id="playerPlaza" aria-label="Về quảng trường" title="Về quảng trường">🏙️</button></div>
 
 <div class="bottom"><div class="pill">Bản thử nghiệm riêng · Chưa đưa vào game chính</div><button id="reset">ĐẶT LẠI GÓC NHÌN</button></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
@@ -131,14 +131,14 @@ function roadArrow(z){for(let k=0;k<3;k++){const y=.075+k*.62;const v=box(0,y,z+
 roadArrow(16);roadArrow(-15);
 // pixel-style shops: shop facades face the central avenue
 const shopData=[
- {name:'NEON FASHION',desc:'Thời trang và phụ kiện avatar. Khu vực dự kiến cho người chơi thuê gian hàng.',x:-13,z:-19,color:0xff28c8,tag:'FASHION'},
+ {name:'CLOTHING SHOP',desc:'Thời trang avatar: xem mẫu, chọn trang phục và trò chuyện với nhân viên bán hàng.',x:-13,z:-19,color:0xff28c8,tag:'FASHION'},
  {name:'369 BEAUTY',desc:'Mỹ phẩm, phụ kiện làm đẹp và vật phẩm trang trí nhân vật.',x:13,z:-19,color:0x18ddff,tag:'BEAUTY'},
  {name:'PIXEL MARKET',desc:'Cửa hàng tổng hợp để trưng bày và bán vật phẩm.',x:-13,z:-6,color:0xffb936,tag:'MARKET'},
- {name:'GAME STORE',desc:'Vật phẩm game, mini game và quà tặng trong thành phố.',x:13,z:-6,color:0x9c4cff,tag:'GAME'},
+ {name:'ARCADE GAME',desc:'Phòng game arcade với nhiều máy chơi game và ghế ngồi tương tác.',x:13,z:-6,color:0x9c4cff,tag:'GAME'},
  {name:'369 FOOD',desc:'Quầy đồ ăn và nước uống phong cách phố đêm.',x:-13,z:7,color:0x18ddff,tag:'FOOD'},
  {name:'DRINK & TEA',desc:'Quầy trà và nước giải khát phong cách phố đêm.',x:13,z:7,color:0xff28c8,tag:'DRINK'},
  {name:'KARAOKE BOX',desc:'Phòng karaoke riêng và khu giao lưu bằng giọng nói.',x:-13,z:20,color:0x9c4cff,tag:'KARAOKE'},
- {name:'GIFT & TOYS',desc:'Quà lưu niệm, đồ sưu tầm và vật phẩm trang trí.',x:13,z:20,color:0xffb936,tag:'GIFTS'}
+ {name:'GIFT SHOP',desc:'Chợ đồ do người chơi đăng bán: xem sản phẩm, hỏi người bán và giao lưu.',x:13,z:20,color:0xffb936,tag:'GIFTS'}
 ];
 const shopMeshes=[];
 function shop(d,index){
@@ -168,7 +168,32 @@ function shop(d,index){
  // side pixel roof antenna
  for(let k=0;k<3;k++)box(-3.5+k*.35,6.5,-2,.16,.45+(k%2)*.3,.16,k%2?M.pink:M.cyan,g);
 }
+
 shopData.forEach(shop);
+function clerk(parent,color){
+ const n=new THREE.Group();parent.add(n);n.position.set(0,0,-1.35);
+ const body=new THREE.Mesh(new THREE.BoxGeometry(.62,1.0,.38),glow(color));body.position.y=1.05;n.add(body);
+ const head=new THREE.Mesh(new THREE.BoxGeometry(.55,.55,.5),M.white);head.position.y=1.85;n.add(head);
+ const hair=new THREE.Mesh(new THREE.BoxGeometry(.58,.18,.54),M.dark);hair.position.y=2.16;n.add(hair);
+ for(const ex of [-.13,.13]){const eye=new THREE.Mesh(new THREE.BoxGeometry(.07,.07,.04),M.dark);eye.position.set(ex,1.9,.27);n.add(eye)}
+ for(const ax of [-.43,.43]){const arm=new THREE.Mesh(new THREE.BoxGeometry(.18,.72,.2),glow(color));arm.position.set(ax,1.1,0);n.add(arm)}
+ return n;
+}
+const shopInterior=[];
+shopData.forEach(d=>{
+ const g=scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-d.x)<.01&&Math.abs(o.position.z-d.z)<.01);if(!g)return;
+ if(d.tag==='GIFTS'||d.tag==='MARKET'){
+  for(let row=0;row<2;row++)for(let k=0;k<4;k++){box(-2.9+k*1.9,.72+row*1.25,-1.6,.95,.12,.48,M.gold,g);box(-2.9+k*1.9,.88+row*1.25,-1.6,.48,.42,.42,k%2?M.cyan:M.pink,g)}
+  box(0,.65,-2.65,3.5,.9,.75,M.dark,g);box(0,1.13,-2.65,3.25,.12,.7,M.gold,g);
+ }else if(d.tag==='FASHION'){
+  for(const x of [-2.8,-.9,.9,2.8]){box(x,2.1,-1.8,.12,2.6,.12,M.gold,g);box(x,3.35,-1.8,1.25,.12,.18,M.cyan,g);for(let k=0;k<3;k++)box(x-.38+k*.38,2.65,-1.8,.32,.62,.16,[M.pink,M.cyan,M.purple][k],g)}
+  box(0,.65,-2.65,3.6,.9,.7,M.dark,g);box(0,1.13,-2.65,3.3,.12,.62,M.gold,g);
+ }else if(d.tag==='GAME'){
+  for(let row=0;row<2;row++)for(let k=0;k<3;k++){const x=-2.6+k*2.6,z=1.25-row*2.45;box(x,1.05,z,.95,1.65,.75,M.dark,g);box(x,1.55,z+.4,.72,.68,.08,M.cyan,g);box(x,1.12,z+.48,.5,.12,.16,M.pink,g);box(x,.48,z+.95,1.05,.48,.72,M.purple,g);const stick=new THREE.Mesh(new THREE.CylinderGeometry(.055,.055,.38,8),M.gold);stick.position.set(x-.2,.83,z+.45);g.add(stick)}
+ }
+ shopInterior.push({data:d,group:g,npc:clerk(g,d.color)});
+});
+
 // street lamps, lush pixel trees and flower beds keep the avenue green without blocking the shops
 function lamp(x,z){box(x,0,z,.22,4.5,.22,M.dark);box(x,4.45,z,.82,.38,.82,M.gold);box(x,4.85,z,.6,.35,.6,M.cyan);point(x,4.8,z,0xffb83e,.45,7)}
 function planter(x,z){box(x,.18,z,3.8,.48,2.1,M.dark);box(x,.42,z,3.55,.14,1.85,M.leaf);for(let i=0;i<11;i++){const px=x-1.55+(i%6)*.62,pz=z+(i%2?-.42:.42);box(px,.72,pz,.34,.34+(i%3)*.13,.34,i%2?M.pink:M.lime);box(px,.98,pz,.16,.16,.16,M.gold)}}
@@ -371,6 +396,34 @@ document.getElementById('playerPlaza').addEventListener('click',()=>{
 
 document.getElementById('playerCenter').addEventListener('click',()=>{const dx=player.position.x-controls.target.x,dz=player.position.z-controls.target.z;camera.position.x+=dx;camera.position.z+=dz;controls.target.set(player.position.x,2.1,player.position.z);controls.update()});
 let pPrev=new THREE.Vector3();pPrev.copy(player.position);const pClock=new THREE.Clock();
+
+const shopWalls=[];
+shopData.forEach(d=>{
+ const side=d.x<0?1:-1,front=d.x+side*4.0,back=d.x-side*4.0;
+ shopWalls.push({minX:back-.24,maxX:back+.24,minZ:d.z-4.5,maxZ:d.z+4.5});
+ shopWalls.push({minX:front-.22,maxX:front+.22,minZ:d.z-4.5,maxZ:d.z-.72});
+ shopWalls.push({minX:front-.22,maxX:front+.22,minZ:d.z+.72,maxZ:d.z+4.5});
+ shopWalls.push({minX:d.x-4.5,maxX:d.x+4.5,minZ:d.z-4.55,maxZ:d.z-4.18});
+ shopWalls.push({minX:d.x-4.5,maxX:d.x+4.5,minZ:d.z+4.18,maxZ:d.z+4.55});
+});
+const streetObstacles=[];
+function addObstacle(x,z,rx,rz){streetObstacles.push({minX:x-rx,maxX:x+rx,minZ:z-rz,maxZ:z+rz})}
+for(const side of [-1,1])for(const z of [-25,-15,-5,5,15,25]){addObstacle(side*9.6,z,1.05,1.05);addObstacle(side*8.25,z+4.5,1.25,1.35)}
+function blockedAt(x,z){const r=.42;for(const b of shopWalls.concat(streetObstacles)){if(x+r>b.minX&&x-r<b.maxX&&z+r>b.minZ&&z-r<b.maxZ)return true}return false}
+let nearbyShop=null;
+function showShop(d){
+ document.getElementById('shopTitle').textContent=d.name;
+ const line=d.tag==='GIFTS'?'Người bán: “Chào bạn! Đây là khu chợ của người chơi. Bạn có thể xem các món đồ đang được đăng bán.”':d.tag==='FASHION'?'Nhân viên: “Xin chào! Bạn muốn xem áo, quần hay phụ kiện cho nhân vật?”':d.tag==='GAME'?'Nhân viên: “Chào mừng đến phòng game! Bạn chọn một máy trống để ngồi chơi nhé.”':'Nhân viên: “Xin chào! Mời bạn tham quan cửa hàng 369 CITY.”';
+ document.getElementById('shopDesc').textContent=d.desc+' '+line;
+ const a=document.getElementById('shopActions');
+ if(d.tag==='GIFTS')a.innerHTML='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px"><button type="button">🎁 Xem đồ đang bán</button><button type="button">🛍️ Gian hàng của tôi</button></div><p style="font-size:11px;color:#9beeff">Bản thử nghiệm: chức năng đăng bán và dữ liệu sản phẩm sẽ kết nối ở bước tiếp theo.</p>';
+ else if(d.tag==='FASHION')a.innerHTML='<div style="display:flex;gap:7px;flex-wrap:wrap"><button type="button">👕 Áo</button><button type="button">👖 Quần</button><button type="button">🧢 Phụ kiện</button></div>';
+ else if(d.tag==='GAME')a.innerHTML='<p>Chọn máy game trong phòng để bắt đầu tương tác.</p><button type="button">🎮 Ngồi chơi máy gần nhất</button>';
+ else a.textContent='';
+ document.getElementById('shopInfo').style.display='block';
+}
+document.getElementById('playerInteract').addEventListener('click',()=>{if(nearbyShop)showShop(nearbyShop)});
+
 function updatePlayer(){
  const dt=Math.min(pClock.getDelta(),.04);
  let ix=pMoveX+(pKeys['d']||pKeys['arrowright']?1:0)-(pKeys['a']||pKeys['arrowleft']?1:0);
@@ -380,9 +433,14 @@ function updatePlayer(){
  const dir=new THREE.Vector3();camera.getWorldDirection(dir);dir.y=0;dir.normalize();
  const right=new THREE.Vector3(dir.z,0,-dir.x);
  const move=right.multiplyScalar(-ix).add(dir.multiplyScalar(-iy));
- const speed=15.5;const nx=THREE.MathUtils.clamp(player.position.x+move.x*speed*dt,-24,24);
+ const speed=15.5;
+ const nx=THREE.MathUtils.clamp(player.position.x+move.x*speed*dt,-24,24);
  const nz=THREE.MathUtils.clamp(player.position.z+move.z*speed*dt,-99,29.5);
- player.position.x=nx;player.position.z=nz;
+ if(!blockedAt(nx,player.position.z))player.position.x=nx;
+ if(!blockedAt(player.position.x,nz))player.position.z=nz;
+ nearbyShop=null;
+ for(const d of shopData){if(Math.abs(player.position.x-d.x)<6.5&&Math.abs(player.position.z-d.z)<3.6){nearbyShop=d;break}}
+ document.getElementById('playerInteract').style.display=nearbyShop?'flex':'none';
  if(len>.08){player.rotation.y=Math.atan2(move.x,move.z);pWings.forEach((w,i)=>w.rotation.z=(i===0?-.35:.35)+Math.sin(performance.now()*.012)*.16)}
  const floorY=player.position.z < -54.1 ? .46 : (player.position.z < -31 ? .08 : 0);
  if(pJumping){pJumpV-=18*dt;player.position.y+=pJumpV*dt;if(player.position.y<=floorY){player.position.y=floorY;pJumpV=0;pJumping=false}}
@@ -395,6 +453,6 @@ function updatePlayer(){
 const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
 const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.045,.22,.68);composer.addPass(bloom);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight)});
-function animate(){requestAnimationFrame(animate);controls.update();updatePlayer();composer.render()}animate();
+function animate(){requestAnimationFrame(animate);controls.update();updatePlayer();shopInterior.forEach(o=>{const t=performance.now()*.002;o.npc.children.forEach((part,i)=>{if(i===4)part.rotation.z=.18+Math.sin(t)*.28})});composer.render()}animate();
 </script>
 </body></html>
