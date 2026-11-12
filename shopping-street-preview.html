@@ -9,7 +9,7 @@
 .bottom{position:fixed;z-index:3;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;align-items:end;gap:8px}.pill{background:#07152cf2;color:white;border:1px solid #24dfff;border-radius:10px;padding:10px 12px;font-size:12px;box-shadow:0 0 16px #00cfff55;max-width:68%}
 button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px;padding:11px 13px;font-weight:800;font-size:12px;box-shadow:0 0 16px #e000ff88}
 #shopInfo{position:fixed;z-index:4;left:50%;transform:translateX(-50%);bottom:78px;width:min(430px,calc(100vw - 28px));display:none;background:#07152cf5;color:white;border:1px solid #20ddff;border-radius:14px;padding:14px;box-shadow:0 0 24px #00cfff77}
-#shopInfo strong{font-size:17px;color:#6df4ff}#shopInfo p{margin:6px 0 10px;font-size:13px;color:#d8e8ff}#closeInfo{float:right;padding:5px 9px}
+#shopInfo strong{font-size:17px;color:#6df4ff}#shopInfo p{margin:6px 0 10px;font-size:13px;color:#d8e8ff}#closeInfo{float:right;padding:5px 9px}#giftActions{display:none;margin-top:10px}#giftActions button{margin:3px}#giftItems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:8px}#giftItems .giftItem{background:#10264a;border:1px solid #2bdfff;border-radius:10px;padding:9px;font-size:12px}#giftItems b{color:#ffe07a}#giftPost{display:none;margin-top:9px}#giftPost input{width:100%;box-sizing:border-box;margin:4px 0;padding:9px;border-radius:8px;background:#08142a;color:white;border:1px solid #2bdfff}
 @media(min-width:700px){.card{max-width:48%;padding:10px 13px}.card strong{font-size:20px}.sub,.hint,.pill,button{font-size:14px}}
 
 /* Player controls */
@@ -29,7 +29,7 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 
 <div id="walletBar"><div id="walletBalances"><b>🪙 XU: —</b><b>🟡 COIN: —</b></div><button id="walletOpen">👛 VÍ CỦA TÔI</button></div>
 <div id="walletModal"><div id="walletCard"><button id="walletClose">ĐÓNG</button><h2>👛 VÍ 369 CITY</h2><div id="walletSignedOut"><p>Đăng nhập để xem số dư XU và COIN của bạn.</p><label>Email</label><input id="walletEmail" type="email" autocomplete="email" placeholder="Email của bạn"><label>Mật khẩu</label><input id="walletPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu"><div class="walletActions"><button id="walletLogin">ĐĂNG NHẬP</button><button id="walletSignup">TẠO TÀI KHOẢN</button></div></div><div id="walletSignedIn" style="display:none"><p id="walletUserLabel"></p><div id="walletDetails"></div><div class="walletActions"><button id="walletTopup" type="button">💳 NẠP XU</button></div><div id="walletTopupInfo" style="display:none;background:#10284a;border:1px solid #42618b;border-radius:10px;padding:12px;margin-top:10px;font-size:13px;line-height:1.45"><b style="color:#ffe08a">CHỌN GÓI NẠP XU</b><p style="margin:7px 0;color:#c7d9ef">Thanh toán qua PayPal. XU chỉ được cộng sau khi PayPal xác nhận giao dịch hoàn tất.</p><div id="walletTopupPackages" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><span style="color:#9fb9d4">Đang tải gói nạp...</span></div><p id="walletTopupMessage" style="margin:9px 0 0;color:#ffc979"></p></div><div id="walletLock">🔒 Đổi XU sang COIN và thanh toán hàng thật đang tạm khóa đến khi hoàn tất xác nhận pháp lý.</div><div class="walletActions"><button id="walletRefresh">LÀM MỚI SỐ DƯ</button><button id="walletLogout">ĐĂNG XUẤT</button></div><h3 style="font-size:14px;color:#8defff;margin:16px 0 4px">LỊCH SỬ GIAO DỊCH</h3><div id="walletHistory">Chưa tải lịch sử.</div></div><div id="walletStatus"></div></div></div>
-<div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p></div>
+<div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p><div id="giftActions"><button id="giftBrowse">🎁 XEM ĐỒ ĐANG BÁN</button><button id="giftPostOpen">＋ ĐĂNG MÓN ĐỒ</button><div id="giftItems"><div class="giftItem">🧸 Gấu bông Pixel<br><b>120 COIN</b><br><small>Người bán: Mèo Xanh</small></div><div class="giftItem">🎒 Ba lô Neon<br><b>90 COIN</b><br><small>Người bán: Bắp Rang</small></div><div class="giftItem">🪴 Chậu cây mini<br><b>45 COIN</b><br><small>Người bán: Hana</small></div><div class="giftItem">🎧 Tai nghe ảo<br><b>150 COIN</b><br><small>Người bán: Ken</small></div></div><div id="giftPost"><p>ĐĂNG SẢN PHẨM THỬ NGHIỆM</p><input id="giftName" placeholder="Tên món đồ"><input id="giftPrice" placeholder="Giá COIN"><button id="giftPublish">ĐĂNG THỬ</button><small id="giftPostMsg">Bản xem trước chưa lưu sản phẩm lên máy chủ.</small></div></div></div>
 <div id="playerJoy" aria-label="Điều khiển di chuyển"><div id="playerKnob"></div></div>
 <div id="playerActions"><button id="playerJump" aria-label="Nhảy" title="Nhảy">🐧</button><button id="playerCenter" aria-label="Theo nhân vật" title="Theo nhân vật">🎯</button><button id="playerPlaza" aria-label="Về quảng trường" title="Về quảng trường">🏙️</button></div>
 
@@ -158,6 +158,22 @@ function shop(d,index){
  for(let row=0;row<2;row++)for(let k=0;k<5;k++){const xx=-3.6+k*1.8;box(xx,1.05+row*1.15,3.25,.72,.62,.35,k%2?a:M.cyan,g)}
  // pixel display plinths at each corner
  for(const xx of [-3.7,3.7]){box(xx,.72,4.9,1.05,.65,.85,M.purple,g);box(xx,1.12,4.9,.72,.12,.62,a,g)}
+ // Gift Shop interior display and friendly pixel shopkeeper
+ if(d.tag==='GIFTS'){
+  box(-2.75,1.15,-1.95,1.05,2.0,.42,M.dark,g);box(-2.75,2.22,-1.95,1.18,.12,.5,a,g);
+  box(0,1.0,-2.0,3.1,1.15,.72,M.wood,g);box(0,1.62,-2.0,3.25,.12,.82,M.gold,g);
+  for(let row=0;row<2;row++)for(let k=0;k<4;k++){
+   const xx=-3.45+k*2.3,yy=1.05+row*1.15;
+   box(xx,yy,-3.0,1.55,.12,.5,M.gold,g);
+   box(xx-.38,yy+.18,-3.0,.42,.42,.42,[M.pink,M.cyan,M.purple,M.lime][(k+row)%4],g);
+   box(xx+.28,yy+.18,-3.0,.38,.38,.38,[M.cyan,M.gold,M.pink,M.purple][(k+row)%4],g);
+  }
+  box(0,1.35,-2.75,.58,.92,.42,a,g);box(0,2.05,-2.75,.55,.55,.5,M.white,g);box(0,2.34,-2.75,.62,.16,.56,M.dark,g);
+  for(const ex of [-.13,.13])box(ex,2.1,-2.48,.07,.07,.04,M.dark,g);
+  box(-.36,1.55,-2.72,.16,.58,.18,a,g);box(.36,1.55,-2.72,.16,.58,.18,a,g);
+  box(0,.78,1.15,2.9,.48,.62,M.purple,g);
+  for(let k=0;k<3;k++)box(-.85+k*.85,1.12,1.15,.42,.34,.38,k%2?M.cyan:M.pink,g);
+ }
  // side-mounted mini LED sign
  sign(g,5.0,3.6,.2,1.2,2.4,d.tag,a);
  // neon side strips and glowing entrance step
@@ -340,7 +356,17 @@ for(let i=0;i<13;i++){const x=-9+i*1.5;const b=new THREE.Mesh(new THREE.BoxGeome
 const initial={pos:new THREE.Vector3(0,24,48),target:new THREE.Vector3(0,2.4,0)};
 document.getElementById('reset').onclick=()=>{camera.position.copy(initial.pos);controls.target.copy(initial.target);controls.update()};
 document.getElementById('closeInfo').onclick=()=>document.getElementById('shopInfo').style.display='none';
-const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();renderer.domElement.addEventListener('pointerup',e=>{if(Math.abs(e.clientX-(window._downX??e.clientX))>8||Math.abs(e.clientY-(window._downY??e.clientY))>8)return;pointer.x=e.clientX/innerWidth*2-1;pointer.y=-(e.clientY/innerHeight)*2+1;ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects(shopMeshes,false);if(hits.length){const d=hits[0].object.userData.shop;document.getElementById('shopTitle').textContent=d.name;document.getElementById('shopDesc').textContent=d.desc;document.getElementById('shopInfo').style.display='block'}});
+function openShopCard(d){
+ document.getElementById('shopTitle').textContent=d.name;
+ document.getElementById('shopDesc').textContent=d.desc+(d.tag==='GIFTS'?' Người bán ảo: “Xin chào! Mời bạn xem các món đồ do cư dân 369 CITY đăng bán nhé!”':'');
+ document.getElementById('giftActions').style.display=d.tag==='GIFTS'?'block':'none';
+ document.getElementById('giftPost').style.display='none';document.getElementById('giftItems').style.display='grid';
+ document.getElementById('shopInfo').style.display='block';
+}
+document.getElementById('giftBrowse').onclick=()=>{document.getElementById('giftItems').style.display='grid';document.getElementById('giftPost').style.display='none'};
+document.getElementById('giftPostOpen').onclick=()=>{document.getElementById('giftItems').style.display='none';document.getElementById('giftPost').style.display='block'};
+document.getElementById('giftPublish').onclick=()=>{const n=document.getElementById('giftName').value.trim(),p=document.getElementById('giftPrice').value.trim();document.getElementById('giftPostMsg').textContent=n&&p?'Đã tạo bản xem trước: '+n+' · '+p+' COIN. Chưa lưu lên máy chủ.':'Bạn hãy nhập tên món đồ và giá.'};
+const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();renderer.domElement.addEventListener('pointerup',e=>{if(Math.abs(e.clientX-(window._downX??e.clientX))>8||Math.abs(e.clientY-(window._downY??e.clientY))>8)return;pointer.x=e.clientX/innerWidth*2-1;pointer.y=-(e.clientY/innerHeight)*2+1;ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects(shopMeshes,false);if(hits.length)openShopCard(hits[0].object.userData.shop)});
 renderer.domElement.addEventListener('pointerdown',e=>{window._downX=e.clientX;window._downY=e.clientY});
 
 // 369 CITY player: penguin avatar + mobile joystick + keyboard + jump
