@@ -181,11 +181,22 @@ function shop(d,index){
   // Checkout counter in the middle with gift boxes.
   box(0,.95,-.55,3.65,.82,.92,M.wood,g);box(0,1.39,-.55,3.8,.12,1.02,M.gold,g);
   for(let k=0;k<4;k++){box(-1.25+k*.82,1.58,-.55,.48,.38,.46,[M.pink,M.cyan,M.purple,M.lime][k],g);box(-1.25+k*.82,1.80,-.55,.18,.08,.50,M.gold,g)}
-  // Pixel shopkeeper behind the counter, facing the entry.
-  box(0,1.85,-1.65,.62,1.0,.48,a,g);box(0,2.62,-1.65,.60,.58,.54,M.white,g);
-  box(0,2.91,-1.65,.66,.18,.58,M.dark,g);
-  for(const ex of [-.14,.14])box(ex,2.66,-1.37,.07,.07,.04,M.dark,g);
-  box(-.38,2.0,-1.65,.18,.68,.22,a,g);box(.38,2.0,-1.65,.18,.68,.22,a,g);
+  // Animated penguin shopkeeper wearing a branded GIFT SHOP uniform.
+  const seller=new THREE.Group();seller.position.set(0,0,-1.75);g.add(seller);
+  const sellerBlack=mat(0x171923),sellerWhite=mat(0xf4f1ec),sellerOrange=mat(0xffa32b),uniform=glow(0xff28c8),uniformTrim=glow(0x19e5ff);
+  const sellerBall=(parent,r,material,x,y,z,sx=1,sy=1,sz=1)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(r,12,10),material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);parent.add(m);return m};
+  sellerBall(seller,.55,sellerBlack,0,1.05,0,.9,1.05,.75);
+  sellerBall(seller,.43,sellerWhite,0,1.02,.27,.78,.9,.48);
+  sellerBall(seller,.47,sellerBlack,0,1.98,0,.92,.9,.8);
+  sellerBall(seller,.38,sellerWhite,0,1.94,.22,.9,.85,.52);
+  sellerBall(seller,.11,sellerOrange,0,1.79,.67,1.25,.62,1);
+  for(const ex of [-.15,.15])sellerBall(seller,.055,M.dark,ex,2.04,.62,1,1,.5);
+  // GIFT SHOP cap and uniform apron.
+  box(0,2.35,0,.82,.16,.72,uniform,seller);box(0,2.43,.02,.48,.12,.42,uniformTrim,seller);
+  box(0,.78,.43,.78,.76,.18,uniform,seller);box(0,1.05,.54,.62,.12,.04,uniformTrim,seller);
+  const apronText=new THREE.Mesh(new THREE.PlaneGeometry(.55,.18),labelTexture('GIFT SHOP','#ff28c8','#ffffff',true));apronText.position.set(0,1.02,.65);seller.add(apronText);
+  const leftWing=sellerBall(seller,.22,sellerBlack,-.55,1.08,0,.48,1.3,.5),rightWing=sellerBall(seller,.22,sellerBlack,.55,1.08,0,.48,1.3,.5);
+  seller.userData.animated={leftWing,rightWing};g.userData.giftSeller=seller;
   // A small seating / gift-wrapping table near the entrance.
   box(0,.86,2.65,2.3,.52,.72,M.purple,g);box(0,1.16,2.65,2.42,.10,.82,M.cyan,g);
   for(let k=0;k<3;k++)box(-.72+k*.72,1.42,2.65,.42,.42,.42,k%2?M.pink:M.gold,g);
@@ -390,10 +401,11 @@ function enterShop(d){
   shopGroup.children.forEach(o=>{o.visible=inside.has(o)});
  }
  const toWorld=(x,y,z)=>shopGroup?shopGroup.localToWorld(new THREE.Vector3(x,y,z)):new THREE.Vector3(d.x+x,y,d.z+z);
- player.position.copy(toWorld(0,0,1.25));pPrev.copy(player.position);
- const cam=toWorld(0,3.05,5.9),look=toWorld(0,1.75,-1.45);
+ // Keep the player's penguin to one side so it does not block the cashier and display shelves.
+ player.position.copy(toWorld(2.35,0,1.65));pPrev.copy(player.position);
+ const cam=toWorld(0,3.65,7.6),look=toWorld(0,1.7,-1.35);
  camera.position.copy(cam);controls.target.copy(look);controls.update();
- controls.minDistance=2.2;controls.maxDistance=12;
+ controls.enableZoom=true;controls.minDistance=2.0;controls.maxDistance=18;
  document.getElementById('playerShop').style.display='none';
  document.getElementById('playerLeaveShop').style.display='flex';
 }
@@ -405,7 +417,7 @@ function leaveShop(){
  player.position.set(d.x+side*5.7,0,d.z);pPrev.copy(player.position);
  camera.position.set(player.position.x+side*7,8,player.position.z+9);
  controls.target.set(player.position.x,1.6,player.position.z);controls.update();
- controls.minDistance=3;controls.maxDistance=65;
+ controls.enableZoom=true;controls.minDistance=3;controls.maxDistance=65;
  insideShop=null;document.getElementById('playerLeaveShop').style.display='none';
 }
 document.getElementById('giftEnter').onclick=()=>{const d=shopData.find(x=>x.tag==='GIFTS');if(d)enterShop(d)};
@@ -493,6 +505,10 @@ function updatePlayer(){
 const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
 const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.045,.22,.68);composer.addPass(bloom);
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight)});
-function animate(){requestAnimationFrame(animate);controls.update();updatePlayer();composer.render()}animate();
+const animClock=new THREE.Clock();
+function animate(){requestAnimationFrame(animate);const t=animClock.getElapsedTime();controls.update();updatePlayer();
+ const giftGroup=scene.children.find(o=>o.type==='Group'&&o.userData.giftSeller);
+ if(giftGroup&&giftGroup.userData.giftSeller){const seller=giftGroup.userData.giftSeller;seller.position.y=.035+Math.sin(t*2.4)*.045;seller.rotation.y=Math.sin(t*1.1)*.10;const w=seller.userData.animated;if(w){w.leftWing.rotation.z=Math.sin(t*3.1)*.28-.12;w.rightWing.rotation.z=-Math.sin(t*3.1)*.28+.12;}}
+ composer.render()}animate();
 </script>
 </body></html>
