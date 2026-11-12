@@ -182,7 +182,7 @@ function shop(d,index){
    const geo=new THREE.ExtrudeGeometry(shape,{depth:h-2*r,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:r,bevelThickness:r,curveSegments:5});geo.rotateX(-Math.PI/2);
    const mesh=new THREE.Mesh(geo,material);mesh.position.set(x,y+r,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh};
   // Glossy boutique floor, rug and gold inlay.
-  const floor=new THREE.Mesh(new THREE.PlaneGeometry(16.5,14.5),boutiqueFloor);floor.rotation.x=-Math.PI/2;floor.position.set(0,.64,-.05);g.add(floor);
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(8.35,7.25),boutiqueFloor);floor.rotation.x=-Math.PI/2;floor.position.set(0,.64,-.05);g.add(floor);
   box(0,.655,.95,4.5,.035,2.15,velvet,g);box(0,.68,.95,4.34,.025,2.0,goldMetal,g);
   // Soft ambient pools and ceiling feature lights.
   const ceilingGlow=new THREE.Mesh(new THREE.PlaneGeometry(8.1,7.1),new THREE.MeshBasicMaterial({color:0xc5f5ff,transparent:true,opacity:.82,side:THREE.DoubleSide}));ceilingGlow.rotation.x=Math.PI/2;ceilingGlow.position.set(0,4.9,-.1);g.add(ceilingGlow);
@@ -201,38 +201,13 @@ function shop(d,index){
    for(let level=0;level<3;level++){
     const y=.98+level*.88;rounded(x,y,-1.2,1.28,.16,.88,.07,boutiqueWood,g);
     box(x,y+.13,-.72,1.16,.045,.06,M.cyan,g);
+    for(let k=0;k<3;k++){const px=x-.39+k*.39,pz=-1.18;
+     const colors=[softPink,mat(0x6dcce7),mat(0xc7a5ef),mat(0xe7c66d)];
+     rounded(px,y+.2,pz,.28,.42,.3,.045,colors[(k+level+(side>0?1:0))%4],g);
+     box(px,y+.43,pz+.16,.12,.055,.025,goldMetal,g);
+    }
    }
    const strip=new THREE.Mesh(new THREE.BoxGeometry(1.5,.035,.05),new THREE.MeshStandardMaterial({color:side<0?0xff31c8:0x22e6ff,emissive:side<0?0xff31c8:0x22e6ff,emissiveIntensity:1.1}));strip.position.set(x,3.82,-1.15);g.add(strip);
-  }
-  // Individual 3D shelf merchandise: plush bears, keychains and wrapped gift bags.
-  const plushFur=mat(0xc58a68),plushCream=mat(0xffe0c5),keyRing=new THREE.MeshStandardMaterial({color:0xd8b66c,metalness:.85,roughness:.2});
-  function shelfBear(x,y,z,scale=1){
-   const toy=new THREE.Group();toy.position.set(x,y,z);toy.scale.setScalar(scale);g.add(toy);
-   sphere(toy,0,.22,0,.19,.23,.16,plushFur);sphere(toy,0,.51,0,.17,.17,.15,plushFur);
-   for(const ex of [-.12,.12])sphere(toy,ex,.64,0,.075,.085,.07,plushFur);
-   sphere(toy,0,.46,.135,.085,.06,.04,plushCream);
-   for(const ex of [-.055,.055])sphere(toy,ex,.53,.17,.018,.022,.014,blackGlass);
-   sphere(toy,0,.39,.18,.025,.02,.018,blackGlass);
-   const bow=new THREE.Mesh(new THREE.TorusGeometry(.075,.018,7,14),softPink);bow.position.set(0,.34,.14);toy.add(bow);return toy;
-  }
-  function shelfKeychain(x,y,z,color){
-   const k=new THREE.Group();k.position.set(x,y,z);g.add(k);
-   const ring=new THREE.Mesh(new THREE.TorusGeometry(.105,.018,8,18),keyRing);ring.position.y=.12;k.add(ring);
-   const chain=new THREE.Mesh(new THREE.CylinderGeometry(.012,.012,.12,8),keyRing);chain.position.y=.01;k.add(chain);
-   const charm=new THREE.Mesh(new THREE.SphereGeometry(.12,16,12),mat(color));charm.scale.set(.82,1,.42);charm.position.y=-.14;k.add(charm);
-   const face=sphere(k,0,-.14,.052,.045,.06,.025,cream);return k;
-  }
-  function shelfGiftBag(x,y,z,color){
-   const bag=new THREE.Group();bag.position.set(x,y,z);g.add(bag);
-   const body=new THREE.Mesh(new THREE.BoxGeometry(.34,.36,.22),mat(color));body.position.y=.19;body.castShadow=true;bag.add(body);
-   const front=new THREE.Mesh(new THREE.PlaneGeometry(.26,.25),labelTexture('369','#ffffff','#e13f9e',true));front.position.set(0,.19,.116);bag.add(front);
-   const handle=new THREE.Mesh(new THREE.TorusGeometry(.085,.018,8,18,Math.PI),goldMetal);handle.position.set(0,.41,0);bag.add(handle);return bag;
-  }
-  for(const side of [-1,1])for(let level=0;level<3;level++){
-   const x=side*3.34,y=1.02+level*.88,z=-1.18;
-   shelfBear(x-.38,y+.15,z+.05,.72);
-   shelfKeychain(x,y+.23,z+.12,[0xff69b8,0x6ccfe4,0xc5a0ef][level]);
-   shelfGiftBag(x+.38,y+.16,z+.02,[0xff83bd,0x66cfe2,0xc6a2ef][level]);
   }
   // Centre checkout island: layered wood, stone top, brass edging and POS screen.
   rounded(0,.82,-.58,3.55,.94,1.05,.12,boutiqueWood,g);
@@ -240,11 +215,9 @@ function shop(d,index){
   box(0,1.36,-1.17,3.55,.045,.045,goldMetal,g);
   box(0,1.36,-.01,3.55,.045,.045,goldMetal,g);
   const pos=new THREE.Group();pos.position.set(1.12,1.39,-.72);g.add(pos);
-  rounded(0,.32,0,.72,.56,.18,.055,blackGlass,pos);
-  const screenMat=labelTexture('369 PAY','#07182c','#54efff',true);panel(0,.35,.101,.58,.36,screenMat,pos);
-  box(0,.045,.02,.86,.08,.52,goldMetal,pos);
-  const keypad=new THREE.Mesh(new THREE.BoxGeometry(.2,.035,.16),mat(0x394b68));keypad.position.set(-.34,.1,.12);pos.add(keypad);
-  for(let ky=0;ky<2;ky++)for(let kx=0;kx<3;kx++){const key=new THREE.Mesh(new THREE.SphereGeometry(.025,8,6),mat(0xffd66d));key.position.set(-.39+kx*.05,.13,.08+ky*.06);pos.add(key)}
+  rounded(0,.32,0,.62,.52,.16,.045,blackGlass,pos);
+  const screenMat=labelTexture('369 PAY','#07182c','#54efff',true);panel(0,.34,.09,.49,.32,screenMat,pos);
+  box(0,.045,.02,.78,.08,.48,goldMetal,pos);
   // Illustrated product artwork: original canvas-drawn packaging graphics, not plain colored cubes.
   function productArtwork(kind,accent,title){
    const c=document.createElement('canvas');c.width=384;c.height=512;const q=c.getContext('2d');
@@ -329,17 +302,8 @@ function shop(d,index){
   sellerBall(seller,.105,sellerOrange,0,1.76,.67,1.25,.65,1);
   for(const ex of [-.145,.145])sellerBall(seller,.052,blackGlass,ex,2.03,.62,1,1,.5);
   // Tailored uniform jacket, apron, name badge and matching cap.
-  // Rounded uniform body with a tailored fabric apron, neck strap and pockets.
-  sellerBall(seller,.43,uniform,0,1.08,.36,.98,.83,.28);
-  const apronShape=new THREE.Shape();apronShape.moveTo(-.27,0);apronShape.quadraticCurveTo(-.34,.02,-.34,.12);apronShape.lineTo(-.25,.62);apronShape.quadraticCurveTo(0,.72,.25,.62);apronShape.lineTo(.34,.12);apronShape.quadraticCurveTo(.34,.02,.27,0);apronShape.closePath();
-  const apronGeo=new THREE.ExtrudeGeometry(apronShape,{depth:.035,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.025,bevelThickness:.02});const apron=new THREE.Mesh(apronGeo,uniform);apron.position.set(0,.72,.62);apron.castShadow=true;seller.add(apron);
-  const neckStrap=new THREE.Mesh(new THREE.TorusGeometry(.18,.035,8,20,Math.PI),uniformTrim);neckStrap.position.set(0,1.53,.5);neckStrap.rotation.x=Math.PI/2;seller.add(neckStrap);
-  rounded(0,.94,.68,.28,.17,.04,.025,uniformTrim,seller);
-  // A real soft fabric cap with curved crown, visor and stitched badge.
-  const capCrown=new THREE.Mesh(new THREE.SphereGeometry(.48,24,16,0,Math.PI*2,0,Math.PI/2),uniform);capCrown.position.set(0,2.28,0);capCrown.scale.set(1,.42,.86);capCrown.castShadow=true;seller.add(capCrown);
-  const capBand=new THREE.Mesh(new THREE.TorusGeometry(.39,.045,8,24),uniformTrim);capBand.position.set(0,2.28,0);capBand.rotation.x=Math.PI/2;seller.add(capBand);
-  const capVisor=new THREE.Mesh(new THREE.SphereGeometry(.34,20,10,0,Math.PI,0,Math.PI/2),uniform);capVisor.position.set(0,2.29,.28);capVisor.scale.set(1,.12,.65);seller.add(capVisor);
-  const capBadge=new THREE.Mesh(new THREE.PlaneGeometry(.22,.1),labelTexture('369','#fff0f8','#a91e78',true));capBadge.position.set(0,2.43,.36);seller.add(capBadge);
+  rounded(0,.82,.4,.84,.78,.16,.08,uniform,seller);rounded(0,1.18,.49,.66,.12,.08,.035,uniformTrim,seller);
+  rounded(0,2.31,0,.86,.16,.68,.06,uniform,seller);box(0,2.41,.04,.48,.08,.38,uniformTrim,seller);
   const badge=new THREE.Mesh(new THREE.PlaneGeometry(.5,.18),labelTexture('GIFT SHOP','#6d174e','#ffffff',true));badge.position.set(0,1.1,.59);seller.add(badge);
   const wingL=sellerBall(seller,.22,sellerBlack,-.54,1.08,0,.5,1.25,.52),wingR=sellerBall(seller,.22,sellerBlack,.54,1.08,0,.5,1.25,.52);
   seller.userData.animated={leftWing:wingL,rightWing:wingR};g.userData.giftSeller=seller;
@@ -541,7 +505,7 @@ function enterShop(d){
  const shopGroup=scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-d.x)<.01&&Math.abs(o.position.z-d.z)<.01);
  scene.userData.shopSceneVisibility=scene.children.map(o=>o.visible);
  scene.children.forEach(o=>{if(o!==shopGroup&&o!==player&&!o.isLight)o.visible=false});
- scene.userData.shopBackground=scene.background;scene.background=new THREE.Color(0xc9f1f5);scene.userData.shopFog=scene.fog;scene.fog=null;
+ scene.userData.shopBackground=scene.background;scene.background=new THREE.Color(0xffeaf5);scene.userData.shopFog=scene.fog;scene.fog=null;
  scene.userData.shopExposure=renderer.toneMappingExposure;renderer.toneMappingExposure=1.08;
  if(shopGroup){
   shopGroup.userData.savedVisibility=shopGroup.children.map(o=>o.visible);
@@ -676,4 +640,4 @@ function animate(){requestAnimationFrame(animate);const t=animClock.getElapsedTi
  if(giftGroup&&giftGroup.userData.giftSeller){const seller=giftGroup.userData.giftSeller;seller.position.y=.035+Math.sin(t*2.4)*.045;seller.rotation.y=Math.sin(t*1.1)*.10;const w=seller.userData.animated;if(w){w.leftWing.rotation.z=Math.sin(t*3.1)*.28-.12;w.rightWing.rotation.z=-Math.sin(t*3.1)*.28+.12;}}
  composer.render()}animate();
 </script>
-</body></html>
+</body></html><script async data-explicit-opt-in="true" data-deployment-id="dpl_D592Jxd9qoEM1gJh9C2HGdRfNZ12" src="https://vercel.live/_next-live/feedback/feedback.js"></script>
