@@ -625,6 +625,8 @@ for(const side of [-1,1]){
 }
 
 
+// Interactive objects in the central plaza (mission/event boards).
+const plazaActionMeshes=[];
 // Connected 369 CITY central plaza, imported as an adjacent world district
 {
  const plazaGroup=new THREE.Group();
@@ -725,7 +727,62 @@ function flowerBed(x,z){
  }
 }
 flowerBed(-9,-12);flowerBed(9,-12);flowerBed(-9,12);flowerBed(9,12);
-// Khu hút thuốc riêng, có mái che, ghế và thùng tàn thuốc
+
+// 369 CITY SOCIAL STAGE — compact open-air performance space at the north edge.
+{
+ const stage=new THREE.Group();stage.position.set(0,0,15.8);plazaGroup.add(stage);
+ const deck=box(0,.62,0,12,.62,4.4,"dark",stage);
+ box(0,.96,0,11.7,.12,4.15,amber,stage);
+ box(0,1.08,0,11.25,.12,3.82,"purple",stage);
+ for(let x=-5;x<=5;x+=1){box(x,1.2,1.82,.72,.12,.12,x%2?pink:cyan,stage)}
+ // Rear LED wall facing the audience/fountain.
+ box(0,3.05,-1.72,10.8,3.65,.42,"dark",stage);
+ box(0,3.05,-1.48,10.35,3.25,.08,violet,stage);
+ const screen=document.createElement("canvas");screen.width=1024;screen.height=360;
+ const sg=screen.getContext("2d");const grad=sg.createLinearGradient(0,0,1024,360);grad.addColorStop(0,"#24104c");grad.addColorStop(.5,"#5a176f");grad.addColorStop(1,"#092e58");sg.fillStyle=grad;sg.fillRect(0,0,1024,360);
+ sg.strokeStyle="#ffd45b";sg.lineWidth=10;sg.strokeRect(14,14,996,332);
+ sg.textAlign="center";sg.shadowColor="#ff37d6";sg.shadowBlur=26;sg.fillStyle="#fff";sg.font="900 112px Arial";sg.fillText("369 CITY",512,148);
+ sg.shadowBlur=0;sg.fillStyle="#7df6ff";sg.font="bold 48px Arial";sg.fillText("LIVE • MUSIC • FRIENDS",512,245);
+ const screenTex=new THREE.CanvasTexture(screen);screenTex.colorSpace=THREE.SRGBColorSpace;
+ const screenMesh=new THREE.Mesh(new THREE.PlaneGeometry(9.9,2.95),new THREE.MeshBasicMaterial({map:screenTex,side:THREE.DoubleSide}));screenMesh.position.set(0,3.05,-1.425);stage.add(screenMesh);
+ // Neon speaker stacks and stage spotlights.
+ for(const side of [-1,1]){
+  box(side*5.25,1.8,.1,.85,2.0,.72,"dark",stage);
+  for(const y of [1.35,2.05]){const sp=new THREE.Mesh(new THREE.CylinderGeometry(.24,.24,.10,18),side<0?cyan:pink);sp.rotation.x=Math.PI/2;sp.position.set(side*5.25,y,.49);stage.add(sp)}
+  const beam=new THREE.Mesh(new THREE.ConeGeometry(1.0,4.8,16,1,true),new THREE.MeshBasicMaterial({color:side<0?0x24dfff:0xff42d7,transparent:true,opacity:.10,side:THREE.DoubleSide,depthWrite:false}));beam.position.set(side*3.7,3.3,.6);beam.rotation.x=.25;stage.add(beam);
+ }
+ const title=new THREE.Mesh(new THREE.PlaneGeometry(4.7,.55),textTexture("369 LIVE STAGE","#160e35","#ffe27a"));title.position.set(0,5.2,-1.46);stage.add(title);
+ for(const x of [-4.5,-1.5,1.5,4.5]){const mic=cylinder(x,1.18,.55,.045,.045,.55,"gold",8);mic.rotation.z=Math.PI/2}
+ // Audience benches face the stage; keep the fountain approach clear.
+ bench(-5.6,8.7,0);bench(5.6,8.7,0);
+ for(const x of [-7.5,7.5]){box(x,.35,11.4,1.0,.7,1.0,"dark");box(x,.76,11.4,.82,.12,.82,x<0?cyan:pink)}
+}
+// Large readable mission and event boards on the left/right plaza edges.
+function plazaBoard(x,z,label,sub,color,rotation,action){
+ const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rotation;plazaGroup.add(g);
+ box(0,2.35,0,4.4,3.15,.42,"dark",g);
+ box(0,2.35,.24,4.18,2.92,.12,color,g);
+ const c=document.createElement("canvas");c.width=720;c.height=480;const q=c.getContext("2d");
+ const bg=q.createLinearGradient(0,0,720,480);bg.addColorStop(0,"#101b42");bg.addColorStop(1,"#30134e");q.fillStyle=bg;q.fillRect(0,0,720,480);
+ q.strokeStyle="#ffd45b";q.lineWidth=12;q.strokeRect(12,12,696,456);
+ q.textAlign="center";q.fillStyle="#fff";q.font="900 62px Arial";q.fillText(label,360,160);
+ q.fillStyle="#7ef4ff";q.font="bold 36px Arial";q.fillText(sub,360,235);
+ q.fillStyle="#ffdf7a";q.font="bold 29px Arial";q.fillText("CHẠM ĐỂ XEM",360,390);
+ const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;
+ const face=new THREE.Mesh(new THREE.PlaneGeometry(3.95,2.63),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));face.position.set(0,2.35,.315);g.add(face);
+ for(const dx of [-1.7,1.7])box(dx,.7,0,.18,1.4,.18,"gold",g);
+ const hit=new THREE.Mesh(new THREE.BoxGeometry(4.6,3.4,.8),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));hit.position.set(0,2.25,.05);hit.userData.plazaAction=action;g.add(hit);plazaActionMeshes.push(hit);
+}
+plazaBoard(-15.7,0,"NHIỆM VỤ","DAILY QUEST",cyan,Math.PI/2,{name:"📋 NHIỆM VỤ HẰNG NGÀY",tag:"PLAZA",desc:"Bảng nhiệm vụ 369 CITY đang ở chế độ giới thiệu. Các nhiệm vụ, phần thưởng XU và tiến độ người chơi sẽ được kết nối ở giai đoạn tiếp theo."});
+plazaBoard(15.7,0,"SỰ KIỆN","EVENTS",pink,-Math.PI/2,{name:"🎉 SỰ KIỆN 369 CITY",tag:"PLAZA",desc:"Đây là bảng thông báo sự kiện. Sân khấu 369 LIVE sẽ là nơi tổ chức âm nhạc, giao lưu và hoạt động cộng đồng. Lịch sự kiện trực tuyến sẽ được bổ sung sau."});
+// Photo spot: a freestanding neon frame with a 369 CITY welcome plaque.
+{
+ const frame=new THREE.Group();frame.position.set(0,0,-15.5);plazaGroup.add(frame);
+ box(0,3.0,0,7.6,.28,.32,amber,frame);box(-3.65,1.55,0,.28,3.0,.32,cyan,frame);box(3.65,1.55,0,.28,3.0,.32,pink,frame);
+ box(0,.18,0,8.2,.28,1.0,"dark",frame);
+ const photo=new THREE.Mesh(new THREE.PlaneGeometry(5.7,1.35),textTexture("WELCOME TO 369 CITY","#10163a","#fff0a6"));photo.position.set(0,2.1,.19);frame.add(photo);
+}
+ // Khu hút thuốc riêng, có mái che, ghế và thùng tàn thuốc
 function smokingZone(){
  const x=14,z=9;
  box(x,.34,z,6.8,.12,4.8,'dark');box(x,2.8,z,6.8,.18,4.8,violet);
@@ -882,7 +939,7 @@ const giftImageInput=document.getElementById('giftImageInput'),giftImagePreview=
 giftImageInput.addEventListener('change',()=>{const file=giftImageInput.files&&giftImageInput.files[0];if(!file)return;if(!file.type.startsWith('image/')){document.getElementById('giftPostMsg').textContent='Vui lòng chọn tệp hình ảnh.';giftImageInput.value='';return}if(file.size>1500000){document.getElementById('giftPostMsg').textContent='Ảnh tối đa 1.5 MB để lưu thử trên điện thoại. Bạn hãy chọn ảnh nhỏ hơn.';giftImageInput.value='';return}const reader=new FileReader();reader.onload=()=>{giftImageData=String(reader.result||'');giftImagePreview.src=giftImageData;giftImagePreview.style.display='block'};reader.readAsDataURL(file)});
 document.getElementById('giftPublish').onclick=()=>{const n=document.getElementById('giftName').value.trim(),p=Number(document.getElementById('giftPrice').value),desc=document.getElementById('giftDescInput').value.trim(),seller=document.getElementById('giftSellerInput').value.trim()||'Bạn';const msg=document.getElementById('giftPostMsg');if(!n||!Number.isFinite(p)||p<1){msg.textContent='Bạn hãy nhập tên sản phẩm và giá COIN hợp lệ.';return}const items=readDemoProducts();items.unshift({name:n,price:p,old:p,emoji:'🎁',seller,desc:desc||'Sản phẩm do cư dân 369 CITY đăng bán.',detail:desc||'Sản phẩm thử nghiệm do cư dân đăng bán.',image:giftImageData});try{localStorage.setItem(giftStorageKey,JSON.stringify(items));renderGiftProducts();document.getElementById('giftPost').style.display='none';document.getElementById('giftItems').style.display='grid';document.getElementById('giftName').value='';document.getElementById('giftPrice').value='';document.getElementById('giftDescInput').value='';document.getElementById('giftSellerInput').value='';giftImageInput.value='';giftImageData='';giftImagePreview.style.display='none';msg.textContent='';}catch(e){msg.textContent='Không đủ bộ nhớ để lưu ảnh. Hãy thử ảnh nhỏ hơn.'}};
 
-const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();renderer.domElement.addEventListener('pointerup',e=>{if(Math.abs(e.clientX-(window._downX??e.clientX))>8||Math.abs(e.clientY-(window._downY??e.clientY))>8)return;pointer.x=e.clientX/innerWidth*2-1;pointer.y=-(e.clientY/innerHeight)*2+1;ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects(shopMeshes,false);if(hits.length)openShopCard(hits[0].object.userData.shop)});
+const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();renderer.domElement.addEventListener('pointerup',e=>{if(Math.abs(e.clientX-(window._downX??e.clientX))>8||Math.abs(e.clientY-(window._downY??e.clientY))>8)return;pointer.x=e.clientX/innerWidth*2-1;pointer.y=-(e.clientY/innerHeight)*2+1;ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects([...shopMeshes,...plazaActionMeshes],false);if(hits.length){const hit=hits[0].object;openShopCard(hit.userData.shop||hit.userData.plazaAction)}});
 renderer.domElement.addEventListener('pointerdown',e=>{window._downX=e.clientX;window._downY=e.clientY});
 
 // 369 CITY player: penguin avatar + mobile joystick + keyboard + jump
