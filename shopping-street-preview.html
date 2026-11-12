@@ -732,18 +732,37 @@ function flowerBed(x,z){
  const stageLight=new THREE.PointLight(0x31dfff,8,34);stageLight.position.set(0,8,3);stage.add(stageLight);
  const pinkLight=new THREE.PointLight(0xff25cf,7,28);pinkLight.position.set(-7,4,2);stage.add(pinkLight);
  const goldLight=new THREE.PointLight(0xffc52f,5,26);goldLight.position.set(7,4,2);stage.add(goldLight);
- // Wide raised stage deck with a layered front fascia.
+ // Wide concert deck with a polished neon-gradient floor surface.
  box(0,.48,-.55,14.2,.72,8.2,"dark",stage);
  box(0,.88,-.55,13.9,.12,7.95,"purple",stage);
  box(0,.98,-.55,13.5,.08,7.6,amber,stage);
  box(0,1.06,-.55,13.2,.08,7.3,"purple",stage);
- // Broad, connected steps — each tread is a full-width continuous slab.
- for(let k=0;k<4;k++){
-  const z=3.05+k*.68,y=.20+k*.17;
-  box(0,y,z,11.2,.36,1.0,k%2?"purple":"dark",stage);
-  box(0,y+.19,z+.47,11.05,.065,.08,k%2?pink:cyan,stage);
-  box(0,y-.17,z+.02,11.12,.045,.08,k%2?cyan:pink,stage);
+ // Reflective stage floor: magenta at the wings, electric blue through the center.
+ const stageFloorCanvas=document.createElement("canvas");stageFloorCanvas.width=1024;stageFloorCanvas.height=512;
+ const sf=stageFloorCanvas.getContext("2d");
+ const floorGradient=sf.createLinearGradient(0,0,1024,0);
+ floorGradient.addColorStop(0,"#7d1ad0");floorGradient.addColorStop(.24,"#3826a4");
+ floorGradient.addColorStop(.52,"#0879cf");floorGradient.addColorStop(.78,"#3826a4");floorGradient.addColorStop(1,"#a51b9c");
+ sf.fillStyle=floorGradient;sf.fillRect(0,0,1024,512);
+ for(const glow of [{x:90,c:"#ff29d4"},{x:512,c:"#18cfff"},{x:934,c:"#ff29d4"}]){
+  const rg=sf.createRadialGradient(glow.x,260,12,glow.x,260,330);
+  rg.addColorStop(0,glow.c+"66");rg.addColorStop(1,glow.c+"00");sf.fillStyle=rg;sf.fillRect(0,0,1024,512);
  }
+ const stageFloorTex=new THREE.CanvasTexture(stageFloorCanvas);stageFloorTex.colorSpace=THREE.SRGBColorSpace;
+ const stageFloor=new THREE.Mesh(new THREE.PlaneGeometry(13.05,7.12),new THREE.MeshBasicMaterial({map:stageFloorTex,side:THREE.DoubleSide,toneMapped:false}));
+ stageFloor.rotation.x=-Math.PI/2;stageFloor.position.set(0,1.145,-.55);stage.add(stageFloor);
+ // Five broad, deep, connected stairs with luminous front nosings, like a real concert platform.
+ for(let k=0;k<5;k++){
+  const z=3.05+k*.94,y=.12+k*.205;
+  const width=13.0-k*.08,depth=1.12;
+  box(0,y,z,width,.36,depth,k%2?"purple":"dark",stage);
+  box(0,y+.29,z+.51,width-.10,.065,.075,k%2?pink:cyan,stage);
+  box(0,y+.04,z+.51,width-.16,.055,.09,k%2?cyan:pink,stage);
+  box(0,y+.365,z-.46,width-.14,.035,.035,k%2?pink:cyan,stage);
+ }
+ // Broad dark apron beneath the stairs makes the platform feel grounded in the plaza.
+ box(0,.02,5.55,13.35,.16,5.35,"dark",stage);
+ box(0,.105,5.55,13.18,.045,5.18,purple,stage);
  // Removed the two tall side truss posts and the overhead crossbar
  // marked in the latest screenshot; keep the neon arch and graphic wings.
  // Nested neon arches, with real 3D tube geometry.
