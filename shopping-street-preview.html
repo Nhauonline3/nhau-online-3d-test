@@ -699,12 +699,8 @@ for(let i=0;i<14;i++){
 
 
 for(let i=0;i<8;i++){const a=i*Math.PI/4;box(Math.cos(a)*3.6,1.05,Math.sin(a)*3.6,.22,.42,.22,'cream')}
-// Four garden beds and small shrubs around inner square
-for(const [x,z] of [[-13,-13],[13,-13],[-13,13],[13,13]]){box(x,.34,z,4.6,.3,4.6,'green');for(const dx of [-1,1])for(const dz of [-1,1])box(x+dx,.65,z+dz,1.1,1.1,1.1,'green2')}
-// Lamps along square edges; wooden benches removed for a cleaner open plaza.
+// Keep only the perimeter lamps; remove all circled trees, shrubs and garden blocks.
 for(const [x,z] of [[-17,-8],[17,-8],[-17,8],[17,8],[-8,-17],[8,-17],[-8,17],[8,17]])lamp(x,z);
-// trees in perimeter landscaping
-for(const [x,z,s] of [[-20,-14,.9],[-20,14,.9],[20,-14,.9],[20,14,.9],[-14,-20,.8],[14,-20,.8],[-14,20,.8],[14,20,.8]])tree(x,z,s);
 // Tiện ích quanh quảng trường: máy bán nước tự động phong cách arcade
 function vendingMachine(x,z,accent,label){
  const g=new THREE.Group();g.position.set(x,0,z);
@@ -716,7 +712,7 @@ function vendingMachine(x,z,accent,label){
  box(0,.16,0,1.65,.16,.84,accent,g);plazaGroup.add(g);
  const glow=new THREE.PointLight(0x16dfff,.7,5);glow.position.set(x,1.5,z+1);plazaGroup.add(glow);
 }
-vendingMachine(-13,-5,cyan,'DRINKS');vendingMachine(13,-5,pink,'DRINKS');vendingMachine(-13,5,amber,'SNACKS');
+// Removed the dark vending-machine kiosks circled in the plaza screenshot.
 // Bồn hoa pixel nhiều tầng và hoa neon nhỏ
 function flowerBed(x,z){
  box(x,.38,z,3.2,.34,2.0,'green');box(x,.57,z,2.9,.12,1.7,'green2');
@@ -726,7 +722,7 @@ function flowerBed(x,z){
    const core=new THREE.Mesh(new THREE.BoxGeometry(.12,.12,.12),M.gold);core.position.set(px,1.08,pz);plazaGroup.add(core);
  }
 }
-flowerBed(-9,-12);flowerBed(9,-12);flowerBed(-9,12);flowerBed(9,12);
+// Removed the four neon flower-bed clusters circled by the user.
 
 // 369 CITY SOCIAL STAGE — compact open-air performance space at the north edge.
 {
@@ -757,8 +753,7 @@ flowerBed(-9,-12);flowerBed(9,-12);flowerBed(-9,12);flowerBed(9,12);
  }
  const title=new THREE.Mesh(new THREE.PlaneGeometry(4.7,.55),textTexture("369 LIVE STAGE","#160e35","#ffe27a"));title.position.set(0,5.2,-1.46);stage.add(title);
  for(const x of [-4.5,-1.5,1.5,4.5]){const mic=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.55,8),M.gold);mic.position.set(x,1.48,.55);mic.rotation.z=Math.PI/2;stage.add(mic)}
- // Audience benches face the stage; keep the fountain approach clear.
- bench(-5.6,8.7,0);bench(5.6,8.7,0);
+ // Open audience area: no wooden benches.
  for(const x of [-7.5,7.5]){box(x,.35,11.4,1.0,.7,1.0,"dark");box(x,.76,11.4,.82,.12,.82,x<0?cyan:pink)}
  // Friendly voxel visitors make the stage feel occupied. They are decorative NPCs for now.
  function plazaVisitor(x,z,shirt,skin,hat){
@@ -770,10 +765,7 @@ flowerBed(-9,-12);flowerBed(9,-12);flowerBed(-9,12);flowerBed(9,12);
   for(const dx of [-.4,.4]){const arm=new THREE.Mesh(new THREE.BoxGeometry(.18,.62,.2),new THREE.MeshStandardMaterial({color:skin}));arm.position.set(dx,1.25,0);person.add(arm)}
   person.rotation.y=Math.PI;return person;
  }
- const visitors=[[-5.1,5.8,0xff42c9,0xffc18b,0x231a38],[-2.9,7.1,0x25cfff,0xf0b78d,0x34234a],[0,5.4,0xffb938,0x9a654b,0x17243a],[2.8,7.2,0x9a62ff,0xffd0a5,0x36233e],[5.1,5.8,0x48d6a0,0xd99b72,0x1d273a],[-7.2,10.4,0xff6b8c,0xe9bd91,0x2a1c30],[7.2,10.4,0x4b83ff,0xc98b68,0x18243a]];
- visitors.forEach(v=>plazaVisitor(...v));
- // Extra illuminated pylons mark the dance/audience zone.
- for(const x of [-9,9]){box(x,0,7.4,.22,3.4,.22,"dark");box(x,2.5,7.4,.48,.28,.48,x<0?cyan:pink);const glowLight=new THREE.PointLight(x<0?0x20dfff:0xff28c8,2.1,10);glowLight.position.set(x,3,7.4);plazaGroup.add(glowLight)}
+ // Removed decorative NPC visitors and audience pylons as circled; keep the stage clear.
 }
 // Large readable mission and event boards on the left/right plaza edges.
 function plazaBoard(x,z,label,sub,color,rotation,action){
