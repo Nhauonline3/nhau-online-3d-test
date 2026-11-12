@@ -794,8 +794,8 @@ function flowerBed(x,z){
     box(x+side*(width/2+.12),yy+.35,1.24,.22,.18,.34,edgeColor,stage);
   }
  };
- addWing("./stage-left-wing.svg",-7.45,4.05,7.25,pink);
- addWing("./stage-right-wing.svg",7.45,4.05,7.25,cyan);
+ addWing("./stage-left-wing.svg",-7.45,4.05,7.25,pinkMat);
+ addWing("./stage-right-wing.svg",7.45,4.05,7.25,cyanMat);
  // Side LED bars and footlights.
  for(const side of [-1,1])for(let y=1.0;y<5.8;y+=.35)box(side*5.48,y,.1,.09,.19,.12,y%0.7?cyan:pink,stage);
  for(let x=-5.2;x<=5.2;x+=.65)box(x,1.18,3.15,.42,.08,.08,Math.round(x*10)%2?pink:cyan,stage);
