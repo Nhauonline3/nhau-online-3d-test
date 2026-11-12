@@ -776,42 +776,22 @@ function flowerBed(x,z){
  // A real 3D logo plaque integrated into the top of the truss.
  box(0,7.1,-1.35,5.9,.72,.38,"dark",stage);
  const logo=new THREE.Mesh(new THREE.PlaneGeometry(5.45,.52),textTexture("369 CITY","#1b0b42","#ffe45b"));logo.position.set(0,7.1,-1.13);stage.add(logo);
- // Large left display stack: headphone medallion, smiley tiles, heart, speaker and 369 plaque.
- const makePanel=(x,y,w,h,color,label,fg="#ffffff",z=.45)=>{
-  box(x,y,z-.12,w,h,.42,color,stage);
-  box(x,y,z+.105,w-.16,h-.16,.12,"dark",stage);
-  const p=new THREE.Mesh(new THREE.PlaneGeometry(w-.28,h-.28),textTexture(label,"#160d32",fg));p.position.set(x,y,z+.18);stage.add(p);
+ // Use the two dedicated neon graphic panels as real transparent textures on 3D side structures.
+ const wingLoader=new THREE.TextureLoader();
+ const addWing=(url,x,width,height,edgeColor)=>{
+  // Deep backing gives the cut-out graphic a physical 3D side profile.
+  box(x,height/2+.35,.72,width+.28,height+.34,.62,"dark",stage);
+  box(x,height/2+.35,1.04,width+.12,height+.16,.12,"purple",stage);
+  const tex=wingLoader.load(url,(loaded)=>{loaded.colorSpace=THREE.SRGBColorSpace;loaded.needsUpdate=true;});
+  tex.colorSpace=THREE.SRGBColorSpace;
+  const art=new THREE.Mesh(new THREE.PlaneGeometry(width,height),new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide,depthWrite:false}));
+  art.position.set(x,height/2+.35,1.18);art.renderOrder=8;stage.add(art);
+  // Thin luminous rails frame the artwork without covering its icons.
+  box(x-width/2-.07,height/2+.35,1.2,.09,height+.18,.10,edgeColor,stage);
+  box(x+width/2+.07,height/2+.35,1.2,.09,height+.18,.10,edgeColor,stage);
  };
- const disc=(x,y,r,color,label,fg)=>{
-  const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,.34,32),neon(color,2));m.rotation.x=Math.PI/2;m.position.set(x,y,.62);stage.add(m);
-  const f=new THREE.Mesh(new THREE.PlaneGeometry(r*1.55,r*1.55),textTexture(label,"#190d35",fg));f.position.set(x,y,.83);stage.add(f);
- };
- // Left wing, stacked with breathing room and a prominent headphone badge.
- disc(-7.35,5.9,1.12,0xff24c9,"♫","#fff4ff");
- disc(-8.45,4.25,.72,0x16dff5,"☺","#052b43");
- disc(-6.8,4.25,.72,0xffd22e,"☺","#362000");
- makePanel(-7.65,2.95,1.55,1.35,0xff28c9,"♥","#fff1fb",.55);
- makePanel(-5.95,2.95,1.25,1.35,0x26144b,"◉","#35eaff",.55);
- makePanel(-7.65,1.35,1.55,1.45,0xffa51d,"369","#fff36b",.55);
- makePanel(-5.95,1.35,1.25,1.45,0x30105d,"♫","#ff5cda",.55);
- // Right wing: tall microphone block, music tile, play tile and gift block.
- makePanel(7.35,5.05,1.9,2.45,0xffb91e,"MIC","#fff4b0",.55);
- makePanel(8.95,3.65,1.55,1.45,0x13dff1,"♫","#07314b",.55);
- makePanel(8.95,2.05,1.55,1.45,0xff2acb,"▶","#fff1fb",.55);
- makePanel(7.35,.95,1.9,1.65,0xffa51d,"GIFT","#fff4a0",.55);
- // Oversized speaker cabinets with layered rings and glowing cones on both wings.
- for(const x of [-5.95,7.35]){
-  box(x,3.0,.9,1.35,2.85,.72,"dark",stage);
-  for(const [y,r,c] of [[3.65,.32,0x28eaff],[2.65,.48,0xffb52c]]){
-   const rim=new THREE.Mesh(new THREE.TorusGeometry(r,.09,10,32),neon(c,2));rim.position.set(x,y,1.34);stage.add(rim);
-   const cone=new THREE.Mesh(new THREE.CylinderGeometry(r*.63,r*.63,.10,24),neon(c,1.1));cone.rotation.x=Math.PI/2;cone.position.set(x,y,1.34);stage.add(cone);
-  }
- }
- // Starbursts around the outside edges of the decorative towers.
- for(const [x,y,c] of [[-9.0,5.4,0xff28d0],[-9.15,3.6,0xff28d0],[9.8,6.35,0xff28d0],[9.75,4.55,0xff28d0]]){
-  const g=new THREE.Group();g.position.set(x,y,.8);stage.add(g);const mat=neon(c,2.4);
-  for(let a=0;a<8;a++){const ray=new THREE.Mesh(new THREE.BoxGeometry(.065,.58,.065),mat);ray.rotation.z=a*Math.PI/4;g.add(ray)}
- }
+ addWing("./stage-left-wing.svg",-7.55,3.48,6.18,pink);
+ addWing("./stage-right-wing.svg",7.55,3.48,6.18,cyan);
  // Side LED bars and footlights.
  for(const side of [-1,1])for(let y=1.0;y<5.8;y+=.35)box(side*5.48,y,.1,.09,.19,.12,y%0.7?cyan:pink,stage);
  for(let x=-5.2;x<=5.2;x+=.65)box(x,1.18,3.15,.42,.08,.08,Math.round(x*10)%2?pink:cyan,stage);
