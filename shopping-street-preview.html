@@ -723,82 +723,98 @@ function flowerBed(x,z){
 }
 // Removed the four neon flower-bed clusters circled by the user.
 
-// 369 CITY LIVE STAGE — rebuilt as one coherent architectural portal.
+// 369 CITY LIVE STAGE — detailed 3D build matching the dedicated stage artwork.
 {
  const stage=new THREE.Group();stage.position.set(0,0,15.8);stage.rotation.y=Math.PI;stage.scale.setScalar(1.25);plazaGroup.add(stage);
- const fill=new THREE.PointLight(0x59eaff,6.5,32);fill.position.set(0,8,4);stage.add(fill);
- const pinkFill=new THREE.PointLight(0xff3acb,4.5,24);pinkFill.position.set(-6,4,2);stage.add(pinkFill);
- const goldFill=new THREE.PointLight(0xffca62,3.8,22);goldFill.position.set(6,4,2);stage.add(goldFill);
- // Single continuous platform, layered fascia and broad stairs facing the fountain.
- box(0,.48,-.45,13.6,.72,7.4,"dark",stage);
- box(0,.88,-.45,13.35,.12,7.15,"purple",stage);
- box(0,.99,-.45,12.95,.08,6.8,amber,stage);
- box(0,1.07,-.45,12.65,.08,6.55,"purple",stage);
+ const neon=(color,intensity=1.8)=>new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:intensity,metalness:.25,roughness:.28});
+ const cyanMat=neon(0x28eaff,2.2),pinkMat=neon(0xff25cf,2.2),goldMat=neon(0xffc52f,1.8),purpleMat=neon(0x7625e8,1.5);
+ const stageLight=new THREE.PointLight(0x31dfff,8,34);stageLight.position.set(0,8,3);stage.add(stageLight);
+ const pinkLight=new THREE.PointLight(0xff25cf,7,28);pinkLight.position.set(-7,4,2);stage.add(pinkLight);
+ const goldLight=new THREE.PointLight(0xffc52f,5,26);goldLight.position.set(7,4,2);stage.add(goldLight);
+ // Wide raised stage deck with a layered front fascia.
+ box(0,.48,-.55,16.8,.72,8.2,"dark",stage);
+ box(0,.88,-.55,16.5,.12,7.95,"purple",stage);
+ box(0,.98,-.55,16.1,.08,7.6,amber,stage);
+ box(0,1.06,-.55,15.8,.08,7.3,"purple",stage);
+ // Broad, connected steps — each tread is a full-width continuous slab.
  for(let k=0;k<4;k++){
-  const z=3.0+k*.72, y=.22+k*.18;
-  box(0,y,z,9.8,.38,1.05,k%2?"purple":"dark",stage);
-  box(0,y+.21,z+.48,9.65,.07,.09,k%2?pink:cyan,stage);
+  const z=3.05+k*.68,y=.20+k*.17;
+  box(0,y,z,11.2,.36,1.0,k%2?"purple":"dark",stage);
+  box(0,y+.19,z+.47,11.05,.065,.08,k%2?pink:cyan,stage);
+  box(0,y-.17,z+.02,11.12,.045,.08,k%2?cyan:pink,stage);
  }
- // Main portal frame remains clean; replace plain side columns with layered icon towers.
+ // Main truss portal: strong vertical legs, overhead beam and cross-braced steel.
  for(const side of [-1,1]){
-  box(side*5.35,3.65,-1.65,.72,6.1,3.25,"dark",stage);
-  box(side*5.35,3.65,-1.65,.20,5.72,.20,side<0?cyan:pink,stage);
-  // Three stacked illuminated display blocks on each wing, like the supplied festival reference.
-  const blocks=side<0?[
-   {y:5.25,c:0xff27c8,t:"♫",tc:"#fff0ff"},
-   {y:3.85,c:0x19dff5,t:"☺",tc:"#062d4a"},
-   {y:2.45,c:0xffca35,t:"♥",tc:"#fff8dc"},
-   {y:1.05,c:0xff9b27,t:"369",tc:"#fff4b0"}
-  ]:[
-   {y:5.25,c:0xffb52f,t:"MIC",tc:"#fff8d5"},
-   {y:3.85,c:0x20dff0,t:"♪",tc:"#07324a"},
-   {y:2.45,c:0xff36ca,t:"▶",tc:"#fff0ff"},
-   {y:1.05,c:0xffca35,t:"✿",tc:"#fff8dc"}
-  ];
-  for(const item of blocks){
-   const w=item.t==="369"||item.t==="MIC"?1.7:1.55;
-   box(side*6.35,item.y,-.12,w,1.22,2.2,item.c,stage);
-   box(side*6.35,item.y,-.12,w-.18,1.04,2.02,"dark",stage);
-   const panel=new THREE.Mesh(new THREE.PlaneGeometry(w-.32,.86),textTexture(item.t,"#211039",item.tc));
-   panel.position.set(side*6.35,item.y,1.00);stage.add(panel);
-   box(side*6.35,item.y+.53,1.04,w-.28,.07,.07,item.c,stage);
-  }
-  // Visible speaker rings mounted in front of the lower display blocks.
-  for(const y of [2.0,2.38,3.55,3.93]){
-   const ring=new THREE.Mesh(new THREE.TorusGeometry(.22,.065,8,20),new THREE.MeshStandardMaterial({color:side<0?0xff39ce:0x25eaff,emissive:side<0?0xff39ce:0x25eaff,emissiveIntensity:1.5}));
-   ring.position.set(side*6.35,y,1.18);stage.add(ring);
-  }
-  // Small neon starburst above each wing.
-  const burst=new THREE.Group();burst.position.set(side*6.35,6.2,.95);stage.add(burst);
-  const burstMat=new THREE.MeshBasicMaterial({color:side<0?0xff35d4:0x4defff});
-  for(let a=0;a<8;a++){const ray=new THREE.Mesh(new THREE.BoxGeometry(.055,.48,.055),burstMat);ray.rotation.z=a*Math.PI/4;burst.add(ray)}
- }
- box(0,6.78,-1.65,10.95,.38,3.45,"dark",stage);
- box(0,6.99,-1.55,10.5,.12,3.25,amber,stage);
- // One large smooth arch with a smaller pink inner accent.
- const archMat=new THREE.MeshStandardMaterial({color:0x32eaff,emissive:0x32eaff,emissiveIntensity:1.8,metalness:.25,roughness:.28});
- const arch=new THREE.Mesh(new THREE.TorusGeometry(4.85,.16,10,64,Math.PI),archMat);arch.position.set(0,3.15,-.75);stage.add(arch);
- const innerArch=new THREE.Mesh(new THREE.TorusGeometry(4.55,.065,8,64,Math.PI),new THREE.MeshStandardMaterial({color:0xff39d0,emissive:0xff39d0,emissiveIntensity:1.9}));innerArch.position.set(0,3.15,-.68);stage.add(innerArch);
- // Recessed, wide LED screen with a clear frame and no loose black rear blocks.
- box(0,3.55,-2.15,9.95,3.45,.34,"dark",stage);
- box(0,3.55,-1.94,9.62,3.12,.08,violet,stage);
- const screen=document.createElement("canvas");screen.width=1200;screen.height=420;
- const sg=screen.getContext("2d");const grad=sg.createLinearGradient(0,0,1200,420);grad.addColorStop(0,"#27105b");grad.addColorStop(.5,"#7016a5");grad.addColorStop(1,"#092c5b");sg.fillStyle=grad;sg.fillRect(0,0,1200,420);
- sg.strokeStyle="#ffd45b";sg.lineWidth=12;sg.strokeRect(16,16,1168,388);sg.textAlign="center";sg.shadowColor="#ff37d6";sg.shadowBlur=30;sg.fillStyle="#fff";sg.font="900 142px Arial";sg.fillText("369 CITY",600,180);sg.shadowBlur=0;sg.fillStyle="#8af5ff";sg.font="bold 52px Arial";sg.fillText("LIVE • MUSIC • FRIENDS",600,285);
- const tex=new THREE.CanvasTexture(screen);tex.colorSpace=THREE.SRGBColorSpace;
- const face=new THREE.Mesh(new THREE.PlaneGeometry(9.28,2.98),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));face.position.set(0,3.55,-1.885);stage.add(face);
- // Compact roof sign integrated into the top beam.
- const roofSign=new THREE.Mesh(new THREE.PlaneGeometry(5.6,.62),textTexture("369 CITY","#211044","#ffe36a"));roofSign.position.set(0,7.38,-1.38);stage.add(roofSign);
- // Two front-facing speaker cabinets and clean edge lights.
- for(const side of [-1,1]){
-  box(side*4.85,1.75,1.22,.82,1.75,.62,"dark",stage);
-  for(const y of [1.35,1.95]){
-   const sp=new THREE.Mesh(new THREE.TorusGeometry(.22,.065,8,18),new THREE.MeshStandardMaterial({color:side<0?0x27eaff:0xff38ce,emissive:side<0?0x27eaff:0xff38ce,emissiveIntensity:1.2}));
-   sp.position.set(side*4.85,y,1.55);stage.add(sp);
+  box(side*6.15,3.65,-1.65,.42,6.0,.5,"dark",stage);
+  box(side*6.15,3.65,-1.35,.13,5.7,.13,side<0?cyan:pink,stage);
+  for(let y=1.0;y<6.1;y+=.8){
+   const brace=new THREE.Mesh(new THREE.BoxGeometry(.09,.72,.09),side<0?cyanMat:pinkMat);
+   brace.position.set(side*6.15,y,-1.05);brace.rotation.z=side*.72;stage.add(brace);
   }
  }
- // Thin LED strips run continuously along the stage lip.
- for(let x=-5.8;x<=5.8;x+=.8)box(x,1.16,2.75,.48,.08,.09,Math.round(x*10)%2?pink:cyan,stage);
+ box(0,6.55,-1.65,12.65,.42,.55,"dark",stage);
+ for(let x=-6;x<=6;x+=.72){
+  box(x,6.55,-1.25,.08,.08,.62,x%1.44?pink:cyan,stage);
+  if(x<6) {const d=new THREE.Mesh(new THREE.BoxGeometry(.07,.72,.07),x%1.44?pinkMat:cyanMat);d.position.set(x+.36,6.55,-1.23);d.rotation.z=.75;stage.add(d)}
+ }
+ // Nested neon arches, with real 3D tube geometry.
+ const archOuter=new THREE.Mesh(new THREE.TorusGeometry(5.35,.22,12,72,Math.PI),cyanMat);archOuter.position.set(0,3.12,-.62);stage.add(archOuter);
+ const archInner=new THREE.Mesh(new THREE.TorusGeometry(5.02,.12,10,72,Math.PI),pinkMat);archInner.position.set(0,3.12,-.54);stage.add(archInner);
+ const archGold=new THREE.Mesh(new THREE.TorusGeometry(4.72,.055,8,72,Math.PI),goldMat);archGold.position.set(0,3.12,-.48);stage.add(archGold);
+ // Recessed LED wall with a spectrum equalizer, not a flat empty sign.
+ box(0,3.48,-2.25,10.5,3.65,.42,"dark",stage);
+ box(0,3.48,-2.00,10.18,3.35,.08,violet,stage);
+ const canvas=document.createElement("canvas");canvas.width=1200;canvas.height=520;
+ const ctx=canvas.getContext("2d");const bg=ctx.createLinearGradient(0,0,0,520);bg.addColorStop(0,"#120b35");bg.addColorStop(.55,"#24105f");bg.addColorStop(1,"#071b43");ctx.fillStyle=bg;ctx.fillRect(0,0,1200,520);
+ ctx.strokeStyle="#26eaff";ctx.lineWidth=7;ctx.strokeRect(12,12,1176,496);
+ ctx.textAlign="center";ctx.shadowColor="#ff24d2";ctx.shadowBlur=32;ctx.fillStyle="#fff";ctx.font="900 142px Arial";ctx.fillText("369 CITY",600,195);
+ ctx.shadowBlur=0;ctx.fillStyle="#80f5ff";ctx.font="bold 52px Arial";ctx.fillText("LIVE • MUSIC • FRIENDS",600,265);
+ const bars=[65,95,130,85,150,195,115,82,135,185,105,75,145,190,120,88,150,205,120,80,145,180,110,70,130,165,100,65];
+ bars.forEach((h,i)=>{const x=115+i*35;const g=ctx.createLinearGradient(0,520-h,0,520);g.addColorStop(0,i%3===0?"#ff32d4":"#28eaff");g.addColorStop(1,"#5426ff");ctx.fillStyle=g;ctx.fillRect(x,500-h,23,h)});
+ const tex=new THREE.CanvasTexture(canvas);tex.colorSpace=THREE.SRGBColorSpace;
+ const screen=new THREE.Mesh(new THREE.PlaneGeometry(9.82,3.0),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));screen.position.set(0,3.48,-1.94);stage.add(screen);
+ // A real 3D logo plaque integrated into the top of the truss.
+ box(0,7.1,-1.35,5.9,.72,.38,"dark",stage);
+ const logo=new THREE.Mesh(new THREE.PlaneGeometry(5.45,.52),textTexture("369 CITY","#1b0b42","#ffe45b"));logo.position.set(0,7.1,-1.13);stage.add(logo);
+ // Large left display stack: headphone medallion, smiley tiles, heart, speaker and 369 plaque.
+ const makePanel=(x,y,w,h,color,label,fg="#ffffff",z=.45)=>{
+  box(x,y,z-.12,w,h,.42,color,stage);
+  box(x,y,z+.105,w-.16,h-.16,.12,"dark",stage);
+  const p=new THREE.Mesh(new THREE.PlaneGeometry(w-.28,h-.28),textTexture(label,"#160d32",fg));p.position.set(x,y,z+.18);stage.add(p);
+ };
+ const disc=(x,y,r,color,label,fg)=>{
+  const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,.34,32),neon(color,2));m.rotation.x=Math.PI/2;m.position.set(x,y,.62);stage.add(m);
+  const f=new THREE.Mesh(new THREE.PlaneGeometry(r*1.55,r*1.55),textTexture(label,"#190d35",fg));f.position.set(x,y,.83);stage.add(f);
+ };
+ // Left wing, stacked with breathing room and a prominent headphone badge.
+ disc(-7.35,5.9,1.12,0xff24c9,"♫","#fff4ff");
+ disc(-8.45,4.25,.72,0x16dff5,"☺","#052b43");
+ disc(-6.8,4.25,.72,0xffd22e,"☺","#362000");
+ makePanel(-7.65,2.95,1.55,1.35,0xff28c9,"♥","#fff1fb",.55);
+ makePanel(-5.95,2.95,1.25,1.35,0x26144b,"◉","#35eaff",.55);
+ makePanel(-7.65,1.35,1.55,1.45,0xffa51d,"369","#fff36b",.55);
+ makePanel(-5.95,1.35,1.25,1.45,0x30105d,"♫","#ff5cda",.55);
+ // Right wing: tall microphone block, music tile, play tile and gift block.
+ makePanel(7.35,5.05,1.9,2.45,0xffb91e,"MIC","#fff4b0",.55);
+ makePanel(8.95,3.65,1.55,1.45,0x13dff1,"♫","#07314b",.55);
+ makePanel(8.95,2.05,1.55,1.45,0xff2acb,"▶","#fff1fb",.55);
+ makePanel(7.35,.95,1.9,1.65,0xffa51d,"GIFT","#fff4a0",.55);
+ // Oversized speaker cabinets with layered rings and glowing cones on both wings.
+ for(const x of [-5.95,7.35]){
+  box(x,3.0,.9,1.35,2.85,.72,"dark",stage);
+  for(const [y,r,c] of [[3.65,.32,0x28eaff],[2.65,.48,0xffb52c]]){
+   const rim=new THREE.Mesh(new THREE.TorusGeometry(r,.09,10,32),neon(c,2));rim.position.set(x,y,1.34);stage.add(rim);
+   const cone=new THREE.Mesh(new THREE.CylinderGeometry(r*.63,r*.63,.10,24),neon(c,1.1));cone.rotation.x=Math.PI/2;cone.position.set(x,y,1.34);stage.add(cone);
+  }
+ }
+ // Starbursts around the outside edges of the decorative towers.
+ for(const [x,y,c] of [[-9.0,5.4,0xff28d0],[-9.15,3.6,0xff28d0],[9.8,6.35,0xff28d0],[9.75,4.55,0xff28d0]]){
+  const g=new THREE.Group();g.position.set(x,y,.8);stage.add(g);const mat=neon(c,2.4);
+  for(let a=0;a<8;a++){const ray=new THREE.Mesh(new THREE.BoxGeometry(.065,.58,.065),mat);ray.rotation.z=a*Math.PI/4;g.add(ray)}
+ }
+ // Side LED bars and footlights.
+ for(const side of [-1,1])for(let y=1.0;y<5.8;y+=.35)box(side*5.48,y,.1,.09,.19,.12,y%0.7?cyan:pink,stage);
+ for(let x=-5.2;x<=5.2;x+=.65)box(x,1.18,3.15,.42,.08,.08,Math.round(x*10)%2?pink:cyan,stage);
 }
 // Large readable mission and event boards on the left/right plaza edges.
 function plazaBoard(x,z,label,sub,color,rotation,action){
