@@ -44,6 +44,38 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 .pdBottom{flex:none;display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid #e7e9ef}
 .pdBottom button{flex:1;min-height:46px;border-radius:9px;font-size:13px}.pdBottom #pdAddCart{background:#17a995;border-color:#17a995;box-shadow:none}.pdBottom #pdBuy{background:#ef513b;border-color:#ef513b;box-shadow:none}
 #pdToast{display:none;position:absolute;bottom:78px;left:50%;transform:translateX(-50%);background:#17243c;color:#fff;padding:10px 16px;border-radius:22px;font-size:12px;white-space:nowrap;z-index:3}
+
+/* Modal states: keep game controls out of the shopping surface */
+body.ui-modal-open #playerJoy,body.ui-modal-open #playerActions,body.ui-modal-open .bottom{display:none!important}
+body.ui-modal-open #shopInfo{z-index:20;bottom:18px;max-height:calc(100dvh - 300px);overflow:auto}
+#giftItems{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#giftItems .giftItem{padding:8px;background:linear-gradient(155deg,#10284a,#07152c);border:1px solid #22dfff;border-radius:13px;box-shadow:inset 0 0 16px #00cfff12;overflow:hidden;cursor:pointer}
+.giftProductArt{height:100px;display:flex;align-items:center;justify-content:center;font-size:62px;background:radial-gradient(circle at 50% 42%,#264d78 0,#142b50 48%,#0a1933 100%);border-radius:9px;margin-bottom:8px;text-shadow:0 5px 12px #0009}
+.giftProductName{font-size:12px;color:#e9f8ff;font-weight:700;line-height:1.3;margin-bottom:3px}
+#giftItems .giftItem b{display:block;color:#ffe27a;font-size:13px;margin:2px 0}
+#giftItems .giftItem small{display:block;color:#8edff4;font-size:10px;margin-top:2px}
+#giftPostOpen{background:linear-gradient(100deg,#d82fe0,#8d43ff);border:1px solid #f4a8ff;box-shadow:0 0 14px #d92de766}
+#productDetail{background:radial-gradient(ellipse at 50% 20%,#173c69 0,#09172f 48%,#050b1d 100%);color:#effaff}
+.pdTop{background:#07152cf5;border-bottom:1px solid #20dfff66}
+.pdTop button{background:#10284a;color:#8ef4ff;border:1px solid #28dfff66}
+.pdSearch{background:#10284a;color:#9ceeff}
+#pdCartCount{background:#ed36d9}
+.pdHero{background:radial-gradient(circle at 50% 46%,#244b77 0,#112a4c 44%,#07152c 100%);border-bottom:1px solid #23dfff55}
+.pdBadge{background:#092442eF;color:#71edff;border:1px solid #22dfff99}
+.pdArt{filter:drop-shadow(0 16px 14px #000b);text-shadow:0 0 28px #28dfff66}
+.pdDots{color:#6eeaff}
+.pdPhotoCount{background:#07152ce8;border:1px solid #25dfff88;color:#baf8ff}
+.pdPrice,.pdTitle,.pdSection{background:#0b1b36;color:#effaff;border-top:1px solid #1d8eb866;border-bottom:1px solid #1d8eb844}
+.pdPrice strong{color:#ffe17a}.pdPrice span{color:#8b9db9}.pdPrice em{background:#56265f;color:#ffb8fa;border:1px solid #d83de866}
+.pdPrice small{color:#8ee8f7}
+.pdTitle h2{color:#f4fbff}.pdTitle div{color:#ffdc75}.pdTitle p,.pdSection p{color:#b6cce5}
+.pdSection>b{color:#72edff}
+.pdVariant{background:#10284a;color:#b8d6ef;border:1px solid #2a6b91}
+.pdVariant.selected{border-color:#e83bdf;color:#ffbafa;background:#44204f}
+.pdBottom{background:#07152cf5;border-top:1px solid #20dfff77}
+.pdBottom #pdAddCart{background:linear-gradient(100deg,#12a997,#087c9a);border-color:#4ce8e0;color:#fff;box-shadow:0 0 14px #00d6c455}
+.pdBottom #pdBuy{background:linear-gradient(100deg,#e62fd8,#9637ed);border-color:#ff9af2;color:#fff;box-shadow:0 0 16px #d52de966}
+#pdToast{background:#0c2344;border:1px solid #26dfff;color:#dffaff}
 </style>
 </head>
 <body>
@@ -52,7 +84,7 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 
 <div id="walletBar"><div id="walletBalances"><b>🪙 XU: —</b><b>🟡 COIN: —</b></div><button id="walletOpen">👛 VÍ CỦA TÔI</button></div>
 <div id="walletModal"><div id="walletCard"><button id="walletClose">ĐÓNG</button><h2>👛 VÍ 369 CITY</h2><div id="walletSignedOut"><p>Đăng nhập để xem số dư XU và COIN của bạn.</p><label>Email</label><input id="walletEmail" type="email" autocomplete="email" placeholder="Email của bạn"><label>Mật khẩu</label><input id="walletPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu"><div class="walletActions"><button id="walletLogin">ĐĂNG NHẬP</button><button id="walletSignup">TẠO TÀI KHOẢN</button></div></div><div id="walletSignedIn" style="display:none"><p id="walletUserLabel"></p><div id="walletDetails"></div><div class="walletActions"><button id="walletTopup" type="button">💳 NẠP XU</button></div><div id="walletTopupInfo" style="display:none;background:#10284a;border:1px solid #42618b;border-radius:10px;padding:12px;margin-top:10px;font-size:13px;line-height:1.45"><b style="color:#ffe08a">CHỌN GÓI NẠP XU</b><p style="margin:7px 0;color:#c7d9ef">Thanh toán qua PayPal. XU chỉ được cộng sau khi PayPal xác nhận giao dịch hoàn tất.</p><div id="walletTopupPackages" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><span style="color:#9fb9d4">Đang tải gói nạp...</span></div><p id="walletTopupMessage" style="margin:9px 0 0;color:#ffc979"></p></div><div id="walletLock">🔒 Đổi XU sang COIN và thanh toán hàng thật đang tạm khóa đến khi hoàn tất xác nhận pháp lý.</div><div class="walletActions"><button id="walletRefresh">LÀM MỚI SỐ DƯ</button><button id="walletLogout">ĐĂNG XUẤT</button></div><h3 style="font-size:14px;color:#8defff;margin:16px 0 4px">LỊCH SỬ GIAO DỊCH</h3><div id="walletHistory">Chưa tải lịch sử.</div></div><div id="walletStatus"></div></div></div>
-<div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p><div id="giftActions"><button id="giftBrowse">🎁 XEM ĐỒ ĐANG BÁN</button><button id="giftPostOpen">＋ ĐĂNG MÓN ĐỒ</button><div id="giftItems"><div class="giftItem">🧸 Gấu bông Pixel<br><b>120 COIN</b><br><small>Người bán: Mèo Xanh</small></div><div class="giftItem">🎒 Ba lô Neon<br><b>90 COIN</b><br><small>Người bán: Bắp Rang</small></div><div class="giftItem">🪴 Chậu cây mini<br><b>45 COIN</b><br><small>Người bán: Hana</small></div><div class="giftItem">🎧 Tai nghe ảo<br><b>150 COIN</b><br><small>Người bán: Ken</small></div></div><div style="margin-top:10px"><button id="giftEnter">🚪 VÀO GIFT SHOP</button></div><div id="giftPost"><p>ĐĂNG SẢN PHẨM THỬ NGHIỆM</p><input id="giftName" placeholder="Tên món đồ"><input id="giftPrice" placeholder="Giá COIN"><button id="giftPublish">ĐĂNG THỬ</button><small id="giftPostMsg">Bản xem trước chưa lưu sản phẩm lên máy chủ.</small></div></div></div>
+<div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p><div id="giftActions"><button id="giftPostOpen">＋ ĐĂNG MÓN ĐỒ</button><div id="giftItems"><div class="giftItem"><div class="giftProductArt">🧸</div><div class="giftProductName">Gấu bông Pixel</div><b>120 COIN</b><small>Người bán: Mèo Xanh</small></div><div class="giftItem"><div class="giftProductArt">🎒</div><div class="giftProductName">Ba lô Neon</div><b>90 COIN</b><small>Người bán: Bắp Rang</small></div><div class="giftItem"><div class="giftProductArt">🪴</div><div class="giftProductName">Chậu cây mini</div><b>45 COIN</b><small>Người bán: Hana</small></div><div class="giftItem"><div class="giftProductArt">🎧</div><div class="giftProductName">Tai nghe ảo</div><b>150 COIN</b><small>Người bán: Ken</small></div></div><div style="margin-top:10px"><button id="giftEnter">🚪 VÀO GIFT SHOP</button></div><div id="giftPost"><p>ĐĂNG SẢN PHẨM THỬ NGHIỆM</p><input id="giftName" placeholder="Tên món đồ"><input id="giftPrice" placeholder="Giá COIN"><button id="giftPublish">ĐĂNG THỬ</button><small id="giftPostMsg">Bản xem trước chưa lưu sản phẩm lên máy chủ.</small></div></div></div>
 <div id="productDetail" aria-hidden="true">
  <div class="pdTop"><button id="pdBack" aria-label="Quay lại">‹</button><div class="pdSearch">⌕　Tìm sản phẩm trong 369 CITY</div><button id="pdShare">↗</button><button id="pdCart">🛒<span id="pdCartCount">0</span></button></div>
  <div class="pdScroll">
@@ -564,17 +596,17 @@ for(let i=0;i<13;i++){const x=-9+i*1.5;const b=new THREE.Mesh(new THREE.BoxGeome
 // Removed the overhead portal and distant skyline wall to keep the plaza sightline open.
 const initial={pos:new THREE.Vector3(0,24,48),target:new THREE.Vector3(0,2.4,0)};
 document.getElementById('reset').onclick=()=>{camera.position.copy(initial.pos);controls.target.copy(initial.target);controls.update()};
-document.getElementById('closeInfo').onclick=()=>document.getElementById('shopInfo').style.display='none';
+document.getElementById('closeInfo').onclick=()=>{document.getElementById('shopInfo').style.display='none';document.body.classList.remove('ui-modal-open')};
 let nearbyShop=null,insideShop=null;
 function openShopCard(d){
  document.getElementById('shopTitle').textContent=d.tag==='GIFTS'?'🎁 GIFT SHOP':d.name;
  document.getElementById('shopDesc').textContent=d.desc+(d.tag==='GIFTS'?' Người bán hàng: “Xin chào! Mời bạn vào xem các món đồ do cư dân 369 CITY đăng bán nhé!”':'');
  document.getElementById('giftActions').style.display=d.tag==='GIFTS'?'block':'none';
  document.getElementById('giftPost').style.display='none';document.getElementById('giftItems').style.display='grid';
- document.getElementById('shopInfo').style.display='block';
+ document.getElementById('shopInfo').style.display='block';document.body.classList.add('ui-modal-open');
 }
 function enterShop(d){
- document.getElementById('shopInfo').style.display='none';insideShop=d;
+ document.getElementById('shopInfo').style.display='none';document.body.classList.remove('ui-modal-open');insideShop=d;
  const shopGroup=scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-d.x)<.01&&Math.abs(o.position.z-d.z)<.01);
  scene.userData.shopSceneVisibility=scene.children.map(o=>o.visible);
  scene.children.forEach(o=>{if(o!==shopGroup&&o!==player&&!o.isLight)o.visible=false});
@@ -617,15 +649,15 @@ const giftCatalog=[
  {name:'Tai nghe ảo',price:150,old:180,emoji:'🎧',seller:'Ken',desc:'Tai nghe phong cách tương lai dành cho cư dân thành phố.',detail:'Phụ kiện tai nghe ảo phong cách công nghệ, dùng để làm đẹp nhân vật.'}
 ];
 let pdCartCount=0,pdCurrent=null;
-function pdOpen(item){pdCurrent=item;document.getElementById('pdName').textContent=item.name;document.getElementById('pdPrice').textContent=item.price+' COIN';document.getElementById('pdOldPrice').textContent=item.old+' COIN';document.getElementById('pdArt').textContent=item.emoji;document.getElementById('pdDesc').textContent=item.desc;document.getElementById('pdDetails').textContent=item.detail;document.getElementById('productDetail').classList.add('open');document.getElementById('productDetail').setAttribute('aria-hidden','false')}
-function pdClose(){document.getElementById('productDetail').classList.remove('open');document.getElementById('productDetail').setAttribute('aria-hidden','true')}
+function pdOpen(item){pdCurrent=item;document.getElementById('pdName').textContent=item.name;document.getElementById('pdPrice').textContent=item.price+' COIN';document.getElementById('pdOldPrice').textContent=item.old+' COIN';document.getElementById('pdArt').textContent=item.emoji;document.getElementById('pdDesc').textContent=item.desc;document.getElementById('pdDetails').textContent=item.detail;document.getElementById('productDetail').classList.add('open');document.body.classList.add('ui-modal-open');document.getElementById('productDetail').setAttribute('aria-hidden','false')}
+function pdClose(){document.getElementById('productDetail').classList.remove('open');document.body.classList.remove('ui-modal-open');document.getElementById('productDetail').setAttribute('aria-hidden','true')}
 document.getElementById('giftItems').addEventListener('click',e=>{const card=e.target.closest('.giftItem');if(!card)return;const cards=[...document.querySelectorAll('#giftItems .giftItem')],n=cards.indexOf(card);if(giftCatalog[n])pdOpen(giftCatalog[n])});
 document.getElementById('pdBack').onclick=pdClose;
 document.getElementById('pdAddCart').onclick=()=>{pdCartCount++;document.getElementById('pdCartCount').textContent=pdCartCount;const t=document.getElementById('pdToast');t.textContent='Đã thêm vào giỏ hàng thử nghiệm';t.style.display='block';setTimeout(()=>t.style.display='none',1800)};
 document.getElementById('pdBuy').onclick=()=>{const t=document.getElementById('pdToast');t.textContent='Chức năng thanh toán đang trong giai đoạn thử nghiệm';t.style.display='block';setTimeout(()=>t.style.display='none',2200)};
 document.getElementById('pdShare').onclick=()=>{const t=document.getElementById('pdToast');t.textContent='Chia sẻ sản phẩm sẽ được bổ sung';t.style.display='block';setTimeout(()=>t.style.display='none',1800)};
 document.querySelectorAll('.pdVariant').forEach(b=>b.onclick=()=>{document.querySelectorAll('.pdVariant').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')});
-document.getElementById('giftBrowse').onclick=()=>{document.getElementById('giftItems').style.display='grid';document.getElementById('giftPost').style.display='none'};
+
 document.getElementById('giftPostOpen').onclick=()=>{document.getElementById('giftItems').style.display='none';document.getElementById('giftPost').style.display='block'};
 document.getElementById('giftPublish').onclick=()=>{const n=document.getElementById('giftName').value.trim(),p=document.getElementById('giftPrice').value.trim();document.getElementById('giftPostMsg').textContent=n&&p?'Đã tạo bản xem trước: '+n+' · '+p+' COIN. Chưa lưu lên máy chủ.':'Bạn hãy nhập tên món đồ và giá.'};
 const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();renderer.domElement.addEventListener('pointerup',e=>{if(Math.abs(e.clientX-(window._downX??e.clientX))>8||Math.abs(e.clientY-(window._downY??e.clientY))>8)return;pointer.x=e.clientX/innerWidth*2-1;pointer.y=-(e.clientY/innerHeight)*2+1;ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects(shopMeshes,false);if(hits.length)openShopCard(hits[0].object.userData.shop)});
