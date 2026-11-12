@@ -444,7 +444,8 @@ function exitShop(){
  controls.target.set(player.position.x,1.5,player.position.z);controls.update();
  activeShop=null;document.getElementById('playerExitShop').style.display='none';
 }
-document.getElementById('playerInteract').addEventListener('click',()=>{if(nearbyShop)showShop(nearbyShop)});\ndocument.getElementById('playerExitShop').addEventListener('click',exitShop);
+document.getElementById('playerInteract').addEventListener('click',()=>{if(nearbyShop)showShop(nearbyShop)});
+document.getElementById('playerExitShop').addEventListener('click',exitShop);
 
 function updatePlayer(){
  const dt=Math.min(pClock.getDelta(),.04);
