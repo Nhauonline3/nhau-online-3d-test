@@ -699,8 +699,7 @@ for(let i=0;i<14;i++){
 
 
 for(let i=0;i<8;i++){const a=i*Math.PI/4;box(Math.cos(a)*3.6,1.05,Math.sin(a)*3.6,.22,.42,.22,'cream')}
-// Keep only the perimeter lamps; remove all circled trees, shrubs and garden blocks.
-for(const [x,z] of [[-17,-8],[17,-8],[-17,8],[17,8],[-8,-17],[8,-17],[-8,17],[8,17]])lamp(x,z);
+// All plaza lamp posts removed as requested.
 // Tiện ích quanh quảng trường: máy bán nước tự động phong cách arcade
 function vendingMachine(x,z,accent,label){
  const g=new THREE.Group();g.position.set(x,0,z);
@@ -724,48 +723,50 @@ function flowerBed(x,z){
 }
 // Removed the four neon flower-bed clusters circled by the user.
 
-// 369 CITY SOCIAL STAGE — compact open-air performance space at the north edge.
+// 369 CITY LIVE STAGE — deep neon portal inspired by the user's reference.
 {
  const stage=new THREE.Group();stage.position.set(0,0,15.8);stage.rotation.y=Math.PI;stage.scale.setScalar(1.25);plazaGroup.add(stage);
- // Extra local lighting makes the plaza readable on phone screens without flattening the neon night look.
- const stageFill=new THREE.PointLight(0x5edfff,5.5,28);stageFill.position.set(0,8,5);stage.add(stageFill);
- const stagePink=new THREE.PointLight(0xff35d2,3.8,20);stagePink.position.set(-7,5,1);stage.add(stagePink);
- const stageGold=new THREE.PointLight(0xffc85a,3.2,18);stageGold.position.set(7,4,3);stage.add(stageGold);
- const deck=box(0,.62,0,12,.62,4.4,"dark",stage);
- box(0,.96,0,11.7,.12,4.15,amber,stage);
- box(0,1.08,0,11.25,.12,3.82,"purple",stage);
- for(let x=-5;x<=5;x+=1){box(x,1.2,1.82,.72,.12,.12,x%2?pink:cyan,stage)}
- // Rear LED wall facing the audience/fountain.
- box(0,3.05,-1.72,10.8,3.65,.42,"dark",stage);
- box(0,3.05,-1.48,10.35,3.25,.08,violet,stage);
+ const stageFill=new THREE.PointLight(0x5edfff,7.5,34);stageFill.position.set(0,9,4);stage.add(stageFill);
+ const stagePink=new THREE.PointLight(0xff35d2,5.2,28);stagePink.position.set(-7,5,2);stage.add(stagePink);
+ const stageGold=new THREE.PointLight(0xffc85a,4.2,24);stageGold.position.set(7,5,3);stage.add(stageGold);
+ // Deep raised deck and broad illuminated approach stairs.
+ box(0,.62,-.35,13.2,.62,7.8,"dark",stage);box(0,.96,-.35,12.9,.12,7.55,amber,stage);box(0,1.08,-.35,12.45,.12,7.1,"purple",stage);
+ for(let k=0;k<4;k++){const z=3.25+k*.72;box(0,.24+k*.19,z,9.6,.38,1.05,k%2?"purple":"dark",stage);box(0,.45+k*.19,z+.49,9.5,.07,.09,k%2?pink:cyan)}
+ // Heavy portal side columns and roof create visible architectural depth.
+ for(const side of [-1,1]){
+  box(side*5.65,3.15,-1.45,.85,6.4,4.8,"dark",stage);
+  box(side*5.65,3.25,-1.02,.18,5.8,.18,side<0?cyan:pink,stage);
+  box(side*6.35,2.35,-.15,1.9,4.7,4.2,side<0?pink:amber,stage);
+  box(side*6.35,2.35,-.15,1.62,4.4,3.95,"dark",stage);
+  box(side*6.35,4.75,-.05,1.72,.16,3.7,side<0?cyan:pink,stage);
+  const icon=new THREE.Mesh(new THREE.PlaneGeometry(1.45,1.35),textTexture(side<0?"♫":"★","#16102d",side<0?"#7df6ff":"#ffe36a"));icon.position.set(side*6.35,3.45,1.87);stage.add(icon);
+  box(side*6.35,1.45,1.9,1.35,1.25,.18,"purple",stage);
+  for(const y of [1.25,1.7]){const sp=new THREE.Mesh(new THREE.CylinderGeometry(.31,.31,.12,20),new THREE.MeshStandardMaterial({color:side<0?0xff27c8:0xffc52e,emissive:side<0?0xff27c8:0xffc52e,emissiveIntensity:.8}));sp.rotation.x=Math.PI/2;sp.position.set(side*6.35,y,2.02);stage.add(sp)}
+  const sparkle=new THREE.Mesh(new THREE.OctahedronGeometry(.38,0),new THREE.MeshBasicMaterial({color:side<0?0xff27c8:0xffc52e}));sparkle.position.set(side*6.35,5.15,-.05);stage.add(sparkle);
+ }
+ box(0,6.35,-1.45,11.6,.48,4.8,"dark",stage);
+ // Twin neon arches around the entrance.
+ const archMat=new THREE.MeshStandardMaterial({color:0x20dfff,emissive:0x20dfff,emissiveIntensity:1.7,metalness:.25,roughness:.3});
+ const arch=new THREE.Mesh(new THREE.TorusGeometry(4.95,.19,10,48,Math.PI),archMat);arch.position.set(0,3.05,-.78);stage.add(arch);
+ const arch2=new THREE.Mesh(new THREE.TorusGeometry(4.62,.075,8,48,Math.PI),new THREE.MeshStandardMaterial({color:0xff35d2,emissive:0xff35d2,emissiveIntensity:1.8}));arch2.position.set(0,3.05,-.7);stage.add(arch2);
+ // Roof truss and repeated neon crossbeams.
+ box(0,6.62,-1.05,10.9,.16,.16,amber,stage);
+ for(let x=-4.8;x<=4.8;x+=.8){box(x,6.05,-1.05,.12,.5,2.9,x%1.6?cyan:pink)}
+ // Recessed LED wall, set behind the arch rather than flush on the front.
+ box(0,3.35,-2.0,10.45,3.55,.38,"dark",stage);box(0,3.35,-1.78,10.05,3.18,.08,violet,stage);
  const screen=document.createElement("canvas");screen.width=1024;screen.height=360;
  const sg=screen.getContext("2d");const grad=sg.createLinearGradient(0,0,1024,360);grad.addColorStop(0,"#24104c");grad.addColorStop(.5,"#5a176f");grad.addColorStop(1,"#092e58");sg.fillStyle=grad;sg.fillRect(0,0,1024,360);
- sg.strokeStyle="#ffd45b";sg.lineWidth=10;sg.strokeRect(14,14,996,332);
- sg.textAlign="center";sg.shadowColor="#ff37d6";sg.shadowBlur=26;sg.fillStyle="#fff";sg.font="900 112px Arial";sg.fillText("369 CITY",512,148);
- sg.shadowBlur=0;sg.fillStyle="#7df6ff";sg.font="bold 48px Arial";sg.fillText("LIVE • MUSIC • FRIENDS",512,245);
+ sg.strokeStyle="#ffd45b";sg.lineWidth=10;sg.strokeRect(14,14,996,332);sg.textAlign="center";sg.shadowColor="#ff37d6";sg.shadowBlur=26;sg.fillStyle="#fff";sg.font="900 112px Arial";sg.fillText("369 CITY",512,148);sg.shadowBlur=0;sg.fillStyle="#7df6ff";sg.font="bold 48px Arial";sg.fillText("LIVE • MUSIC • FRIENDS",512,245);
  const screenTex=new THREE.CanvasTexture(screen);screenTex.colorSpace=THREE.SRGBColorSpace;
- const screenMesh=new THREE.Mesh(new THREE.PlaneGeometry(9.9,2.95),new THREE.MeshBasicMaterial({map:screenTex,side:THREE.DoubleSide}));screenMesh.position.set(0,3.05,-1.425);stage.add(screenMesh);
- // Neon speaker stacks and stage spotlights.
+ const screenMesh=new THREE.Mesh(new THREE.PlaneGeometry(9.65,2.78),new THREE.MeshBasicMaterial({map:screenTex,side:THREE.DoubleSide}));screenMesh.position.set(0,3.35,-1.72);stage.add(screenMesh);
+ const title=new THREE.Mesh(new THREE.PlaneGeometry(6.2,.72),textTexture("369 CITY","#160e35","#ffe36a"));title.position.set(0,7.35,-1.15);stage.add(title);
+ const subTitle=new THREE.Mesh(new THREE.PlaneGeometry(3.7,.42),textTexture("LIVE • MUSIC • FRIENDS","#160e35","#7df6ff"));subTitle.position.set(0,6.88,-1.12);stage.add(subTitle);
+ // Side speakers and stage spotlights.
  for(const side of [-1,1]){
-  box(side*5.25,1.8,.1,.85,2.0,.72,"dark",stage);
-  for(const y of [1.35,2.05]){const sp=new THREE.Mesh(new THREE.CylinderGeometry(.24,.24,.10,18),side<0?cyan:pink);sp.rotation.x=Math.PI/2;sp.position.set(side*5.25,y,.49);stage.add(sp)}
-  const beam=new THREE.Mesh(new THREE.ConeGeometry(1.0,4.8,16,1,true),new THREE.MeshBasicMaterial({color:side<0?0x24dfff:0xff42d7,transparent:true,opacity:.10,side:THREE.DoubleSide,depthWrite:false}));beam.position.set(side*3.7,3.3,.6);beam.rotation.x=.25;stage.add(beam);
+  box(side*4.95,1.8,1.45,.85,2.0,.72,"dark",stage);
+  for(const y of [1.35,2.05]){const sp=new THREE.Mesh(new THREE.CylinderGeometry(.24,.24,.10,18),side<0?cyan:pink);sp.rotation.x=Math.PI/2;sp.position.set(side*4.95,y,1.84);stage.add(sp)}
+  const beam=new THREE.Mesh(new THREE.ConeGeometry(1.0,4.8,16,1,true),new THREE.MeshBasicMaterial({color:side<0?0x24dfff:0xff42d7,transparent:true,opacity:.13,side:THREE.DoubleSide,depthWrite:false}));beam.position.set(side*3.7,3.3,1.2);beam.rotation.x=.25;stage.add(beam);
  }
- const title=new THREE.Mesh(new THREE.PlaneGeometry(4.7,.55),textTexture("369 LIVE STAGE","#160e35","#ffe27a"));title.position.set(0,5.2,-1.46);stage.add(title);
- for(const x of [-4.5,-1.5,1.5,4.5]){const mic=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.55,8),M.gold);mic.position.set(x,1.48,.55);mic.rotation.z=Math.PI/2;stage.add(mic)}
- // Open audience area: no wooden benches.
- for(const x of [-7.5,7.5]){box(x,.35,11.4,1.0,.7,1.0,"dark");box(x,.76,11.4,.82,.12,.82,x<0?cyan:pink)}
- // Friendly voxel visitors make the stage feel occupied. They are decorative NPCs for now.
- function plazaVisitor(x,z,shirt,skin,hat){
-  const person=new THREE.Group();person.position.set(x,0,z);plazaGroup.add(person);
-  const torso=new THREE.Mesh(new THREE.BoxGeometry(.62,.82,.38),new THREE.MeshStandardMaterial({color:shirt,emissive:shirt,emissiveIntensity:.08}));torso.position.y=1.22;person.add(torso);
-  const head=new THREE.Mesh(new THREE.BoxGeometry(.48,.48,.43),new THREE.MeshStandardMaterial({color:skin}));head.position.y=1.88;person.add(head);
-  const hair=new THREE.Mesh(new THREE.BoxGeometry(.5,.14,.46),new THREE.MeshStandardMaterial({color:hat}));hair.position.y=2.17;person.add(hair);
-  for(const dx of [-.19,.19]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.19,.52,.22),M.dark);leg.position.set(dx,.55,0);person.add(leg)}
-  for(const dx of [-.4,.4]){const arm=new THREE.Mesh(new THREE.BoxGeometry(.18,.62,.2),new THREE.MeshStandardMaterial({color:skin}));arm.position.set(dx,1.25,0);person.add(arm)}
-  person.rotation.y=Math.PI;return person;
- }
- // Removed decorative NPC visitors and audience pylons as circled; keep the stage clear.
 }
 // Large readable mission and event boards on the left/right plaza edges.
 function plazaBoard(x,z,label,sub,color,rotation,action){
