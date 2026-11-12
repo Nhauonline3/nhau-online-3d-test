@@ -190,8 +190,15 @@ function shop(d,index){
   // Back feature wall with fluted panels and illuminated brand plaque.
   box(0,2.55,-3.62,8.45,3.75,.22,mat(0x247f9b),g);
   for(let x=-3.85;x<=3.86;x+=.42){box(x,2.6,-3.48,.035,3.35,.055,goldMetal,g)}
-  box(0,3.88,-3.39,5.5,1.02,.12,blackGlass,g);
-  panel(0,3.88,-3.31,5.25,.78,labelTexture('GIFT  •  MARKET','#ff4eae','#fff8d9',false));
+  // Illustrated cartoon feature wall instead of a plain text-only sign.
+  box(0,3.82,-3.39,5.9,1.5,.14,blackGlass,g);
+  const mural=document.createElement('canvas');mural.width=1024;mural.height=420;const mc=mural.getContext('2d');
+  const mg=mc.createLinearGradient(0,0,1024,420);mg.addColorStop(0,'#ff8ccf');mg.addColorStop(.5,'#ffc9e8');mg.addColorStop(1,'#78e5ef');mc.fillStyle=mg;mc.fillRect(0,0,1024,420);
+  mc.fillStyle='rgba(255,255,255,.24)';for(let x=0;x<1024;x+=90){mc.beginPath();mc.arc(x+25,55,24,0,Math.PI*2);mc.fill()}
+  function muralPenguin(x,y,k){mc.fillStyle='#17243c';mc.beginPath();mc.ellipse(x,y,75*k,100*k,0,0,Math.PI*2);mc.fill();mc.fillStyle='#fff8ee';mc.beginPath();mc.ellipse(x,y+18*k,49*k,70*k,0,0,Math.PI*2);mc.fill();mc.fillStyle='#ffad38';mc.beginPath();mc.moveTo(x-18*k,y-5*k);mc.lineTo(x+18*k,y-5*k);mc.lineTo(x,y+12*k);mc.fill();mc.fillStyle='#18243a';for(const dx of [-19,19]){mc.beginPath();mc.arc(x+dx*k,y-29*k,6*k,0,Math.PI*2);mc.fill()}}
+  function muralBear(x,y,k){mc.fillStyle='#a96c58';mc.beginPath();mc.arc(x-34*k,y-45*k,28*k,0,Math.PI*2);mc.arc(x+34*k,y-45*k,28*k,0,Math.PI*2);mc.arc(x,y,76*k,0,Math.PI*2);mc.fill();mc.fillStyle='#f4d9c5';mc.beginPath();mc.ellipse(x,y+20*k,42*k,32*k,0,0,Math.PI*2);mc.fill();mc.fillStyle='#302235';for(const dx of [-25,25]){mc.beginPath();mc.arc(x+dx*k,y-12*k,6*k,0,Math.PI*2);mc.fill()}}
+  muralPenguin(160,230,1.05);muralBear(820,230,1.05);mc.fillStyle='#7c236e';mc.font='bold 58px Arial';mc.textAlign='center';mc.fillText('GIFT SHOP',510,120);mc.font='bold 30px Arial';mc.fillText('TOYS  •  PLUSH  •  HAPPY GIFTS',510,365);
+  const muralTex=new THREE.CanvasTexture(mural);muralTex.colorSpace=THREE.SRGBColorSpace;panel(0,3.82,-3.30,5.72,1.34,new THREE.MeshBasicMaterial({map:muralTex,side:THREE.DoubleSide}));
   // Playful pastel ceiling panels and illustrated wall posters.
   for(const [px,pz] of [[-2.7,-.1],[0,-.1],[2.7,-.1]]){const panelLight=new THREE.Mesh(new THREE.PlaneGeometry(1.55,.78),new THREE.MeshBasicMaterial({color:0xfff5dc,side:THREE.DoubleSide}));panelLight.rotation.x=Math.PI/2;panelLight.position.set(px,4.84,pz);g.add(panelLight)}
   for(const [px,label,bg,fg] of [[-2.65,'TOYS & PLUSH','#ff78bd','#fff8dc'],[2.65,'GIFT IDEAS','#39c9db','#ffffff']]){const poster=new THREE.Mesh(new THREE.PlaneGeometry(1.28,.62),labelTexture(label,bg,fg,true));poster.position.set(px,3.18,-3.31);g.add(poster)}
@@ -201,7 +208,7 @@ function shop(d,index){
    for(let level=0;level<3;level++){
     const y=.98+level*.88;rounded(x,y,-1.2,1.28,.16,.88,.07,boutiqueWood,g);
     box(x,y+.13,-.72,1.16,.045,.06,M.cyan,g);
-    // Shelf product slots are populated with shaped plush toys, gift packs and keychains below.
+    // Shelves display only character-shaped plush toys and small hanging keychains; no cube-shaped stock.
    }
    const strip=new THREE.Mesh(new THREE.BoxGeometry(1.5,.035,.05),new THREE.MeshStandardMaterial({color:side<0?0xff31c8:0x22e6ff,emissive:side<0?0xff31c8:0x22e6ff,emissiveIntensity:1.1}));strip.position.set(x,3.82,-1.15);g.add(strip);
   }
@@ -210,10 +217,15 @@ function shop(d,index){
   rounded(0,1.28,-.58,3.72,.16,1.18,.07,mat(0xe5d6cb),g);
   box(0,1.36,-1.17,3.55,.045,.045,goldMetal,g);
   box(0,1.36,-.01,3.55,.045,.045,goldMetal,g);
-  const pos=new THREE.Group();pos.position.set(1.12,1.39,-.72);g.add(pos);
-  rounded(0,.32,0,.62,.52,.16,.045,blackGlass,pos);
-  const screenMat=labelTexture('369 PAY  •  CHECKOUT','#07182c','#54efff',true);panel(0,.34,.09,.49,.32,screenMat,pos);
-  box(0,.045,.02,.78,.08,.48,goldMetal,pos);
+  const pos=new THREE.Group();pos.position.set(1.02,1.39,-.72);pos.scale.set(1.25,1.25,1.25);g.add(pos);
+  // Full point-of-sale terminal: upright monitor, thick bezel, stand, keypad and receipt printer.
+  rounded(0,.53,-.02,.82,.68,.20,.07,blackGlass,pos);
+  const screenMat=labelTexture('369 PAY\nTOTAL  12.00','#07182c','#54efff',true);panel(0,.55,.092,.68,.50,screenMat,pos);
+  rounded(0,.13,-.02,.28,.18,.24,.04,goldMetal,pos);
+  rounded(0,.035,-.02,.72,.10,.46,.04,blackGlass,pos);
+  for(let row=0;row<3;row++)for(let col=0;col<4;col++){const key=new THREE.Mesh(new THREE.BoxGeometry(.085,.03,.065),mat((row+col)%3===0?0xff69bd:0x79d9e8));key.position.set(-.24+col*.14,.115,-.12+row*.09);pos.add(key)}
+  const printer=new THREE.Group();printer.position.set(-.72,1.39,-.70);g.add(printer);rounded(0,.16,0,.46,.32,.40,.055,blackGlass,printer);box(0,.33,.205,.28,.018,.015,cream,printer);box(0,.05,.21,.24,.035,.018,goldMetal,printer);
+  const cardReader=new THREE.Group();cardReader.position.set(1.72,1.39,-.35);g.add(cardReader);rounded(0,.14,0,.32,.25,.42,.05,mat(0x253c5b),cardReader);panel(0,.20,.214,.23,.12,labelTexture('TAP','#07182c','#62efff',true),cardReader);
   // Clearly visible POS keypad and contactless payment pad.
   for(let row=0;row<3;row++)for(let col=0;col<4;col++){const key=new THREE.Mesh(new THREE.BoxGeometry(.075,.026,.06),mat((row+col)%3===0?0xff69bd:0x79d9e8));key.position.set(-.23+col*.105,.105,-.13+row*.085);pos.add(key)}
   const tapPad=new THREE.Mesh(new THREE.CircleGeometry(.07,20),new THREE.MeshStandardMaterial({color:0x5be6f2,emissive:0x1c9cae,emissiveIntensity:.65}));tapPad.position.set(.25,.12,.10);pos.add(tapPad);
@@ -258,9 +270,8 @@ function shop(d,index){
   const plushMat=mat(0xb98562);const sphere=(parent,x,y,z,sx,sy,sz,material)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(1,18,14),material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);parent.add(m);return m};
   // Three-dimensional shelf merchandise: plush bears, wrapped gifts and keychains.
   function shelfTeddy(x,y,z,scale=.34){const toy=new THREE.Group();toy.position.set(x,y,z);toy.scale.setScalar(scale);g.add(toy);sphere(toy,0,.28,0,.27,.30,.22,plushMat);sphere(toy,0,.67,0,.23,.23,.20,plushMat);for(const ex of [-.17,.17])sphere(toy,ex,.83,0,.105,.11,.09,plushMat);sphere(toy,-.075,.69,.18,.025,.03,.02,blackGlass);sphere(toy,.075,.69,.18,.025,.03,.02,blackGlass);sphere(toy,0,.59,.20,.09,.065,.035,cream);const bow=new THREE.Mesh(new THREE.TorusGeometry(.10,.025,7,14),softPink);bow.position.set(0,.48,.2);toy.add(bow)}
-  function shelfGift(x,y,z,color){const pack=new THREE.Group();pack.position.set(x,y,z);g.add(pack);rounded(0,.19,0,.42,.38,.32,.045,mat(color),pack);box(0,.39,.01,.055,.035,.34,goldMetal,pack);box(0,.39,.01,.42,.035,.05,goldMetal,pack);const loop=new THREE.Mesh(new THREE.TorusGeometry(.09,.025,7,14),M.pink);loop.position.set(0,.43,0);pack.add(loop)}
   function shelfKeychain(x,y,z){const key=new THREE.Group();key.position.set(x,y,z);g.add(key);const ring=new THREE.Mesh(new THREE.TorusGeometry(.09,.018,8,16),goldMetal);ring.position.y=.24;key.add(ring);const charm=new THREE.Mesh(new THREE.SphereGeometry(.13,16,12),plushMat);charm.scale.set(.9,1.1,.55);charm.position.y=.04;key.add(charm);sphere(key,0,.04,.08,.075,.09,.035,cream)}
-  for(const side of [-1,1])for(let level=0;level<3;level++){const sx=side*3.34,sy=.98+level*.88,sz=-.86;shelfTeddy(sx-.34,sy+.20,sz,.72);if(level!==1)shelfGift(sx+.12,sy+.16,sz,level%2?0x8f72cf:0xff78bd);shelfKeychain(sx+.43,sy+.38,sz)}
+  for(const side of [-1,1])for(let level=0;level<3;level++){const sx=side*3.34,sy=.98+level*.88,sz=-.86;shelfTeddy(sx-.24,sy+.20,sz,.88);plushPenguin(sx+.30,sy+.18,sz+.04,.52);shelfKeychain(sx+.48,sy+.42,sz)}
   // Rounded plush penguin toys displayed as actual character-shaped merchandise.
   const toyDark=mat(0x18243b),toyWhite=mat(0xfffaf0),toyOrange=mat(0xffa72f),toyPink=mat(0xff68b8);
   function plushPenguin(x,y,z,scale=1){
@@ -314,8 +325,16 @@ function shop(d,index){
   sellerBall(seller,.47,sellerBlack,0,1.93,0,.95,.9,.8);sellerBall(seller,.37,sellerWhite,0,1.91,.25,.92,.86,.52);
   sellerBall(seller,.105,sellerOrange,0,1.76,.67,1.25,.65,1);
   for(const ex of [-.145,.145])sellerBall(seller,.052,blackGlass,ex,2.03,.62,1,1,.5);
-  // Tailored uniform jacket, apron, name badge and matching cap.
-  rounded(0,.82,.4,.84,.78,.16,.08,uniform,seller);rounded(0,1.18,.49,.66,.12,.08,.035,uniformTrim,seller);
+  // Soft fabric polo shirt and cloth apron: rounded textile-like torso, curved sleeves and stitched seams.
+  sellerBall(seller,.48,uniform,0,1.04,.08,1.08,.91,.83);
+  const sleeveL=sellerBall(seller,.19,uniform,-.48,1.04,.06,.78,1.05,.82),sleeveR=sellerBall(seller,.19,uniform,.48,1.04,.06,.78,1.05,.82);
+  sellerBall(seller,.31,velvet,0,.92,.43,1.0,.88,.22);
+  // Apron bib, shoulder straps and curved hem in contrasting cloth.
+  const apronShape=new THREE.Shape();apronShape.moveTo(-.29,1.28);apronShape.quadraticCurveTo(-.34,1.2,-.31,.78);apronShape.quadraticCurveTo(0,.68,.31,.78);apronShape.quadraticCurveTo(.34,1.2,.29,1.28);apronShape.lineTo(-.29,1.28);
+  const apronGeo=new THREE.ShapeGeometry(apronShape,16);const apronMesh=new THREE.Mesh(apronGeo,new THREE.MeshStandardMaterial({color:0xffd7eb,roughness:.92,side:THREE.DoubleSide}));apronMesh.position.set(0,0,.56);seller.add(apronMesh);
+  for(const sx of [-.22,.22]){const strap=sellerBall(seller,.055,uniformTrim,sx,1.39,.50,.8,2.3,.45)}
+  const seam=new THREE.Mesh(new THREE.TorusGeometry(.22,.012,6,24,Math.PI),uniformTrim);seam.position.set(0,.83,.59);seller.add(seam);
+  const pocket=new THREE.Mesh(new THREE.PlaneGeometry(.27,.18),labelTexture('369','#fff0f8','#9c287d',true));pocket.position.set(0,.98,.595);seller.add(pocket);
   // Curved fabric cap with rounded crown and projecting visor.
   sellerBall(seller,.34,uniform,0,2.31,0,1.22,.34,.92);sellerBall(seller,.30,uniform,0,2.22,.24,1.3,.16,.72);
   const capBadge=new THREE.Mesh(new THREE.CircleGeometry(.075,20),uniformTrim);capBadge.position.set(0,2.34,.32);seller.add(capBadge);
