@@ -744,20 +744,8 @@ function flowerBed(x,z){
   box(0,y+.19,z+.47,11.05,.065,.08,k%2?pink:cyan,stage);
   box(0,y-.17,z+.02,11.12,.045,.08,k%2?cyan:pink,stage);
  }
- // Main truss portal: strong vertical legs, overhead beam and cross-braced steel.
- for(const side of [-1,1]){
-  box(side*6.15,3.65,-1.65,.42,6.0,.5,"dark",stage);
-  box(side*6.15,3.65,-1.35,.13,5.7,.13,side<0?cyan:pink,stage);
-  for(let y=1.0;y<6.1;y+=.8){
-   const brace=new THREE.Mesh(new THREE.BoxGeometry(.09,.72,.09),side<0?cyanMat:pinkMat);
-   brace.position.set(side*6.15,y,-1.05);brace.rotation.z=side*.72;stage.add(brace);
-  }
- }
- box(0,6.55,-1.65,12.65,.42,.55,"dark",stage);
- for(let x=-6;x<=6;x+=.72){
-  box(x,6.55,-1.25,.08,.08,.62,x%1.44?pink:cyan,stage);
-  if(x<6) {const d=new THREE.Mesh(new THREE.BoxGeometry(.07,.72,.07),x%1.44?pinkMat:cyanMat);d.position.set(x+.36,6.55,-1.23);d.rotation.z=.75;stage.add(d)}
- }
+ // Removed the two tall side truss posts and the overhead crossbar
+ // marked in the latest screenshot; keep the neon arch and graphic wings.
  // Nested neon arches, with real 3D tube geometry.
  const archOuter=new THREE.Mesh(new THREE.TorusGeometry(5.35,.22,12,72,Math.PI),cyanMat);archOuter.position.set(0,3.12,-.62);stage.add(archOuter);
  const archInner=new THREE.Mesh(new THREE.TorusGeometry(5.02,.12,10,72,Math.PI),pinkMat);archInner.position.set(0,3.12,-.54);stage.add(archInner);
@@ -789,8 +777,7 @@ function flowerBed(x,z){
  };
  addWing("./stage-left-wing.svg",-7.45,4.05,7.25,pinkMat);
  addWing("./stage-right-wing.svg",7.45,4.05,7.25,cyanMat);
- // Side LED bars and footlights.
- for(const side of [-1,1])for(let y=1.0;y<5.8;y+=.35)box(side*5.48,y,.1,.09,.19,.12,y%0.7?cyan:pink,stage);
+ // Removed the thin side LED poles beside the arch; retain the stage front footlights.
  for(let x=-5.2;x<=5.2;x+=.65)box(x,1.18,3.15,.42,.08,.08,Math.round(x*10)%2?pink:cyan,stage);
 }
 // Large readable mission and event boards on the left/right plaza edges.
