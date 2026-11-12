@@ -7,7 +7,6 @@
  <filter id="glow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
 </defs>
-<path d="M110 90h400v930H110z" fill="#05091d" opacity=".8" filter="url(#shadow)"/>
 <g stroke="#ff5be5" stroke-width="12" stroke-linecap="round" filter="url(#glow)"><path d="M525 45v150M450 120h150M470 65l110 110M580 65L470 175"/><path d="M530 290v125M468 352h125M485 308l90 90M575 308l-90 90"/></g>
 <!-- microphone panel -->
 <rect x="45" y="80" width="340" height="360" rx="48" fill="url(#gold)" stroke="#fff2a0" stroke-width="16" filter="url(#glow)"/>
