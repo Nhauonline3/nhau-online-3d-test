@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="1100" viewBox="0 0 620 1100">
+<defs>
+ <linearGradient id="pink" x2="1" y2="1"><stop stop-color="#ff75ef"/><stop offset=".45" stop-color="#f000bb"/><stop offset="1" stop-color="#6d087e"/></linearGradient>
+ <linearGradient id="cyan" x2="1" y2="1"><stop stop-color="#9affff"/><stop offset=".5" stop-color="#00cce9"/><stop offset="1" stop-color="#075a9c"/></linearGradient>
+ <linearGradient id="gold" x2="1" y2="1"><stop stop-color="#fff27b"/><stop offset=".5" stop-color="#ffad13"/><stop offset="1" stop-color="#a84a00"/></linearGradient>
+ <linearGradient id="purple" x2="1" y2="1"><stop stop-color="#7427c9"/><stop offset=".55" stop-color="#220d50"/><stop offset="1" stop-color="#080b28"/></linearGradient>
+ <filter id="glow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
+</defs>
+<path d="M110 90h400v930H110z" fill="#05091d" opacity=".8" filter="url(#shadow)"/>
+<g stroke="#ff5be5" stroke-width="12" stroke-linecap="round" filter="url(#glow)"><path d="M525 45v150M450 120h150M470 65l110 110M580 65L470 175"/><path d="M530 290v125M468 352h125M485 308l90 90M575 308l-90 90"/></g>
+<!-- microphone panel -->
+<rect x="45" y="80" width="340" height="360" rx="48" fill="url(#gold)" stroke="#fff2a0" stroke-width="16" filter="url(#glow)"/>
+<rect x="90" y="120" width="250" height="280" rx="35" fill="#7a3100" opacity=".38"/>
+<g fill="none" stroke="#fff8d5" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"><rect x="155" y="155" width="120" height="170" rx="60"/><path d="M125 265v24a90 90 0 0 0 180 0v-24M215 380v42M165 422h100"/></g>
+<g fill="#fff8d5"><rect x="180" y="190" width="15" height="18"/><rect x="210" y="180" width="15" height="28"/><rect x="240" y="190" width="15" height="18"/></g>
+<!-- speaker -->
+<rect x="45" y="465" width="340" height="420" rx="42" fill="url(#purple)" stroke="#ff4be4" stroke-width="15" filter="url(#glow)"/>
+<circle cx="215" cy="585" r="75" fill="#060c26" stroke="#22eaff" stroke-width="18"/><circle cx="215" cy="585" r="32" fill="#182c53" stroke="#8cf4ff" stroke-width="8"/>
+<circle cx="215" cy="770" r="100" fill="#060c26" stroke="#ffb52b" stroke-width="18"/><circle cx="215" cy="770" r="48" fill="#1d2947" stroke="#ffda75" stroke-width="9"/>
+<!-- music tile -->
+<rect x="410" y="455" width="190" height="185" rx="38" fill="url(#cyan)" stroke="#b5ffff" stroke-width="14" filter="url(#glow)"/>
+<path d="M500 575V500l58-14v78" fill="none" stroke="#fff" stroke-width="18" stroke-linejoin="round"/><ellipse cx="480" cy="580" rx="24" ry="17" fill="#fff"/><ellipse cx="540" cy="565" rx="24" ry="17" fill="#fff"/>
+<!-- play tile -->
+<rect x="410" y="665" width="190" height="185" rx="38" fill="url(#pink)" stroke="#ffb5f4" stroke-width="14" filter="url(#glow)"/>
+<path d="M475 705 555 757 475 810z" fill="none" stroke="#fff" stroke-width="19" stroke-linejoin="round"/>
+<!-- gift tile -->
+<rect x="410" y="875" width="190" height="205" rx="38" fill="url(#gold)" stroke="#fff2a0" stroke-width="14" filter="url(#glow)"/>
+<rect x="455" y="955" width="100" height="82" fill="#ec168f" stroke="#fff" stroke-width="12"/>
+<path d="M435 950h140v30H435zM505 950q-80-80-65-10 15 30 65 10 65-85 80-10-10 35-80 10" fill="#ff32c9" stroke="#fff" stroke-width="10"/>
+<!-- linked social icon -->
+<rect x="45" y="910" width="340" height="170" rx="38" fill="url(#purple)" stroke="#ff4be4" stroke-width="14" filter="url(#glow)"/>
+<g fill="none" stroke="#ff4be4" stroke-width="17"><circle cx="145" cy="995" r="28"/><circle cx="285" cy="995" r="28"/><path d="M145 967v-35m0 91v35m140-91v-35m0 91v35"/></g>
+</svg>
