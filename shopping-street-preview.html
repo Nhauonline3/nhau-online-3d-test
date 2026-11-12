@@ -29,9 +29,9 @@ button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px
 
 <div id="walletBar"><div id="walletBalances"><b>🪙 XU: —</b><b>🟡 COIN: —</b></div><button id="walletOpen">👛 VÍ CỦA TÔI</button></div>
 <div id="walletModal"><div id="walletCard"><button id="walletClose">ĐÓNG</button><h2>👛 VÍ 369 CITY</h2><div id="walletSignedOut"><p>Đăng nhập để xem số dư XU và COIN của bạn.</p><label>Email</label><input id="walletEmail" type="email" autocomplete="email" placeholder="Email của bạn"><label>Mật khẩu</label><input id="walletPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu"><div class="walletActions"><button id="walletLogin">ĐĂNG NHẬP</button><button id="walletSignup">TẠO TÀI KHOẢN</button></div></div><div id="walletSignedIn" style="display:none"><p id="walletUserLabel"></p><div id="walletDetails"></div><div class="walletActions"><button id="walletTopup" type="button">💳 NẠP XU</button></div><div id="walletTopupInfo" style="display:none;background:#10284a;border:1px solid #42618b;border-radius:10px;padding:12px;margin-top:10px;font-size:13px;line-height:1.45"><b style="color:#ffe08a">CHỌN GÓI NẠP XU</b><p style="margin:7px 0;color:#c7d9ef">Thanh toán qua PayPal. XU chỉ được cộng sau khi PayPal xác nhận giao dịch hoàn tất.</p><div id="walletTopupPackages" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><span style="color:#9fb9d4">Đang tải gói nạp...</span></div><p id="walletTopupMessage" style="margin:9px 0 0;color:#ffc979"></p></div><div id="walletLock">🔒 Đổi XU sang COIN và thanh toán hàng thật đang tạm khóa đến khi hoàn tất xác nhận pháp lý.</div><div class="walletActions"><button id="walletRefresh">LÀM MỚI SỐ DƯ</button><button id="walletLogout">ĐĂNG XUẤT</button></div><h3 style="font-size:14px;color:#8defff;margin:16px 0 4px">LỊCH SỬ GIAO DỊCH</h3><div id="walletHistory">Chưa tải lịch sử.</div></div><div id="walletStatus"></div></div></div>
-<div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p><div id="giftActions"><button id="giftBrowse">🎁 XEM ĐỒ ĐANG BÁN</button><button id="giftPostOpen">＋ ĐĂNG MÓN ĐỒ</button><div id="giftItems"><div class="giftItem">🧸 Gấu bông Pixel<br><b>120 COIN</b><br><small>Người bán: Mèo Xanh</small></div><div class="giftItem">🎒 Ba lô Neon<br><b>90 COIN</b><br><small>Người bán: Bắp Rang</small></div><div class="giftItem">🪴 Chậu cây mini<br><b>45 COIN</b><br><small>Người bán: Hana</small></div><div class="giftItem">🎧 Tai nghe ảo<br><b>150 COIN</b><br><small>Người bán: Ken</small></div></div><div id="giftPost"><p>ĐĂNG SẢN PHẨM THỬ NGHIỆM</p><input id="giftName" placeholder="Tên món đồ"><input id="giftPrice" placeholder="Giá COIN"><button id="giftPublish">ĐĂNG THỬ</button><small id="giftPostMsg">Bản xem trước chưa lưu sản phẩm lên máy chủ.</small></div></div></div>
+<div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p><div id="giftActions"><button id="giftBrowse">🎁 XEM ĐỒ ĐANG BÁN</button><button id="giftPostOpen">＋ ĐĂNG MÓN ĐỒ</button><div id="giftItems"><div class="giftItem">🧸 Gấu bông Pixel<br><b>120 COIN</b><br><small>Người bán: Mèo Xanh</small></div><div class="giftItem">🎒 Ba lô Neon<br><b>90 COIN</b><br><small>Người bán: Bắp Rang</small></div><div class="giftItem">🪴 Chậu cây mini<br><b>45 COIN</b><br><small>Người bán: Hana</small></div><div class="giftItem">🎧 Tai nghe ảo<br><b>150 COIN</b><br><small>Người bán: Ken</small></div></div><div style="margin-top:10px"><button id="giftEnter">🚪 VÀO GIFT SHOP</button></div><div id="giftPost"><p>ĐĂNG SẢN PHẨM THỬ NGHIỆM</p><input id="giftName" placeholder="Tên món đồ"><input id="giftPrice" placeholder="Giá COIN"><button id="giftPublish">ĐĂNG THỬ</button><small id="giftPostMsg">Bản xem trước chưa lưu sản phẩm lên máy chủ.</small></div></div></div>
 <div id="playerJoy" aria-label="Điều khiển di chuyển"><div id="playerKnob"></div></div>
-<div id="playerActions"><button id="playerJump" aria-label="Nhảy" title="Nhảy">🐧</button><button id="playerCenter" aria-label="Theo nhân vật" title="Theo nhân vật">🎯</button><button id="playerPlaza" aria-label="Về quảng trường" title="Về quảng trường">🏙️</button></div>
+<div id="playerActions"><button id="playerJump" aria-label="Nhảy" title="Nhảy">🐧</button><button id="playerShop" aria-label="Tương tác cửa hàng" title="Tương tác cửa hàng" style="display:none">🛍️</button><button id="playerLeaveShop" aria-label="Ra khỏi cửa hàng" title="Ra khỏi cửa hàng" style="display:none">🚪</button><button id="playerCenter" aria-label="Theo nhân vật" title="Theo nhân vật">🎯</button><button id="playerPlaza" aria-label="Về quảng trường" title="Về quảng trường">🏙️</button></div>
 
 <div class="bottom"><div class="pill">Bản thử nghiệm riêng · Chưa đưa vào game chính</div><button id="reset">ĐẶT LẠI GÓC NHÌN</button></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
@@ -151,7 +151,7 @@ function shop(d,index){
  box(0,4.95,3.86,8.9,1.3,.25,M.dark,g);sign(g,0,5.05,4.02,8.25,1.0,d.tag,a);
  // glass shop front panels with mullions and a central door
  for(const x of [-3.0,-1.5,1.5,3.0]){box(x,2.25,3.83,1.28,3.0,.18,M.glass,g);box(x-.68,2.25,3.96,.09,3.05,.08,a,g)}
- box(0,2.15,3.9,1.3,2.9,.24,M.dark,g);box(0,2.2,4.05,1.08,2.55,.08,M.glass,g);box(.38,2.25,4.12,.08,.12,.06,M.gold,g);
+ // Central doorway kept open for the player to enter; side glass panels remain.
  // colorful awning stripe canopy above display windows
  for(let i=0;i<9;i++){const xx=-4+i*.99;box(xx,3.85,4.42,.94,.28,1.25,i%2?a:M.pink,g)}
  // shelves, display cubes and bright window props
@@ -356,13 +356,32 @@ for(let i=0;i<13;i++){const x=-9+i*1.5;const b=new THREE.Mesh(new THREE.BoxGeome
 const initial={pos:new THREE.Vector3(0,24,48),target:new THREE.Vector3(0,2.4,0)};
 document.getElementById('reset').onclick=()=>{camera.position.copy(initial.pos);controls.target.copy(initial.target);controls.update()};
 document.getElementById('closeInfo').onclick=()=>document.getElementById('shopInfo').style.display='none';
+let nearbyShop=null,insideShop=null;
 function openShopCard(d){
- document.getElementById('shopTitle').textContent=d.name;
- document.getElementById('shopDesc').textContent=d.desc+(d.tag==='GIFTS'?' Người bán ảo: “Xin chào! Mời bạn xem các món đồ do cư dân 369 CITY đăng bán nhé!”':'');
+ document.getElementById('shopTitle').textContent=d.tag==='GIFTS'?'🎁 GIFT SHOP':d.name;
+ document.getElementById('shopDesc').textContent=d.desc+(d.tag==='GIFTS'?' Người bán hàng: “Xin chào! Mời bạn vào xem các món đồ do cư dân 369 CITY đăng bán nhé!”':'');
  document.getElementById('giftActions').style.display=d.tag==='GIFTS'?'block':'none';
  document.getElementById('giftPost').style.display='none';document.getElementById('giftItems').style.display='grid';
  document.getElementById('shopInfo').style.display='block';
 }
+function enterShop(d){
+ document.getElementById('shopInfo').style.display='none';insideShop=d;
+ player.position.set(d.x,0,d.z);pPrev.copy(player.position);
+ const side=d.x<0?1:-1;
+ camera.position.set(d.x+side*3.2,5.2,d.z+7.2);
+ controls.target.set(d.x,1.45,d.z);controls.update();
+ document.getElementById('playerShop').style.display='none';
+ document.getElementById('playerLeaveShop').style.display='flex';
+}
+function leaveShop(){
+ if(!insideShop)return;
+ const d=insideShop,side=d.x<0?1:-1;
+ player.position.set(d.x+side*5.7,0,d.z);pPrev.copy(player.position);
+ camera.position.set(player.position.x+side*7,8,player.position.z+9);
+ controls.target.set(player.position.x,1.6,player.position.z);controls.update();
+ insideShop=null;document.getElementById('playerLeaveShop').style.display='none';
+}
+document.getElementById('giftEnter').onclick=()=>{const d=shopData.find(x=>x.tag==='GIFTS');if(d)enterShop(d)};
 document.getElementById('giftBrowse').onclick=()=>{document.getElementById('giftItems').style.display='grid';document.getElementById('giftPost').style.display='none'};
 document.getElementById('giftPostOpen').onclick=()=>{document.getElementById('giftItems').style.display='none';document.getElementById('giftPost').style.display='block'};
 document.getElementById('giftPublish').onclick=()=>{const n=document.getElementById('giftName').value.trim(),p=document.getElementById('giftPrice').value.trim();document.getElementById('giftPostMsg').textContent=n&&p?'Đã tạo bản xem trước: '+n+' · '+p+' COIN. Chưa lưu lên máy chủ.':'Bạn hãy nhập tên món đồ và giá.'};
@@ -389,6 +408,8 @@ pJoy.addEventListener('pointerup',pEndJoy);pJoy.addEventListener('pointercancel'
 const pKeys={};addEventListener('keydown',e=>{pKeys[e.key.toLowerCase()]=true});addEventListener('keyup',e=>{pKeys[e.key.toLowerCase()]=false});
 function pJump(){if(!pJumping){pJumpV=8;pJumping=true}}
 document.getElementById('playerJump').addEventListener('click',pJump);
+document.getElementById('playerShop').addEventListener('click',()=>{if(nearbyShop)openShopCard(nearbyShop)});
+document.getElementById('playerLeaveShop').addEventListener('click',leaveShop);
 document.getElementById('playerPlaza').addEventListener('click',()=>{
  pEndJoy();player.position.set(0,.46,-91);pPrev.copy(player.position);
  camera.position.set(0,22,-111);controls.target.set(0,2.2,-91);controls.update();
@@ -397,6 +418,20 @@ document.getElementById('playerPlaza').addEventListener('click',()=>{
 
 document.getElementById('playerCenter').addEventListener('click',()=>{const dx=player.position.x-controls.target.x,dz=player.position.z-controls.target.z;camera.position.x+=dx;camera.position.z+=dz;controls.target.set(player.position.x,2.1,player.position.z);controls.update()});
 let pPrev=new THREE.Vector3();pPrev.copy(player.position);const pClock=new THREE.Clock();
+function shopBlocked(x,z){
+ const radius=.48;
+ for(const d of shopData){
+  const halfX=4.25,halfZ=4.45;
+  const insideX=x+radius>d.x-halfX&&x-radius<d.x+halfX;
+  const insideZ=z+radius>d.z-halfZ&&z-radius<d.z+halfZ;
+  if(!insideX||!insideZ)continue;
+  const front=d.x<0?d.x+halfX:d.x-halfX;
+  const atFront=Math.abs(x-front)<.8,doorway=Math.abs(z-d.z)<.82;
+  if(atFront&&doorway)continue;
+  return true;
+ }
+ return false;
+}
 function updatePlayer(){
  const dt=Math.min(pClock.getDelta(),.04);
  let ix=pMoveX+(pKeys['d']||pKeys['arrowright']?1:0)-(pKeys['a']||pKeys['arrowleft']?1:0);
@@ -408,7 +443,16 @@ function updatePlayer(){
  const move=right.multiplyScalar(-ix).add(dir.multiplyScalar(-iy));
  const speed=15.5;const nx=THREE.MathUtils.clamp(player.position.x+move.x*speed*dt,-24,24);
  const nz=THREE.MathUtils.clamp(player.position.z+move.z*speed*dt,-99,29.5);
- player.position.x=nx;player.position.z=nz;
+ if(!shopBlocked(nx,player.position.z))player.position.x=nx;
+ if(!shopBlocked(player.position.x,nz))player.position.z=nz;
+ nearbyShop=null;
+ if(!insideShop){
+  for(const d of shopData){
+   const front=d.x<0?d.x+4.8:d.x-4.8;
+   if(Math.hypot(player.position.x-front,player.position.z-d.z)<3.2){nearbyShop=d;break}
+  }
+ }
+ document.getElementById('playerShop').style.display=nearbyShop?'flex':'none';
  if(len>.08){player.rotation.y=Math.atan2(move.x,move.z);pWings.forEach((w,i)=>w.rotation.z=(i===0?-.35:.35)+Math.sin(performance.now()*.012)*.16)}
  const floorY=player.position.z < -54.1 ? .46 : (player.position.z < -31 ? .08 : 0);
  if(pJumping){pJumpV-=18*dt;player.position.y+=pJumpV*dt;if(player.position.y<=floorY){player.position.y=floorY;pJumpV=0;pJumping=false}}
