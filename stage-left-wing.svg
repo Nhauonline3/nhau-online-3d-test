@@ -10,7 +10,6 @@
 <!-- floating starbursts -->
 <g stroke="#ff5be5" stroke-width="12" stroke-linecap="round" filter="url(#glow)"><path d="M75 150v150M0 225h150M22 172l106 106M128 172L22 278"/><path d="M75 560v125M12 622h126M30 577l90 90M120 577l-90 90"/></g>
 <!-- tower shadow and body -->
-<path d="M115 80h370v930H115z" fill="#05091d" opacity=".8" filter="url(#shadow)"/>
 <!-- headphone medallion -->
 <circle cx="310" cy="170" r="145" fill="#090b27" stroke="#6c168a" stroke-width="24"/>
 <circle cx="298" cy="158" r="137" fill="url(#pink)" stroke="#ffb3f7" stroke-width="12" filter="url(#glow)"/>
