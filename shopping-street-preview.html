@@ -151,7 +151,7 @@ body.ui-modal-open #shopInfo{z-index:20;bottom:18px;max-height:calc(100dvh - 300
 #authGate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;background:rgba(3,10,28,.96);color:#fff;font-family:inherit}#authGate[hidden]{display:none}#authGateCard{width:min(100%,460px);background:#0b1c38;border:1px solid #22dfff;border-radius:22px;padding:24px;box-shadow:0 0 35px #00d9ff35}#authGateCard h1{font-size:25px;margin:0 0 8px;color:#7deaff}#authGateCard p{color:#c3d9f0;line-height:1.5}#authGateCard label{display:block;margin:12px 0 6px;color:#b9d7f2}#authGateCard input{width:100%;box-sizing:border-box;padding:14px;border-radius:11px;border:1px solid #41688f;background:#06142c;color:white;font:inherit;font-size:16px}#authGateActions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}#authGateActions button{padding:13px 8px;border:1px solid #f38bff;border-radius:11px;background:#d82bd5;color:white;font-weight:900;font-size:14px}#authGateMsg{min-height:24px;margin:12px 0 0;color:#ffd16a;font-size:13px;overflow-wrap:anywhere}</style>
 </head>
 <body>
-<div id="authGate">
+<div id="authGate" hidden>
  <div id="authGateCard">
   <h1>🐧 CHÀO MỪNG ĐẾN 369 CITY</h1>
   <p>Đăng ký hoặc đăng nhập một lần để vào thành phố, sử dụng ví, mua hàng và quản lý gian hàng bằng cùng một tài khoản.</p>
@@ -259,7 +259,7 @@ async function walletHandlePayPalReturn(){
 }
 document.getElementById('walletTopup').onclick=async()=>{const el=document.getElementById('walletTopupInfo');el.style.display=el.style.display==='none'?'block':'none';if(el.style.display==='block')await walletLoadTopupPackages()};
 document.getElementById('walletLogout').onclick=async()=>{await walletClient.auth.signOut();walletSession=null;await walletLoad();walletMsg('Đã đăng xuất.')};
-walletClient.auth.getSession().then(async({data})=>{walletSession=data.session;await walletLoad();if(walletSession)authGateHide();else authGateShow();await walletHandlePayPalReturn()});
+walletClient.auth.getSession().then(async({data})=>{walletSession=data.session;await walletLoad();authGateHide();await walletHandlePayPalReturn()});
 function authGateShow(message){document.getElementById('authGate').hidden=false;if(message)document.getElementById('authGateMsg').textContent=message}
 function authGateHide(){document.getElementById('authGate').hidden=true}
 async function authGateLogin(){
@@ -733,10 +733,10 @@ function flowerBed(x,z){
  const pinkLight=new THREE.PointLight(0xff25cf,7,28);pinkLight.position.set(-7,4,2);stage.add(pinkLight);
  const goldLight=new THREE.PointLight(0xffc52f,5,26);goldLight.position.set(7,4,2);stage.add(goldLight);
  // Wide raised stage deck with a layered front fascia.
- box(0,.48,-.55,16.8,.72,8.2,"dark",stage);
- box(0,.88,-.55,16.5,.12,7.95,"purple",stage);
- box(0,.98,-.55,16.1,.08,7.6,amber,stage);
- box(0,1.06,-.55,15.8,.08,7.3,"purple",stage);
+ box(0,.48,-.55,14.2,.72,8.2,"dark",stage);
+ box(0,.88,-.55,13.9,.12,7.95,"purple",stage);
+ box(0,.98,-.55,13.5,.08,7.6,amber,stage);
+ box(0,1.06,-.55,13.2,.08,7.3,"purple",stage);
  // Broad, connected steps — each tread is a full-width continuous slab.
  for(let k=0;k<4;k++){
   const z=3.05+k*.68,y=.20+k*.17;
@@ -780,20 +780,12 @@ function flowerBed(x,z){
  // Use the two dedicated neon graphic panels as real transparent textures on 3D side structures.
  const wingLoader=new THREE.TextureLoader();
  const addWing=(url,x,width,height,edgeColor)=>{
-  // Compact 3D side frame: no empty top/bottom slabs or oversized flat backplate.
-  box(x-width/2-.12,height/2+.35,.68,.24,height+.38,.58,"dark",stage);
-  box(x+width/2+.12,height/2+.35,.68,.24,height+.38,.58,"dark",stage);
+  // Keep only the two graphic wing panels; remove the extra tall side poles,
+  // thick outer rails and little protruding brackets marked in the user's screenshot.
   const tex=wingLoader.load(url,(loaded)=>{loaded.colorSpace=THREE.SRGBColorSpace;loaded.needsUpdate=true;});
   tex.colorSpace=THREE.SRGBColorSpace;
   const art=new THREE.Mesh(new THREE.PlaneGeometry(width,height),new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide,depthWrite:false}));
   art.position.set(x,height/2+.35,1.02);art.renderOrder=8;stage.add(art);
-  // Raised side rails, layered neon edges and small depth spacers.
-  for(const side of [-1,1]){
-   box(x+side*(width/2+.12),height/2+.35,1.10,.14,height+.22,.24,edgeColor,stage);
-   box(x+side*(width/2+.23),height/2+.35,.94,.10,height+.06,.30,"pink",stage);
-   for(let yy=.85;yy<height;yy+=1.25)
-    box(x+side*(width/2+.12),yy+.35,1.24,.22,.18,.34,edgeColor,stage);
-  }
  };
  addWing("./stage-left-wing.svg",-7.45,4.05,7.25,pinkMat);
  addWing("./stage-right-wing.svg",7.45,4.05,7.25,cyanMat);
