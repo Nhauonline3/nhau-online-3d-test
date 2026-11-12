@@ -255,12 +255,31 @@ function shop(d,index){
   // Premium teddy plush, ceramic planter, handbag and headphones as recognizable 3D merchandise.
   const plush=new THREE.Group();plush.position.set(-1.1,1.58,-2.62);g.add(plush);
   const plushMat=mat(0xb98562);const sphere=(parent,x,y,z,sx,sy,sz,material)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(1,18,14),material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);parent.add(m);return m};
+  // Rounded plush penguin toys displayed as actual character-shaped merchandise.
+  const toyDark=mat(0x18243b),toyWhite=mat(0xfffaf0),toyOrange=mat(0xffa72f),toyPink=mat(0xff68b8);
+  function plushPenguin(x,y,z,scale=1){
+   const toy=new THREE.Group();toy.position.set(x,y,z);toy.scale.setScalar(scale);g.add(toy);
+   sphere(toy,0,.36,0,.28,.36,.23,toyDark);sphere(toy,0,.38,.18,.205,.27,.09,toyWhite);
+   sphere(toy,0,.86,0,.25,.25,.22,toyDark);sphere(toy,0,.82,.17,.18,.18,.075,toyWhite);
+   for(const ex of [-.09,.09])sphere(toy,ex,.91,.235,.023,.028,.018,blackGlass);
+   const beak=new THREE.Mesh(new THREE.ConeGeometry(.055,.11,8),toyOrange);beak.rotation.x=Math.PI/2;beak.position.set(0,.78,.27);toy.add(beak);
+   for(const ex of [-.14,.14]){const foot=new THREE.Mesh(new THREE.SphereGeometry(.08,12,10),toyOrange);foot.scale.set(1.3,.45,.8);foot.position.set(ex,.06,.06);toy.add(foot)}
+   const scarf=new THREE.Mesh(new THREE.TorusGeometry(.19,.035,8,16),toyPink);scarf.position.set(0,.66,.02);scarf.rotation.x=Math.PI/2;toy.add(scarf);
+   return toy;
+  }
+  plushPenguin(-2.5,1.2,-1.0,.78);plushPenguin(2.48,2.08,-1.0,.82);
   sphere(plush,0,.32,0,.34,.38,.27,plushMat);sphere(plush,0,.78,0,.29,.3,.25,plushMat);
   for(const ex of [-.22,.22]){sphere(plush,ex,1.0,0,.12,.14,.12,plushMat);sphere(plush,ex,1.0,.1,.07,.08,.06,softPink);sphere(plush,ex*.58,.8,.23,.035,.04,.025,blackGlass)}
   sphere(plush,0,.72,.26,.10,.07,.05,cream);
   // Small branded neck bow and stitched fabric patch.
   const plushBow=new THREE.Mesh(new THREE.TorusGeometry(.13,.045,8,18),M.pink);plushBow.position.set(0,.98,.23);plush.add(plushBow);
   artCard(0,.34,.275,.34,.20,artTeddy,plush);
+  // A colorful handheld game console, modeled with a screen and physical buttons.
+  const consoleToy=new THREE.Group();consoleToy.position.set(.05,1.54,-2.55);consoleToy.rotation.y=.12;g.add(consoleToy);
+  rounded(0,.16,0,.98,.18,.48,.09,mat(0x7c5bb2),consoleToy);
+  rounded(0,.29,.01,.72,.05,.34,.035,mat(0x1d3150),consoleToy);
+  const consoleScreen=new THREE.Mesh(new THREE.PlaneGeometry(.48,.22),labelTexture('PLAY!','#29b8d1','#fff5dc',true));consoleScreen.position.set(0,.32,.19);consoleToy.add(consoleScreen);
+  for(const [bx,bz,bc] of [[-.34,.16,0xff6aa9],[.34,.16,0xffd15b]]){const button=new THREE.Mesh(new THREE.SphereGeometry(.055,12,10),mat(bc));button.position.set(bx,.34,bz);consoleToy.add(button)}
   // Replace bulky plant with a compact glass display pedestal for small merchandise.
   rounded(1.35,.69,-2.65,1.12,.16,.94,.06,blackGlass,g);
   const glassCase=new THREE.Mesh(new THREE.BoxGeometry(.88,.72,.72),new THREE.MeshPhysicalMaterial({color:0x8bdfff,transparent:true,opacity:.16,roughness:.08,metalness:.1,transmission:.65,thickness:.18}));glassCase.position.set(1.35,1.18,-2.65);g.add(glassCase);
