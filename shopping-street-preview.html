@@ -632,6 +632,8 @@ const plazaActionMeshes=[];
  const plazaGroup=new THREE.Group();
  plazaGroup.position.set(0,0,-76);
  scene.add(plazaGroup);
+ const plazaAmbient=new THREE.HemisphereLight(0xa7dcff,0x35416d,1.05);plazaGroup.add(plazaAmbient);
+ const plazaWash=new THREE.PointLight(0x438cff,7,62);plazaWash.position.set(0,13,0);plazaGroup.add(plazaWash);
 
  const mat=(color)=>new THREE.MeshStandardMaterial({color,roughness:.55,metalness:.12});
  const M={grass:mat(0x263d66),edge:mat(0x46577e),cream:mat(0x53648b),tile:mat(0x34466f),tile2:mat(0x465a85),road:mat(0x263653),blue:mat(0x168dff),water:mat(0x0875d5),white:mat(0xf2f7ff),wood:mat(0x9b5592),green:mat(0x168f82),green2:mat(0x39c9a8),dark:mat(0x182747),gold:mat(0xffc44d),red:mat(0xff4b91),purple:mat(0x7540a8)};
@@ -730,7 +732,11 @@ flowerBed(-9,-12);flowerBed(9,-12);flowerBed(-9,12);flowerBed(9,12);
 
 // 369 CITY SOCIAL STAGE — compact open-air performance space at the north edge.
 {
- const stage=new THREE.Group();stage.position.set(0,0,15.8);plazaGroup.add(stage);
+ const stage=new THREE.Group();stage.position.set(0,0,15.8);stage.scale.setScalar(1.25);plazaGroup.add(stage);
+ // Extra local lighting makes the plaza readable on phone screens without flattening the neon night look.
+ const stageFill=new THREE.PointLight(0x5edfff,5.5,28);stageFill.position.set(0,8,5);stage.add(stageFill);
+ const stagePink=new THREE.PointLight(0xff35d2,3.8,20);stagePink.position.set(-7,5,1);stage.add(stagePink);
+ const stageGold=new THREE.PointLight(0xffc85a,3.2,18);stageGold.position.set(7,4,3);stage.add(stageGold);
  const deck=box(0,.62,0,12,.62,4.4,"dark",stage);
  box(0,.96,0,11.7,.12,4.15,amber,stage);
  box(0,1.08,0,11.25,.12,3.82,"purple",stage);
@@ -756,6 +762,20 @@ flowerBed(-9,-12);flowerBed(9,-12);flowerBed(-9,12);flowerBed(9,12);
  // Audience benches face the stage; keep the fountain approach clear.
  bench(-5.6,8.7,0);bench(5.6,8.7,0);
  for(const x of [-7.5,7.5]){box(x,.35,11.4,1.0,.7,1.0,"dark");box(x,.76,11.4,.82,.12,.82,x<0?cyan:pink)}
+ // Friendly voxel visitors make the stage feel occupied. They are decorative NPCs for now.
+ function plazaVisitor(x,z,shirt,skin,hat){
+  const person=new THREE.Group();person.position.set(x,0,z);plazaGroup.add(person);
+  const torso=new THREE.Mesh(new THREE.BoxGeometry(.62,.82,.38),new THREE.MeshStandardMaterial({color:shirt,emissive:shirt,emissiveIntensity:.08}));torso.position.y=1.22;person.add(torso);
+  const head=new THREE.Mesh(new THREE.BoxGeometry(.48,.48,.43),new THREE.MeshStandardMaterial({color:skin}));head.position.y=1.88;person.add(head);
+  const hair=new THREE.Mesh(new THREE.BoxGeometry(.5,.14,.46),new THREE.MeshStandardMaterial({color:hat}));hair.position.y=2.17;person.add(hair);
+  for(const dx of [-.19,.19]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.19,.52,.22),M.dark);leg.position.set(dx,.55,0);person.add(leg)}
+  for(const dx of [-.4,.4]){const arm=new THREE.Mesh(new THREE.BoxGeometry(.18,.62,.2),new THREE.MeshStandardMaterial({color:skin}));arm.position.set(dx,1.25,0);person.add(arm)}
+  person.rotation.y=Math.PI;return person;
+ }
+ const visitors=[[-5.1,5.8,0xff42c9,0xffc18b,0x231a38],[-2.9,7.1,0x25cfff,0xf0b78d,0x34234a],[0,5.4,0xffb938,0x9a654b,0x17243a],[2.8,7.2,0x9a62ff,0xffd0a5,0x36233e],[5.1,5.8,0x48d6a0,0xd99b72,0x1d273a],[-7.2,10.4,0xff6b8c,0xe9bd91,0x2a1c30],[7.2,10.4,0x4b83ff,0xc98b68,0x18243a]];
+ visitors.forEach(v=>plazaVisitor(...v));
+ // Extra illuminated pylons mark the dance/audience zone.
+ for(const x of [-9,9]){box(x,0,7.4,.22,3.4,.22,"dark");box(x,2.5,7.4,.48,.28,.48,x<0?cyan:pink);const glowLight=new THREE.PointLight(x<0?0x20dfff:0xff28c8,2.1,10);glowLight.position.set(x,3,7.4);plazaGroup.add(glowLight)}
 }
 // Large readable mission and event boards on the left/right plaza edges.
 function plazaBoard(x,z,label,sub,color,rotation,action){
