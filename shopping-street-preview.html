@@ -116,6 +116,21 @@ body.ui-modal-open #shopInfo{z-index:20;bottom:18px;max-height:calc(100dvh - 300
 .pdBottom #pdAddCart{background:#16a997;border-color:#16a997;color:#fff;box-shadow:none}
 .pdBottom #pdBuy{background:#ed39ce;border-color:#ed39ce;color:#fff;box-shadow:0 0 12px #ed39ce44}
 #pdToast{background:#fff;color:#26344b;border:1px solid #b7e4ef;box-shadow:0 4px 16px #00152d22}
+
+.pdRating{display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:12px;color:#d99a22}
+#pdReviewOpen{background:#eafaff;color:#087e9b;border:1px solid #a9dce9;border-radius:16px;padding:5px 10px;font-size:11px;box-shadow:none}
+.pdActionModal{display:none;position:absolute;z-index:8;inset:0;background:#07152c99;align-items:center;justify-content:center;padding:18px}
+.pdActionModal.open{display:flex}
+.pdActionCard{position:relative;width:min(100%,390px);background:#fff;color:#26344b;border:1px solid #b8e5ef;border-radius:17px;padding:20px;box-shadow:0 14px 45px #00152d55}
+.pdActionCard h3{margin:0 30px 12px 0;color:#087e9b;font-size:18px}
+.pdActionCard label{display:block;font-size:12px;font-weight:700;margin:12px 0 5px;color:#52627a}
+.pdActionCard select,.pdActionCard textarea{width:100%;box-sizing:border-box;padding:11px;border:1px solid #cbdce7;border-radius:9px;background:#f8fbfe;color:#26344b;font:inherit}
+.pdActionCard textarea{min-height:95px;resize:vertical}
+.pdActionCard>button:not(.pdActionClose){width:100%;margin-top:14px;background:linear-gradient(100deg,#e934d8,#913eea);color:white;border:0}
+.pdActionClose{position:absolute;right:12px;top:12px;background:#eef4f8;color:#40516b;border:0;box-shadow:none;border-radius:50%;width:32px;height:32px;padding:0}
+.pdActionCard small{display:block;color:#718096;font-size:11px;margin-top:9px;line-height:1.4}
+.pdDemoNotice{padding:10px;background:#fff7e8;border:1px solid #f3d49b;border-radius:9px;color:#86611e;font-size:12px;line-height:1.5}
+#pdBuySummary{display:flex;justify-content:space-between;gap:12px;font-weight:800;padding:10px 0}
 </style>
 </head>
 <body>
@@ -130,14 +145,14 @@ body.ui-modal-open #shopInfo{z-index:20;bottom:18px;max-height:calc(100dvh - 300
  <div class="pdScroll">
   <div class="pdHero"><div class="pdBadge">369 CITY · GIFT SHOP</div><div id="pdArt" class="pdArt">🧸</div><div class="pdDots">● ● ● ●</div><div class="pdPhotoCount">1/4</div></div>
   <div class="pdPrice"><strong id="pdPrice">120 COIN</strong><span id="pdOldPrice">150 COIN</span><em>−20%</em><small>Giá trong thế giới ảo 369 CITY</small></div>
-  <div class="pdTitle"><h2 id="pdName">Gấu bông Pixel</h2><div>⭐ 4.9　|　Đã có người sưu tầm</div><p id="pdDesc">Gấu bông mềm mại phong cách Pixel, món quà đáng yêu để trang trí căn phòng của bạn.</p></div>
+  <div class="pdTitle"><h2 id="pdName">Gấu bông Pixel</h2><div class="pdRating">⭐ <span id="pdRatingValue">4.9</span>　|　<span id="pdReviewCount">0</span> đánh giá　<button type="button" id="pdReviewOpen">✍️ Viết đánh giá</button></div><p id="pdDesc">Gấu bông mềm mại phong cách Pixel, món quà đáng yêu để trang trí căn phòng của bạn.</p></div>
   <div class="pdSection"><b>Phân loại</b><div id="pdVariants"><button class="pdVariant selected">Mặc định</button><button class="pdVariant">Phiên bản Neon</button></div></div>
   <div class="pdSection"><b>Thông tin giao nhận</b><p>📦 Vật phẩm ảo sẽ được thêm vào kho đồ sau khi tính năng mua hàng được kích hoạt.</p><p>🛡️ Giao dịch thử nghiệm · Chưa trừ COIN thật</p></div>
   <div class="pdSection"><b>Chi tiết sản phẩm</b><p id="pdDetails">Thiết kế độc quyền của cư dân 369 CITY. Có thể dùng để trang trí không gian cá nhân.</p></div>
   <div class="pdSection"><b>Đánh giá sản phẩm　⭐ 4.9</b><p>“Hình ảnh dễ thương, màu sắc đẹp.”</p><p>“Rất hợp để sưu tầm trong 369 CITY.”</p></div>
  </div>
  <div class="pdBottom"><button id="pdAddCart">＋ Thêm vào giỏ</button><button id="pdBuy">Mua ngay</button></div>
- <div id="pdToast"></div>
+ <div id="pdReviewModal" class="pdActionModal" aria-hidden="true"><div class="pdActionCard"><button type="button" class="pdActionClose" id="pdReviewClose">✕</button><h3>Đánh giá sản phẩm</h3><p id="pdReviewProduct"></p><label for="pdReviewStars">Số sao</label><select id="pdReviewStars"><option value="5">⭐⭐⭐⭐⭐ - Rất tốt</option><option value="4">⭐⭐⭐⭐ - Tốt</option><option value="3">⭐⭐⭐ - Bình thường</option><option value="2">⭐⭐ - Chưa tốt</option><option value="1">⭐ - Không hài lòng</option></select><label for="pdReviewText">Nhận xét</label><textarea id="pdReviewText" maxlength="300" placeholder="Chia sẻ cảm nhận của bạn..."></textarea><button type="button" id="pdReviewSubmit">GỬI ĐÁNH GIÁ</button><small id="pdReviewMsg">Đánh giá thử nghiệm được lưu trên thiết bị này.</small></div></div><div id="pdBuyModal" class="pdActionModal" aria-hidden="true"><div class="pdActionCard"><button type="button" class="pdActionClose" id="pdBuyClose">✕</button><h3>Xác nhận mua hàng</h3><div id="pdBuySummary"></div><p class="pdDemoNotice">Đây là giao dịch thử nghiệm. Chưa trừ COIN và chưa tạo đơn hàng thật.</p><button type="button" id="pdConfirmBuy">XÁC NHẬN MUA THỬ</button></div></div><div id="pdToast"></div>
 </div>
 <div id="playerJoy" aria-label="Điều khiển di chuyển"><div id="playerKnob"></div></div>
 <div id="playerActions"><button id="playerJump" aria-label="Nhảy" title="Nhảy">🐧</button><button id="playerShop" aria-label="Tương tác cửa hàng" title="Tương tác cửa hàng" style="display:none">🛍️</button><button id="playerLeaveShop" aria-label="Ra khỏi cửa hàng" title="Ra khỏi cửa hàng" style="display:none">🚪</button><button id="playerCenter" aria-label="Theo nhân vật" title="Theo nhân vật">🎯</button><button id="playerPlaza" aria-label="Về quảng trường" title="Về quảng trường">🏙️</button></div>
@@ -689,12 +704,24 @@ const giftCatalog=[
  {name:'Tai nghe ảo',price:150,old:180,emoji:'🎧',seller:'Ken',desc:'Tai nghe phong cách tương lai dành cho cư dân thành phố.',detail:'Phụ kiện tai nghe ảo phong cách công nghệ, dùng để làm đẹp nhân vật.'}
 ];
 let pdCartCount=0,pdCurrent=null;
-function pdOpen(item){pdCurrent=item;document.getElementById('pdName').textContent=item.name;document.getElementById('pdPrice').textContent=item.price+' COIN';document.getElementById('pdOldPrice').textContent=item.old+' COIN';const art=document.getElementById('pdArt');art.textContent='';if(item.image){const img=document.createElement('img');img.src=item.image;img.alt=item.name;img.style.cssText='width:min(58vw,240px);height:min(34vh,240px);object-fit:contain';art.appendChild(img)}else art.textContent=item.emoji||'🎁';document.getElementById('pdDesc').textContent=item.desc;document.getElementById('pdDetails').textContent=item.detail;document.getElementById('productDetail').classList.add('open');document.body.classList.add('ui-modal-open');document.getElementById('productDetail').setAttribute('aria-hidden','false')}
+function pdOpen(item){pdCurrent=item;document.getElementById('pdName').textContent=item.name;document.getElementById('pdPrice').textContent=item.price+' COIN';document.getElementById('pdOldPrice').textContent=item.old+' COIN';const art=document.getElementById('pdArt');art.textContent='';if(item.image){const img=document.createElement('img');img.src=item.image;img.alt=item.name;img.style.cssText='width:min(58vw,240px);height:min(34vh,240px);object-fit:contain';art.appendChild(img)}else art.textContent=item.emoji||'🎁';document.getElementById('pdDesc').textContent=item.desc;document.getElementById('pdDetails').textContent=item.detail;pdRefreshReviews();document.getElementById('productDetail').classList.add('open');document.body.classList.add('ui-modal-open');document.getElementById('productDetail').setAttribute('aria-hidden','false')}
 function pdClose(){document.getElementById('productDetail').classList.remove('open');document.body.classList.remove('ui-modal-open');document.getElementById('productDetail').setAttribute('aria-hidden','true')}
 document.getElementById('giftItems').addEventListener('click',e=>{const card=e.target.closest('.giftItem');if(!card)return;if(card.dataset.demoIndex!==undefined){const p=readDemoProducts()[Number(card.dataset.demoIndex)];if(p)pdOpen(p);return}const cards=[...document.querySelectorAll('#giftItems .giftItem:not([data-demo-product])')],n=cards.indexOf(card);if(giftCatalog[n])pdOpen(giftCatalog[n])});
 document.getElementById('pdBack').onclick=pdClose;
 document.getElementById('pdAddCart').onclick=()=>{pdCartCount++;document.getElementById('pdCartCount').textContent=pdCartCount;const t=document.getElementById('pdToast');t.textContent='Đã thêm vào giỏ hàng thử nghiệm';t.style.display='block';setTimeout(()=>t.style.display='none',1800)};
-document.getElementById('pdBuy').onclick=()=>{const t=document.getElementById('pdToast');t.textContent='Chức năng thanh toán đang trong giai đoạn thử nghiệm';t.style.display='block';setTimeout(()=>t.style.display='none',2200)};
+function pdToastMessage(message){const t=document.getElementById('pdToast');t.textContent=message;t.style.display='block';setTimeout(()=>t.style.display='none',2500)}
+function pdShowModal(id){document.getElementById(id).classList.add('open');document.getElementById(id).setAttribute('aria-hidden','false')}
+function pdHideModal(id){document.getElementById(id).classList.remove('open');document.getElementById(id).setAttribute('aria-hidden','true')}
+function pdReviews(){try{return JSON.parse(localStorage.getItem('369city-product-reviews-v1')||'{}')}catch(e){return{}}}
+function pdRefreshReviews(){if(!pdCurrent)return;const list=pdReviews()[pdCurrent.name]||[];document.getElementById('pdReviewCount').textContent=String(list.length);if(list.length){const avg=list.reduce((a,r)=>a+Number(r.stars),0)/list.length;document.getElementById('pdRatingValue').textContent=avg.toFixed(1)}else document.getElementById('pdRatingValue').textContent='4.9'}
+document.getElementById('pdBuy').onclick=()=>{if(!pdCurrent){pdToastMessage('Bạn hãy chọn sản phẩm trước.');return}document.getElementById('pdBuySummary').innerHTML='';const name=document.createElement('span'),price=document.createElement('strong');name.textContent=pdCurrent.name;price.textContent=pdCurrent.price+' COIN';document.getElementById('pdBuySummary').append(name,price);pdShowModal('pdBuyModal')};
+document.getElementById('pdBuyClose').onclick=()=>pdHideModal('pdBuyModal');
+document.getElementById('pdConfirmBuy').onclick=()=>{if(!pdCurrent)return;try{const key='369city-demo-purchases-v1',items=JSON.parse(localStorage.getItem(key)||'[]');items.unshift({name:pdCurrent.name,price:pdCurrent.price,at:new Date().toISOString()});localStorage.setItem(key,JSON.stringify(items));pdHideModal('pdBuyModal');pdToastMessage('Đã ghi nhận đơn mua thử nghiệm! Chưa trừ COIN.')}catch(e){pdToastMessage('Không lưu được đơn thử nghiệm trên thiết bị này.')}};
+document.getElementById('pdReviewOpen').onclick=()=>{if(!pdCurrent)return;document.getElementById('pdReviewProduct').textContent=pdCurrent.name;document.getElementById('pdReviewText').value='';document.getElementById('pdReviewMsg').textContent='Đánh giá thử nghiệm được lưu trên thiết bị này.';pdShowModal('pdReviewModal')};
+document.getElementById('pdReviewClose').onclick=()=>pdHideModal('pdReviewModal');
+document.getElementById('pdReviewSubmit').onclick=()=>{if(!pdCurrent)return;const review=document.getElementById('pdReviewText').value.trim();if(!review){document.getElementById('pdReviewMsg').textContent='Bạn hãy nhập nhận xét trước khi gửi.';return}try{const all=pdReviews();all[pdCurrent.name]=all[pdCurrent.name]||[];all[pdCurrent.name].push({stars:Number(document.getElementById('pdReviewStars').value),text:review,at:new Date().toISOString()});localStorage.setItem('369city-product-reviews-v1',JSON.stringify(all));pdHideModal('pdReviewModal');pdRefreshReviews();pdToastMessage('Cảm ơn bạn đã đánh giá sản phẩm!')}catch(e){document.getElementById('pdReviewMsg').textContent='Không lưu được đánh giá trên thiết bị này.'}};
+document.getElementById('pdReviewModal').addEventListener('click',e=>{if(e.target.id==='pdReviewModal')pdHideModal('pdReviewModal')});
+document.getElementById('pdBuyModal').addEventListener('click',e=>{if(e.target.id==='pdBuyModal')pdHideModal('pdBuyModal')});
 document.getElementById('pdShare').onclick=()=>{const t=document.getElementById('pdToast');t.textContent='Chia sẻ sản phẩm sẽ được bổ sung';t.style.display='block';setTimeout(()=>t.style.display='none',1800)};
 document.querySelectorAll('.pdVariant').forEach(b=>b.onclick=()=>{document.querySelectorAll('.pdVariant').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')});
 
