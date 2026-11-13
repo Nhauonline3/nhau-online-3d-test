@@ -332,7 +332,7 @@ function sign(parent,x,y,z,w,h,text,accent){box(x,y,z,w+.28,h+.28,.22,M.dark,par
 box(0,-.55,0,110,.5,110,M.ground);box(0,-.18,0,37,.18,64,M.road);
 const roadTile=new THREE.MeshStandardMaterial({color:0x3c568b,roughness:.28,metalness:.38});const roadTileAlt=new THREE.MeshStandardMaterial({color:0x304675,roughness:.30,metalness:.35});const roadSeam=glow(0x365cff);
 for(let z=-31;z<=31;z+=2){for(let x=-7;x<=7;x+=2){box(x,.012,z,1.94,.07,1.94,((Math.round(x/2)+Math.round(z/2))%2===0)?roadTile:roadTileAlt)}}
-for(const x of [-8.15,8.15]){box(x,.02,0,.22,.12,64,M.dark);box(x,.11,0,.10,.07,64,x<0?M.cyan:M.pink)}
+// Removed the two long dark roadside strips and their bright edge lines beside the stage.
 // subtle central pixel motif and directional arrows
 for(let z=-25;z<=25;z+=5){box(0,.045,z,.10,.025,1.5,roadSeam)}
 function roadArrow(z){for(let k=0;k<3;k++){const y=.075+k*.62;const v=box(0,y,z+k*.72,1.25,.055,.18,M.pink);v.rotation.z=k%2?-.58:.58}}
