@@ -650,7 +650,7 @@ const plazaActionMeshes=[];
  function bench(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;box(0,.65,0,2.5,.22,.75,"wood",g);box(0,1.05,-.28,2.5,.8,.2,"wood",g);for(const dx of [-.9,.9])box(dx,.15,0,.18,.8,.18,"dark",g);plazaGroup.add(g)}
 
  // Surrounding lawn and raised square LEGO platform
-box(0,-.55,0,180,.5,180,'grass');
+// Crop the oversized blue ground to the exact 46×46 plaza platform footprint; no extra rear ground beyond the plaza.\nbox(0,-.55,0,46,.5,46,'grass');
 const wet=new THREE.MeshStandardMaterial({color:0x405987,metalness:.38,roughness:.3});box(0,.12,0,43.8,.12,43.8,wet);
 box(0,-.12,0,46,.55,46,'edge');
 box(0,.16,0,43.8,.18,43.8,'cream');
