@@ -738,7 +738,7 @@ function flowerBed(x,z){
  const spotSpecs=[[-4.5,7.8,1.2,0xff2bd2],[0,8.2,.8,0x20eaff],[4.5,7.8,1.2,0xffc52f]];
  for(const [sx,sy,sz,color] of spotSpecs){
   const spot=new THREE.SpotLight(color,95,25,Math.PI/5,.55,1.25);
-  spot.position.set(sx,sy,sz);spot.target.position.set(sx*.35,1.2,4.2);stage.add(spot,spot.target);
+  spot.position.set(sx,sy,sz);spot.target.position.set(sx*.25,1.35,-1.35);stage.add(spot,spot.target);
   const beam=new THREE.Mesh(new THREE.ConeGeometry(1.05,5.8,20,1,true),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.105,depthWrite:false,side:THREE.DoubleSide}));
   beam.position.set(sx*.72,4.3,2.6);beam.rotation.x=Math.PI/2.35;beam.rotation.z=-sx*.025;stage.add(beam);
  }
@@ -752,7 +752,7 @@ function flowerBed(x,z){
   const lens=new THREE.Mesh(new THREE.CircleGeometry(.17,16),new THREE.MeshBasicMaterial({color:fixtureGlow[i]}));
   lens.position.set(x,5.62,-.18);lens.rotation.x=-Math.PI/2;stage.add(lens);
   const lamp=new THREE.SpotLight(fixtureGlow[i],58,22,Math.PI/7,.6,1.1);
-  lamp.position.set(x,5.58,-.15);lamp.target.position.set(x*.65,1.1,3.7);stage.add(lamp,lamp.target);
+  lamp.position.set(x,5.58,-.15);lamp.target.position.set(x*.3,1.35,-1.25);stage.add(lamp,lamp.target);
  }
  // Neon concert truss behind the arch.
  const trussMat=new THREE.MeshStandardMaterial({color:0xcbd5e1,metalness:.92,roughness:.2,emissive:0x334155,emissiveIntensity:.22});
@@ -761,7 +761,8 @@ function flowerBed(x,z){
   const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,delta.length(),8),trussMat);
   mesh.position.copy(va).add(vb).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());stage.add(mesh);
  };
- for(const z of [-1.15,-.25]){
+ // Move the stainless truss deeper behind the neon arch; keep all six hanging lamps in their existing positions.
+ for(const z of [-2.75,-2.05]){
   trussBar([-6.5,6.25,z],[6.5,6.25,z],.085);
   trussBar([-6.5,6.25,z],[-6.5,5.75,z],.085);trussBar([6.5,6.25,z],[6.5,5.75,z],.085);
   for(let x=-6.2;x<6.3;x+=.65){trussBar([x,6.25,z],[x+.65,5.75,z],.035);trussBar([x+.65,6.25,z],[x,5.75,z],.035)}
