@@ -43,7 +43,105 @@ const venues=[
 function labelTexture(text,color){const c=document.createElement('canvas');c.width=512;c.height=128;const ctx=c.getContext('2d');ctx.clearRect(0,0,512,128);ctx.font='bold 48px Arial';ctx.textAlign='center';ctx.lineWidth=12;ctx.strokeStyle='#15112c';ctx.strokeText(text,256,82);ctx.fillStyle='#fff';ctx.shadowColor=color;ctx.shadowBlur=22;ctx.fillText(text,256,82);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t}
 const colliders=[];const interactables=[];
 function building(v){const g=new THREE.Group();g.position.set(v.x,0,v.z);const width=10,depth=9;let body=new THREE.Mesh(new THREE.BoxGeometry(width,6,depth),mat(0x30334f));body.position.y=3;body.castShadow=true;body.receiveShadow=true;g.add(body);let roof=new THREE.Mesh(new THREE.ConeGeometry(7.2,2.8,4),mat(0x171a35));roof.rotation.y=Math.PI/4;roof.position.y=7.2;g.add(roof);let door=new THREE.Mesh(new THREE.BoxGeometry(2.4,3.4,.25),mat(0x11142b));door.position.set(0,1.7,depth/2+.14);g.add(door);let sign=new THREE.Mesh(new THREE.PlaneGeometry(8.8,1.9),new THREE.MeshBasicMaterial({map:labelTexture(v.name,'#'+v.c.toString(16)),transparent:true,side:THREE.DoubleSide}));sign.position.set(0,5.3,depth/2+.3);g.add(sign);let glow=new THREE.PointLight(v.warm,3,13);glow.position.set(0,4,depth/2+2);g.add(glow);for(let side of [-1,1]){let win=new THREE.Mesh(new THREE.BoxGeometry(1.6,2.2,.18),mat(0xffbb62,0xff8a22,.7));win.position.set(side*3,2.7,depth/2+.18);g.add(win)}scene.add(g);colliders.push({x:v.x,z:v.z,w:width+1,d:depth+1});interactables.push({x:v.x,z:v.z,name:v.name,desc:v.desc});}
-venues.forEach(building);
+venues.filter(v=>!['QUÁN GAME','KARAOKE'].includes(v.name)).forEach(building);
+
+// LAWSON × TAITO: replace the two circled pixel shops with one connected multi-floor landmark.
+function createLawsonTaito(){
+ const g=new THREE.Group();g.position.set(-13,0,-18);g.scale.setScalar(.78);scene.add(g);
+ const m=(c,r=.55,metal=0,em=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:metal,emissive:em,emissiveIntensity:.18});
+ const cream=m(0xe8dfd2,.78),tile=m(0x958b82,.8),red=m(0xe91f25,.4),redTop=m(0xff352e,.35),blue=m(0x0877d2,.38),white=m(0xf6f2e9,.4),yellow=m(0xffc72a,.3),dark=m(0x19171b,.5),pink=m(0xf49ab6,.3),silver=m(0xb7c0c5,.3,.55),glass=m(0x8bd8e8,.2,.12,0x164451);
+ function put(geo,mat,x,y,z,parent=g){const o=new THREE.Mesh(geo,mat);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
+ function bx(x,y,z,w,h,d,mat,bevel=.06,parent=g){const s=new THREE.Shape();const r=Math.min(bevel,w/2-.01,h/2-.01);s.moveTo(-w/2+r,-h/2);s.lineTo(w/2-r,-h/2);s.quadraticCurveTo(w/2,-h/2,w/2,-h/2+r);s.lineTo(w/2,h/2-r);s.quadraticCurveTo(w/2,h/2,w/2-r,h/2);s.lineTo(-w/2+r,h/2);s.quadraticCurveTo(-w/2,h/2,-w/2,h/2-r);s.lineTo(-w/2,-h/2+r);s.quadraticCurveTo(-w/2,-h/2,-w/2+r,-h/2);const geo=new THREE.ExtrudeGeometry(s,{depth:d,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:Math.min(bevel,d/3),bevelThickness:Math.min(bevel,d/3),curveSegments:6});geo.translate(0,0,-d/2);return put(geo,mat,x,y,z,parent)}
+ function sph(x,y,z,r,mat,sx=1,sy=1,sz=1,parent=g){const o=put(new THREE.SphereGeometry(r,24,16),mat,x,y,z,parent);o.scale.set(sx,sy,sz);return o}
+ function tube(points,r,mat,parent=g){const c=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));return put(new THREE.TubeGeometry(c,48,r,8,false),mat,0,0,0,parent)}
+ function text(str,x,y,z,w,h,bg,fg='#fff',parent=g){const c=document.createElement('canvas');c.width=1024;c.height=256;const q=c.getContext('2d');q.fillStyle=bg;q.fillRect(0,0,1024,256);q.fillStyle=fg;q.font='900 112px Arial';q.textAlign='center';q.textBaseline='middle';q.fillText(str,512,132);const tx=new THREE.CanvasTexture(c);tx.colorSpace=THREE.SRGBColorSpace;return put(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:tx}),x,y,z,parent)}
+ // Lawson ground floor, blue wraparound fascia and glazed shopfront.
+ bx(0,1.65,0,10.8,3.3,8.1,white,.22);
+ bx(0,3.3,0,11,.34,8.25,blue,.12);
+ bx(0,3.48,0,11.05,.12,8.3,white,.05);
+ text('LAWSON',0,3.32,4.18,4.1,.6,'#0877d2');
+ for(const x of [-4.1,-2.05,0,2.05,4.1]){
+  bx(x,1.65,4.12,1.82,2.2,.12,glass,.025);
+  bx(x-.9,1.65,4.2,.055,2.25,.06,silver,.015);
+  bx(x+.9,1.65,4.2,.055,2.25,.06,silver,.015);
+  bx(x,2.77,4.2,1.85,.06,.06,silver,.015);
+  for(let row=0;row<3;row++){
+   bx(x,0.9+row*.48,4.0,1.5,.045,.06,silver,.01);
+   for(let j=0;j<4;j++)bx(x-.55+j*.36,1.08+row*.48,4.05,.16,.23,.09,m([0xff8b38,0x43bfd0,0xf0d044,0x57a76b][j]),.02);
+  }
+ }
+ bx(-.25,1.55,4.25,1.15,2.45,.1,m(0x20384b),.025);bx(-.25,1.55,4.32,.98,2.2,.05,glass,.02);
+ // Taito Station red arcade level, slightly offset like reference.
+ bx(-1.45,5.45,.05,7.25,2.55,7.65,red,.13);
+ bx(-1.45,6.77,.05,7.45,.25,7.8,redTop,.1);
+ text('TAITO STATION',-1.45,6.12,3.92,5.7,.62,'#e91f25');
+ for(const y of [5.48,5.08,4.68])bx(-1.45,y,3.96,5.8,.14,.1,dark,.035);
+ // Space Invaders pixel emblem: individual raised square tiles.
+ const pix=[[-1,1],[0,1],[1,1],[-2,0],[-1,0],[0,0],[1,0],[2,0],[-2,-1],[2,-1],[-3,-2],[-2,-2],[-1,-2],[0,-2],[1,-2],[2,-2],[3,-2]];
+ for(const [px,py] of pix)bx(-1.45+px*.2,3.9+py*.19,4.0,.18,.18,.12,white,.015);
+ // speaker pair and side wall vents.
+ bx(1.55,4.85,4.0,1.05,1.35,.24,m(0xb76d5d),.08);
+ for(const y of [4.55,5.12]){sph(1.55,y,4.17,.27,dark);sph(1.55,y,4.23,.17,silver)}
+ bx(4.0,5.15,1.2,.62,.82,.2,silver,.05);for(let i=0;i<5;i++)bx(3.78+i*.11,5.15,1.32,.035,.6,.035,dark,.01);
+ // Upper rounded tiled tower, with tile grid on front.
+ bx(1.15,9.35,.1,7.15,5.15,7.65,cream,.62);
+ for(let x=-2.3;x<=4.55;x+=.23)bx(x,9.35,4.0,.018,4.95,.025,tile,.004);
+ for(let y=6.85;y<=11.85;y+=.23)bx(1.15,y,4.0,6.9,.018,.025,tile,.004);
+ for(let z=-3.6;z<=3.8;z+=.23)bx(4.75,9.35,z,.025,4.95,.018,tile,.004);
+ for(let y=6.85;y<=11.85;y+=.23)bx(4.75,y,.1,.025,.018,7.5,tile,.004);
+ // Face details mounted toward the street: long dark eyes, yellow-orange lids, pink mouth.
+ for(const x of [-.75,1.0]){
+  bx(x,9.45,4.17,.82,2.15,.2,dark,.38);
+  sph(x,10.58,4.24,.43,yellow,1,.52,.35);
+  sph(x-.12,9.08,4.3,.11,dark);sph(x+.12,9.08,4.3,.11,dark);
+ }
+ tube([[-.25,8.95,4.25],[-.12,8.68,4.38],[.18,8.66,4.4],[.38,8.9,4.34]],.1,pink);
+ // Deep layered Poké Ball relief, facing forward.
+ const pb=new THREE.Group();pb.position.set(3.65,9.25,4.02);g.add(pb);
+ put(new THREE.CylinderGeometry(1.42,1.42,.34,48),m(0x76646a,.3,.2),0,0,0,pb).rotation.x=Math.PI/2;
+ put(new THREE.SphereGeometry(1.2,48,24,0,Math.PI*2,0,Math.PI/2),m(0xef171d,.25),0,0,.2,pb);
+ put(new THREE.SphereGeometry(1.2,48,24,0,Math.PI*2,Math.PI/2,Math.PI/2),white,0,0,.2,pb);
+ const rim=put(new THREE.TorusGeometry(1.36,.16,12,72),m(0x9a8589,.28,.15),0,0,.05,pb);
+ const band=put(new THREE.TorusGeometry(1.2,.105,12,72),dark,0,0,.28,pb);
+ put(new THREE.CylinderGeometry(.34,.34,.18,40),dark,0,0,1.25,pb).rotation.x=Math.PI/2;
+ put(new THREE.CylinderGeometry(.23,.23,.12,40),white,0,0,1.39,pb).rotation.x=Math.PI/2;
+ // White curved orbit with glossy colored beads around the front and side.
+ const orbit=put(new THREE.TorusGeometry(4.05,.17,10,96),white,0,7.25,.05,g);orbit.rotation.x=Math.PI/2;orbit.scale.set(1,.72,1);
+ const colors=[0xf0444d,0x328be8,0xffd34c,0xe78ac5,0x27ad79,0xf2eee8,0xe99b4c,0x9878d1,0x45bfc1,0xf0c343,0xe65c79,0x3d9d63];
+ for(let i=0;i<12;i++){const a=-1.2+i*2.4/11;sph(1.15+4.05*Math.sin(a),7.25,.05+2.92*Math.cos(a),.29,m(colors[i],.22,.05),1,1,.82)}
+ // Yellow roof cornice, orange inset roof and open two-sided ITO EN frame.
+ bx(1.15,12.05,.1,7.8,.42,8.35,yellow,.28);bx(1.15,11.82,.1,7.45,.1,8.0,m(0xf27b25),.18);
+ bx(1.15,13.25,-1.05,4.25,1.45,.13,m(0x293c35,.4,.35),.025);
+ bx(1.15,13.25,1.25,4.25,1.45,.13,m(0x293c35,.4,.35),.025);
+ bx(-.98,13.25,.1,.13,1.45,2.3,m(0x293c35,.4,.35),.025);bx(3.28,13.25,.1,.13,1.45,2.3,m(0x293c35,.4,.35),.025);
+ bx(1.15,13.25,-.98,4.05,1.2,.05,m(0xe1eee2),.015);text('🍀 ITO EN',1.15,13.25,-.94,3.8,.78,'#e1eee2','#183020');
+ bx(1.15,13.25,1.18,4.05,1.2,.05,m(0xe1eee2),.015);text('🍀 ITO EN',1.15,13.25,1.22,3.8,.78,'#e1eee2','#183020');
+ // Visible electrical conduits and junction boxes on the facade.
+ for(const x of [-2.5,-2.1,-1.7])bx(x,11.15,4.12,.16,.55,.12,white,.03);
+ tube([[-2.5,11.4,4.18],[-2.5,11.65,4.18],[-1.7,11.65,4.18],[-1.7,11.0,4.18]],.045,silver);
+ bx(2.25,11.05,4.13,.45,.62,.15,white,.04);
+ // Lawson vending machine, payment terminals, AC unit, street details.
+ bx(2.35,1.55,4.55,.9,2.45,.5,m(0x0754a8),.1);bx(2.35,1.95,4.83,.72,1.3,.04,glass,.025);
+ for(let i=0;i<3;i++)for(let j=0;j<3;j++)bx(2.1+j*.23,2.25-i*.38,4.87,.15,.2,.05,m([0xe74742,0x48b9d0,0xf0d044][(i+j)%3]),.015);
+ text('KIRIN',2.35,.42,4.84,.65,.22,'#0754a8');
+ for(const x of [3.35,4.05]){bx(x,.78,4.55,.48,1.1,.55,m(0x354353),.07);bx(x,.9,4.85,.32,.38,.04,silver,.02)}
+ bx(-4.35,4.55,4.22,.9,.9,.28,silver,.07);
+ for(const y of [4.3,4.72])sph(-4.35,y,4.4,.2,dark);
+ // side sign plate and delivery scene.
+ bx(4.8,7.75,.2,1.25,.55,.12,dark,.2);
+ // tiny people at the entrance.
+ function person(x,z,shirt){const body=put(new THREE.CylinderGeometry(.16,.2,.85,10),m(0x24232a),x,.55,z);sph(x,1.12,z,.17,m(0xc99b7b));bx(x,.65,z+.02,.38,.55,.24,m(shirt),.06)}
+ person(-2.7,4.85,0x252a36);person(.2,5.05,0x343b4b);person(4.45,4.8,0x28252b);
+ // sidewalk rails and two bicycles.
+ for(const x of [-5.3,5.3]){for(const z of [3.8,5.5,7.2])put(new THREE.CylinderGeometry(.045,.045,1.2,8),silver,x,.6,z).rotation.z=Math.PI/2}
+ function bike(x,z){for(const dx of [-.55,.55]){const w=put(new THREE.TorusGeometry(.3,.035,8,24),silver,x+dx,.38,z);w.rotation.y=Math.PI/2}tube([[x-.55,.38,z],[x-.12,.82,z],[x+.55,.38,z],[x-.55,.38,z]],.035,silver);tube([[x-.12,.82,z],[x+.2,.82,z],[x+.55,.38,z]],.03,dark)}
+ bike(-5.7,5.5);bike(5.8,5.5);
+ colliders.push({x:-13,z:-18,w:10.2,d:8.5});
+ interactables.push({x:-13,z:-16.8,name:'LAWSON',desc:'Cửa hàng tiện lợi Lawson: trưng bày sản phẩm và mua vật phẩm trong 369 CITY.'});
+ interactables.push({x:-13,z:-19.8,name:'TAITO STATION',desc:'Khu trò chơi điện tử Taito Station ở tầng trên của tòa nhà.'});
+}
+createLawsonTaito();
+
 // street furniture: tables, stools, lanterns, planters
 function cylinder(r,h,color,x,y,z){const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,12),mat(color));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;scene.add(m);return m}
 for(let z=12;z>-70;z-=8){for(const side of [-1,1]){const x=side*7.5;cylinder(.42,.16,0x8b4b22,x,.75,z);let leg=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.72,8),mat(0x4b2c20));leg.position.set(x,.36,z);scene.add(leg);for(let k=0;k<3;k++){let stool=new THREE.Mesh(new THREE.BoxGeometry(.65,.15,.65),mat(0x9c592d));stool.position.set(x+side*(1.1+(k%2)*.4),.48,z+(k-1)*.8);scene.add(stool)}}}
