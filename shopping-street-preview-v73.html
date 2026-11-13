@@ -802,8 +802,8 @@ function flowerBed(x,z){
 
  // Four broad, full-width front stairs matching the reference: wide purple treads with bright pink front-edge neon.
  // Each lower tier steps forward and down; widths grow slightly toward the floor for a grand entrance.
- for(let k=0;k<4;k++){
-  // First tread meets the front edge of the stage deck; each tread is one clean step deep.
+ for(let k=0;k<3;k++){
+  // Three broad front stairs; one lower tier removed as requested.
   const z=2.55+k*.72;
   const topY=1.145-k*.245;
   // Keep every stair exactly the same width as the trimmed stage base.
@@ -1116,10 +1116,10 @@ function updatePlayer(){
  }
  document.getElementById('playerShop').style.display=nearbyShop?'flex':'none';
  if(len>.08){player.rotation.y=Math.atan2(move.x,move.z);pWings.forEach((w,i)=>w.rotation.z=(i===0?-.35:.35)+Math.sin(performance.now()*.012)*.16)}
- // Match avatar foot height to the actual transformed 3D stage deck and each of its four stair treads.
+ // Match avatar foot height to the actual transformed 3D stage deck and each of its three stair treads.
  const onMainStage=Math.abs(player.position.x)<6.1&&player.position.z>-63.88&&player.position.z<-55.15;
- const onStageSteps=Math.abs(player.position.x)<6.5&&player.position.z<=-63.88&&player.position.z>-67.48;
- const stairIndex=Math.max(0,Math.min(3,Math.floor((-player.position.z-63.875)/.9)));
+ const onStageSteps=Math.abs(player.position.x)<6.5&&player.position.z<=-63.88&&player.position.z>-66.58;
+ const stairIndex=Math.max(0,Math.min(2,Math.floor((-player.position.z-63.875)/.9)));
  const stageDeckY=.62+1.25*1.1675;
  const stairTopY=.62+1.25*(1.1475-stairIndex*.245);
  const floorY=insideShop?.tag==='GIFTS'?.625:(onMainStage?stageDeckY:(onStageSteps?stairTopY:(player.position.z < -54.1 ? .46 : (player.position.z < -31 ? .08 : 0))));
