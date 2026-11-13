@@ -1193,7 +1193,7 @@ const pKeys={};addEventListener('keydown',e=>{pKeys[e.key.toLowerCase()]=true});
 function pJump(){if(!pJumping){pJumpV=8;pJumping=true}}
 document.getElementById('playerJump').addEventListener('click',pJump);
 
-document.getElementById('playerShop').addEventListener('click',()=>{if(nearbyShop)openShopCard(nearbyShop)});
+document.getElementById('playerShop').addEventListener('click',()=>{if(nearbyShop){if(nearbyShop.tag==='LAWSON_TAITO')enterShop(nearbyShop);else openShopCard(nearbyShop)}});
 document.getElementById('playerLeaveShop').addEventListener('click',leaveShop);
 document.getElementById('playerPlaza').addEventListener('click',()=>{
  pEndJoy();player.position.set(0,.46,-91);pPrev.copy(player.position);
@@ -1206,7 +1206,7 @@ let pPrev=new THREE.Vector3();pPrev.copy(player.position);const pClock=new THREE
 function shopBlocked(x,z){
  const radius=.48;
  for(const d of shopData){
-  const halfX=d.tag==='LAWSON_TAITO'?10.0:4.25,halfZ=d.tag==='LAWSON_TAITO'?4.55:4.45;
+  const halfX=d.tag==='LAWSON_TAITO'?4.55:4.25,halfZ=d.tag==='LAWSON_TAITO'?10.0:4.45;
   const insideX=x+radius>d.x-halfX&&x-radius<d.x+halfX;
   const insideZ=z+radius>d.z-halfZ&&z-radius<d.z+halfZ;
   if(!insideX||!insideZ)continue;
@@ -1246,8 +1246,11 @@ function updatePlayer(){
  nearbyShop=null;
  if(!insideShop){
   for(const d of shopData){
-   const front=d.x<0?d.x+4.8:d.x-4.8;
-   if(Math.hypot(player.position.x-front,player.position.z-d.z)<3.2){nearbyShop=d;break}
+   const front=d.tag==='LAWSON_TAITO'?(d.x<0?d.x+4.55:d.x-4.55):(d.x<0?d.x+4.8:d.x-4.8);
+   const radius=d.tag==='LAWSON_TAITO'?5.8:3.2;
+   const sideDistance=Math.abs(player.position.x-front);
+   const alongFront=Math.abs(player.position.z-d.z);
+   if(sideDistance<radius&&alongFront<(d.tag==='LAWSON_TAITO'?4.8:radius)){nearbyShop=d;break}
   }
  }
  document.getElementById('playerShop').style.display=nearbyShop?'flex':'none';
