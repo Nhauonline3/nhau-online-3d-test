@@ -164,6 +164,23 @@ body.ui-modal-open #shopInfo{z-index:20;bottom:18px;max-height:calc(100dvh - 300
 
 <div id="scene"></div>
 <div id="sceneError" role="alert" style="display:none;position:fixed;z-index:9999;left:12px;right:12px;top:50%;transform:translateY(-50%);padding:16px;background:#230d20;border:2px solid #ff6b9d;border-radius:14px;color:#fff;font:14px/1.5 system-ui;white-space:pre-wrap;overflow-wrap:anywhere;max-height:70vh;overflow:auto"><b>369 CITY chưa khởi tạo được cảnh 3D</b><div id="sceneErrorText" style="margin-top:8px"></div></div>
+<script>
+(function(){
+ function report(message){
+  var panel=document.getElementById('sceneError');
+  var text=document.getElementById('sceneErrorText');
+  if(panel&&text){panel.style.display='block';text.textContent=String(message)+'\\nLỗi được bắt từ trình duyệt. Chụp màn hình gửi em nhé.';}
+ }
+ window.addEventListener('error',function(e){
+  var detail=e.message||((e.target&&e.target.src)?'Không tải được tệp: '+e.target.src:'Lỗi JavaScript khi tải trang');
+  report(detail+(e.filename?'\\n'+e.filename+':'+e.lineno:''));
+ },true);
+ window.addEventListener('unhandledrejection',function(e){
+  var reason=e.reason;
+  report('Promise bị lỗi: '+(reason&&reason.stack?reason.stack:(reason&&reason.message?reason.message:String(reason))));
+ });
+})();
+</script>
 <div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">PHỐ MUA SẮM + QUẢNG TRƯỜNG · PIXEL NEON</div></div><div class="card" style="text-align:right"><strong>🛍️ SHOPPING STREET</strong><div class="sub">8 gian hàng + quảng trường</div></div></div>
 
 <div id="walletBar"><div id="walletBalances"><b>🪙 XU: —</b><b>🟡 COIN: —</b></div><button id="walletOpen">👛 VÍ CỦA TÔI</button></div>
