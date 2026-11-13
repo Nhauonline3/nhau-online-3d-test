@@ -789,10 +789,11 @@ function flowerBed(x,z){
 
  // Wide raised stage deck with a layered front fascia.
  // Trim the black deck and fascia to the stair width so no dark side blocks protrude.
- box(0,.48,-.55,13.65,.72,8.2,"dark",stage);
- box(0,.88,-.55,13.58,.12,7.95,"purple",stage);
- box(0,.98,-.55,13.48,.08,7.6,amber,stage);
- box(0,1.06,-.55,13.35,.08,7.3,"purple",stage);
+ // Keep the black foundation and fascia no wider than the first stair, removing both side ears.
+ box(0,.48,-.55,12.35,.72,8.2,"dark",stage);
+ box(0,.88,-.55,12.30,.12,7.95,"purple",stage);
+ box(0,.98,-.55,12.25,.08,7.6,amber,stage);
+ box(0,1.06,-.55,12.20,.08,7.3,"purple",stage);
  // Glossy purple stage floor with continuous cyan and pink LED edges.
  const stageTop=new THREE.Mesh(new THREE.BoxGeometry(12.9,.045,6.9),new THREE.MeshStandardMaterial({color:0x123653,emissive:0x0b2945,emissiveIntensity:.42,metalness:.58,roughness:.24}));
  stageTop.position.set(0,1.145,-.55);stage.add(stageTop);
