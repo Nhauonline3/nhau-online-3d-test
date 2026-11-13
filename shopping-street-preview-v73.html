@@ -660,8 +660,7 @@ const plazaInset=new THREE.MeshStandardMaterial({color:0x68617e,roughness:.78,me
 // Subtle perimeter light strips replace the old blue square-tile pattern.
 for(const x of [-20.2,20.2])box(x,.34,0,.055,.035,39.5,pink);
 for(const z of [-20.2,20.2])box(0,.34,z,39.5,.035,.055,amber);
-box(0,.32,-20,6,.12,10,'cream');box(0,.32,20,6,.12,10,'cream');box(-20,.32,0,10,.12,6,'cream');box(20,.32,0,10,.12,6,'cream');
-box(-14,.32,-14,6,.12,6,'cream');box(14,.32,-14,6,.12,6,'cream');
+// Removed plaza signboards, small gold entry markers and cream paving pads circled by the user.
 // Fountain at center
 cylinder(0,.38,0,4.8,4.8,.38,'edge',32);cylinder(0,.76,0,4.25,4.25,.18,cyan,32);cylinder(0,.88,0,3.3,3.3,.12,'water',32);cylinder(0,1.0,0,.75,.95,1.25,'cream',16);cylinder(0,2.25,0,1.25,.75,.28,'blue',20);
 cylinder(0,2.53,0,.24,.24,.55,'gold',12);
@@ -906,11 +905,9 @@ function smokingZone(){
 // Removed the purple four-post canopy/table circled by the user.
 
 // six labeled connections to surrounding future districts
-sign(0,-21.8,'KHU MUA SAM');// Lối vào phía trước dùng cổng chào chính; bỏ bảng nhỏ gây vướng tầm nhìn
-sign(21.8,0,'DOI TIEN',-Math.PI/2);
-sign(-15.7,-15.7,'APARTMENT',Math.PI/4);sign(15.7,-15.7,'PICKLEBALL',-Math.PI/4);
+// Removed plaza signboards, small gold entry markers and cream paving pads circled by the user.
 // entry markers, paving lights and decorative low bollards
-for(const [x,z] of [[0,-17],[0,17],[-17,0],[17,0],[-12,-12],[12,-12]]){cylinder(x,.35,z,.28,.28,.45,'gold',8);cylinder(x,.8,z,.12,.12,.5,'cream',8)}
+// Removed plaza signboards, small gold entry markers and cream paving pads circled by the user.
 // Cổng chào 369 CITY thu gọn: vòm pixel neon thanh thoát, không che quảng trường
 // Removed tall entrance gate, surrounding skyline towers and billboard screens
 // so the central plaza, fountain and gardens remain clearly visible.
