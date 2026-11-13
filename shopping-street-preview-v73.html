@@ -735,13 +735,21 @@ function flowerBed(x,z){
  // Concert lighting: brighter rear wash and colored spotlights.
  const rearWash=new THREE.PointLight(0x8a2cff,15,42);rearWash.position.set(0,7,-4.5);stage.add(rearWash);
  const floorWash=new THREE.PointLight(0x20dfff,11,30);floorWash.position.set(0,2,5.5);stage.add(floorWash);
- // Direction corrected: fixtures start behind the stage and aim forward onto the performance floor.
+ // Aim all three rear spotlights steeply down onto the stage floor.
  const spotSpecs=[[-4.5,7.8,-2.55,0xff2bd2],[0,8.2,-2.55,0x20eaff],[4.5,7.8,-2.55,0xffc52f]];
+ const beamUp=new THREE.Vector3(0,1,0);
  for(const [sx,sy,sz,color] of spotSpecs){
-  const spot=new THREE.SpotLight(color,95,25,Math.PI/5,.55,1.25);
-  spot.position.set(sx,sy,sz);spot.target.position.set(sx*.25,1.35,2.15);stage.add(spot,spot.target);
-  const beam=new THREE.Mesh(new THREE.ConeGeometry(1.05,5.8,20,1,true),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.105,depthWrite:false,side:THREE.DoubleSide}));
-  beam.position.set(sx*.72,4.3,-.15);beam.rotation.x=Math.PI/2.35;beam.rotation.z=-sx*.025;stage.add(beam);
+  const source=new THREE.Vector3(sx,sy,sz);
+  const target=new THREE.Vector3(sx*.25,1.35,1.55);
+  const spot=new THREE.SpotLight(color,105,24,Math.PI/6,.62,1.35);
+  spot.position.copy(source);spot.target.position.copy(target);stage.add(spot,spot.target);
+  // Transparent cone axis is aligned from the floor target back to the lamp,
+  // so the visible beam travels down onto the stage instead of projecting outward.
+  const beamLength=source.distanceTo(target);
+  const beam=new THREE.Mesh(new THREE.ConeGeometry(1.05,beamLength,20,1,true),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.065,depthWrite:false,side:THREE.DoubleSide}));
+  beam.position.copy(source).add(target).multiplyScalar(.5);
+  beam.quaternion.setFromUnitVectors(beamUp,source.clone().sub(target).normalize());
+  stage.add(beam);
  }
  // Six compact stainless hanging spotlights mounted under the front truss.
  const fixtureMetal=new THREE.MeshStandardMaterial({color:0xdbe6f2,metalness:.94,roughness:.18});
@@ -752,8 +760,8 @@ function flowerBed(x,z){
   housing.position.set(x,5.82,-.18);housing.rotation.x=Math.PI/2;stage.add(housing);
   const lens=new THREE.Mesh(new THREE.CircleGeometry(.17,16),new THREE.MeshBasicMaterial({color:fixtureGlow[i]}));
   lens.position.set(x,5.62,-.18);lens.rotation.x=-Math.PI/2;stage.add(lens);
-  const lamp=new THREE.SpotLight(fixtureGlow[i],58,22,Math.PI/7,.6,1.1);
-  lamp.position.set(x,5.58,-.15);lamp.target.position.set(x*.3,1.35,1.65);stage.add(lamp,lamp.target);
+  const lamp=new THREE.SpotLight(fixtureGlow[i],64,20,Math.PI/8,.68,1.2);
+  lamp.position.set(x,5.58,-.15);lamp.target.position.set(x*.3,1.18,1.45);stage.add(lamp,lamp.target);
  }
  // Neon concert truss behind the arch.
  const trussMat=new THREE.MeshStandardMaterial({color:0xcbd5e1,metalness:.92,roughness:.2,emissive:0x334155,emissiveIntensity:.22});
