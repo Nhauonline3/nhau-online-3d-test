@@ -407,6 +407,37 @@ function buildLawsonTaito(d){
  B(6.2,1.5,4.45,1.0,2.35,.48,blue);B(6.2,1.9,4.72,.78,1.25,.05,glass);
  for(let i=0;i<3;i++)for(let j=0;j<3;j++)B(5.92+j*.24,2.18-i*.38,4.76,.15,.2,.05,mat([0xe84b44,0x43bfd0,0xf0d144][(i+j)%3]));
  for(const x of [7.3,8.2]){B(x,.85,4.5,.52,1.2,.55,mat(0x344454));B(x,.95,4.8,.34,.4,.04,metal)}
+ // Interior arcade room: kept as one toggleable group so enterShop shows only the game room.
+ const room=new THREE.Group();room.name='LAWSON_TAITO_ARCADE_INTERIOR';g.add(room);
+ const R=(x,y,z,w,h,dep,m)=>box(x,y,z,w,h,dep,m,room);
+ const neonPink=glow(0xff27d4),neonBlue=glow(0x19dfff),floorMat=mat(0x17203d),wallMat=mat(0x111a35),cabinet=mat(0x252d49),screenMat=glow(0x12d8f5),goldMat=glow(0xffc34d);
+ R(0,.12,0,18.4,.22,7.8,floorMat);R(0,3.3,-3.72,18.4,6.3,.22,wallMat);
+ R(-9.05,3.2,0,.22,6.2,7.6,wallMat);R(9.05,3.2,0,.22,6.2,7.6,wallMat);
+ R(0,6.25,0,18.2,.18,7.5,dark);
+ R(0,5.7,-3.55,8.2,1.0,.12,neonPink);R(0,5.72,-3.45,7.8,.7,.08,dark);
+ const arcadeText=document.createElement('canvas');arcadeText.width=1024;arcadeText.height=180;const at=arcadeText.getContext('2d');at.fillStyle='#10142b';at.fillRect(0,0,1024,180);at.font='900 104px Arial';at.textAlign='center';at.textBaseline='middle';at.fillStyle='#ffffff';at.shadowColor='#12dfff';at.shadowBlur=24;at.fillText('369 GAME ROOM',512,90);const arcadeTex=new THREE.CanvasTexture(arcadeText);arcadeTex.colorSpace=THREE.SRGBColorSpace;const arcadeSign=new THREE.Mesh(new THREE.PlaneGeometry(7.7,.68),new THREE.MeshBasicMaterial({map:arcadeTex}));arcadeSign.position.set(0,5.72,-3.36);room.add(arcadeSign);
+ function gameCab(x,z,rot,accent,kind){
+  const c=new THREE.Group();c.position.set(x,0,z);c.rotation.y=rot;room.add(c);
+  const matAccent=glow(accent);const cube=(xx,yy,zz,w,h,dep,m)=>box(xx,yy,zz,w,h,dep,m,c);
+  cube(0,1.15,0,1.05,2.2,.72,cabinet);cube(0,2.15,.08,1.15,.34,.82,matAccent);
+  cube(0,1.55,.39,.82,.92,.08,screenMat);cube(0,1.55,.45,.72,.8,.035,mat(0x10152d));
+  for(let j=0;j<3;j++)cube(-.28+j*.28,.88,.43,.13,.13,.08,j===1?goldMat:matAccent);
+  cube(0,.35,.05,1.1,.14,.85,matAccent);
+  if(kind==='RACING'){cube(0,1.0,.58,.72,.35,.36,mat(0x38465e));cube(0,1.35,.5,.55,.08,.08,goldMat)}
+ }
+ // Two rows of cabinets around a clear central walking lane.
+ gameCab(-7.45,-1.9,0,0xff38c9,'ARCADE');gameCab(-4.95,-1.9,0,0x20dfff,'ARCADE');gameCab(-2.45,-1.9,0,0xffc34d,'ARCADE');
+ gameCab(2.45,-1.9,0,0x20dfff,'RACING');gameCab(4.95,-1.9,0,0x8b55ff,'RACING');gameCab(7.45,-1.9,0,0xff38c9,'RACING');
+ gameCab(-7.35,2.2,Math.PI,0x8b55ff,'ARCADE');gameCab(-4.85,2.2,Math.PI,0xff38c9,'ARCADE');gameCab(4.85,2.2,Math.PI,0x20dfff,'ARCADE');gameCab(7.35,2.2,Math.PI,0xffc34d,'ARCADE');
+ // Two-player rhythm dance pads and glowing floor arrows.
+ for(const x of [-1.35,1.35]){R(x,.28,1.1,1.7,.12,1.7,neonBlue);for(let k=0;k<4;k++){const a=R(x+(k%2?-.35:.35),.36,1.1+(k<2?-.35:.35),.35,.04,.35,k%2?neonPink:goldMat)}}
+ // Seating corner, prize counter and vending machine glow.
+ R(-6.5,.65,3.0,3.2,.65,1.0,mat(0x593b73));R(-6.5,1.05,2.45,3.2,.18,.25,neonPink);
+ R(6.4,.65,3.0,3.1,.65,1.0,mat(0x164d68));R(6.4,1.05,2.45,3.1,.18,.25,neonBlue);
+ for(let x=-7;x<=7;x+=2){R(x,3.1,-3.57,.035,5.5,.03,neonBlue)}
+ const interiorLight1=new THREE.PointLight(0x24cfff,2.1,16);interiorLight1.position.set(-3,4,0);room.add(interiorLight1);
+ const interiorLight2=new THREE.PointLight(0xff2acb,1.8,14);interiorLight2.position.set(4,4,-1);room.add(interiorLight2);
+ g.userData.interiorChildren=[room];
  // Click target for the combined landmark.
  const hit=new THREE.Mesh(new THREE.BoxGeometry(19.2,13.8,8.8),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));hit.position.set(0,6.8,0);hit.userData.shop=d;g.add(hit);shopMeshes.push(hit);
 }
@@ -1026,6 +1057,11 @@ function openShopCard(d){
  document.getElementById('giftActions').style.display=d.tag==='GIFTS'?'block':'none';
  document.getElementById('giftPost').style.display='none';document.getElementById('giftItems').style.display='grid';
  document.getElementById('shopInfo').style.display='block';document.body.classList.add('ui-modal-open');
+ let gameEntry=document.getElementById('lawsonGameEnter');
+ if(d.tag==='LAWSON_TAITO'){
+  if(!gameEntry){gameEntry=document.createElement('button');gameEntry.id='lawsonGameEnter';gameEntry.textContent='🎮 VÀO PHÒNG GAME';gameEntry.style.cssText='margin-top:10px;width:100%;background:#0878d4;border:1px solid #35e8ff';document.getElementById('shopInfo').appendChild(gameEntry);}
+  gameEntry.style.display='block';gameEntry.onclick=()=>enterShop(d);
+ }else if(gameEntry){gameEntry.style.display='none'}
 }
 function enterShop(d){
  document.getElementById('shopInfo').style.display='none';document.body.classList.remove('ui-modal-open');insideShop=d;
