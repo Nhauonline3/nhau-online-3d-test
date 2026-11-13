@@ -757,11 +757,13 @@ function flowerBed(x,z){
  for(let i=0;i<6;i++){
   const x=-5+i*2;
   const housing=new THREE.Mesh(new THREE.CylinderGeometry(.18,.24,.34,12),fixtureMetal);
-  housing.position.set(x,5.82,-.18);housing.rotation.x=Math.PI/2;stage.add(housing);
+  // Hang each lamp directly beneath the centered steel lattice truss.
+  housing.position.set(x,5.55,-1.42);housing.rotation.x=Math.PI/2;stage.add(housing);
   const lens=new THREE.Mesh(new THREE.CircleGeometry(.17,16),new THREE.MeshBasicMaterial({color:fixtureGlow[i]}));
-  lens.position.set(x,5.62,-.18);lens.rotation.x=-Math.PI/2;stage.add(lens);
+  lens.position.set(x,5.35,-1.42);lens.rotation.x=-Math.PI/2;stage.add(lens);
+  // Preserve the existing colors, intensity, beam angle and floor target.
   const lamp=new THREE.SpotLight(fixtureGlow[i],64,20,Math.PI/8,.68,1.2);
-  lamp.position.set(x,5.58,-.15);lamp.target.position.set(x*.3,1.18,1.45);stage.add(lamp,lamp.target);
+  lamp.position.set(x,5.32,-1.42);lamp.target.position.set(x*.3,1.18,1.45);stage.add(lamp,lamp.target);
  }
  // Center the black steel lattice truss over the rear of the stage, aligned to the screen width.
  const trussMat=new THREE.MeshStandardMaterial({color:0x8793a5,metalness:.94,roughness:.2,emissive:0x263449,emissiveIntensity:.2});
