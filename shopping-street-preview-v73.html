@@ -883,7 +883,7 @@ function plazaBoard(x,z,label,sub,color,rotation,action){
  const hit=new THREE.Mesh(new THREE.BoxGeometry(4.6,3.4,.8),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));hit.position.set(0,2.25,.05);hit.userData.plazaAction=action;g.add(hit);plazaActionMeshes.push(hit);
 }
 // Removed the left-side plaza board marked by the user to clear the stage view.
-plazaBoard(15.7,0,"SỰ KIỆN","EVENTS",pink,-Math.PI/2,{name:"🎉 SỰ KIỆN 369 CITY",tag:"PLAZA",desc:"Đây là bảng thông báo sự kiện. Sân khấu 369 LIVE sẽ là nơi tổ chức âm nhạc, giao lưu và hoạt động cộng đồng. Lịch sự kiện trực tuyến sẽ được bổ sung sau."});
+// Removed the SỰ KIỆN board circled by the user.
 // Photo spot: a freestanding neon frame with a 369 CITY welcome plaque.
 {
  const frame=new THREE.Group();frame.position.set(0,0,-15.5);plazaGroup.add(frame);
@@ -903,7 +903,7 @@ function smokingZone(){
  // Biểu tượng điếu thuốc cách điệu trên bảng nhỏ
  box(x-2.35,1.1,z-1.98,.75,.12,.12,'cream');box(x-1.95,1.1,z-1.98,.18,.14,.14,pink);
 }
-smokingZone();
+// Removed the purple four-post canopy/table circled by the user.
 
 // six labeled connections to surrounding future districts
 sign(0,-21.8,'KHU MUA SAM');// Lối vào phía trước dùng cổng chào chính; bỏ bảng nhỏ gây vướng tầm nhìn
