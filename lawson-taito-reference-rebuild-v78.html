@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>369 CITY · Lawson Taito Reference Rebuild V78</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f2eff3;font-family:system-ui;color:#20202a}#stage{position:fixed;inset:0}canvas{display:block;width:100%;height:100%;touch-action:none}.hud{position:fixed;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.tag{background:#ffffffdf;border:1px solid #b7b2ba;border-radius:12px;padding:9px 12px;font-size:11px;box-shadow:0 2px 12px #0001}.note{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);white-space:nowrap;background:#ffffffdf;border:1px solid #b7b2ba;border-radius:18px;padding:8px 12px;font-size:11px}
+</style></head><body><div id="stage"></div><div class="hud"><div class="tag"><b>NHẬU ONLINE · 369 CITY</b><br>LAWSON × TAITO · V78 REBUILD</div><div class="tag">Vuốt xoay · Chụm phóng to</div></div><div class="note">Mô hình 3D dựng lại theo ảnh tham khảo · bản thử nghiệm</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script><script>
+(()=>{if(!window.THREE){document.body.insertAdjacentHTML('beforeend','<p>Không tải được thư viện 3D.</p>');return}
+const T=THREE,scene=new T.Scene();scene.background=new T.Color(0xf2eff3);
+const camera=new T.PerspectiveCamera(34,innerWidth/innerHeight,.1,160);
+const renderer=new T.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=T.SRGBColorSpace;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;document.getElementById('stage').appendChild(renderer.domElement);
+scene.add(new T.HemisphereLight(0xffffff,0x6f6358,2));let sun=new T.DirectionalLight(0xffe2c6,3.2);sun.position.set(-16,24,22);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);scene.add(sun);let fill=new T.DirectionalLight(0xd8e5ff,1.1);fill.position.set(15,10,-12);scene.add(fill);
+const M=(c,r=.55,metal=0,em=0)=>new T.MeshStandardMaterial({color:c,roughness:r,metalness:metal,emissive:em,emissiveIntensity:.18});
+const C={cream:M(0xe8e0d4,.8),tile:M(0x887f77,.8),red:M(0xe91f25,.42),red2:M(0xf3332b,.4),blue:M(0x0877d2,.4),white:M(0xf7f4ed,.42),yellow:M(0xffc928,.34),dark:M(0x17151a,.5),pink:M(0xf49bb7,.32),metal:M(0xadb5b9,.3,.55),glass:M(0x8fd7e7,.2,.15,0x174a5a),green:M(0x519b42,.85),wood:M(0x795039,.8)};
+const root=new T.Group();scene.add(root);
+function add(g,m,x,y,z,par=root){let o=new T.Mesh(g,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;par.add(o);return o}
+function box(x,y,z,w,h,d,m,bevel=.08,par=root){let s=new T.Shape();let r=Math.min(bevel,w/2-.001,h/2-.001);s.moveTo(-w/2+r,-h/2);s.lineTo(w/2-r,-h/2);s.quadraticCurveTo(w/2,-h/2,w/2,-h/2+r);s.lineTo(w/2,h/2-r);s.quadraticCurveTo(w/2,h/2,w/2-r,h/2);s.lineTo(-w/2+r,h/2);s.quadraticCurveTo(-w/2,h/2,-w/2,h/2-r);s.lineTo(-w/2,-h/2+r);s.quadraticCurveTo(-w/2,-h/2,-w/2+r,-h/2);let g=new T.ExtrudeGeometry(s,{depth:d,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:Math.min(bevel,d/3),bevelThickness:Math.min(bevel,d/3),curveSegments:8});g.translate(0,0,-d/2);return add(g,m,x,y,z,par)}
+function sphere(x,y,z,r,m,sx=1,sy=1,sz=1,par=root){let o=add(new T.SphereGeometry(r,32,22),m,x,y,z,par);o.scale.set(sx,sy,sz);return o}
+function cyl(x,y,z,r,h,m,rotX=0,par=root){let o=add(new T.CylinderGeometry(r,r,h,40),m,x,y,z,par);o.rotation.x=rotX;return o}
+function tube(points,r,m,par=root){let curve=new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p)));return add(new T.TubeGeometry(curve,64,r,10,false),m,0,0,0,par)}
+function text(text,x,y,z,w,h,bg,fg='#fff',rot=0,par=root){let c=document.createElement('canvas');c.width=1024;c.height=256;let q=c.getContext('2d');q.fillStyle=bg;q.fillRect(0,0,1024,256);q.fillStyle=fg;q.font='900 112px Arial';q.textAlign='center';q.textBaseline='middle';q.fillText(text,512,130);let t=new T.CanvasTexture(c);t.colorSpace=T.SRGBColorSpace;let o=add(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:t}),x,y,z,par);o.rotation.y=rot;return o}
+// plinth / pavement
+box(0,-.28,0,19,.45,15,M(0xb4b1b1),.25);
+for(let x=-9;x<9;x+=.8)for(let z=-7;z<7;z+=.8)box(x,-.025,z,.77,.035,.77,M((Math.round(x+z)%2)?0xc7c2bd:0xbcb7b2),.015);
+// Lawson ground floor
+box(0,1.65,2.8,10.8,3.35,6.8,C.white,.34);
+box(0,3.35,2.8,11,.28,7,C.blue,.12);box(0,3.53,2.8,11.1,.12,7.08,C.white,.06);
+text('LAWSON',-.4,3.35,6.35,4.3,.62,'#0877d2');text('LAWSON',5.48,3.35,2.8,3.6,.52,'#0877d2','#fff',Math.PI/2);
+// storefront front glazing
+for(let x of [-4.25,-2.35,0,2.25,4.3]){box(x,1.65,6.28,1.85,2.15,.12,C.glass,.04);box(x-.9,1.65,6.37,.07,2.25,.06,C.metal,.02);box(x+.9,1.65,6.37,.07,2.25,.06,C.metal,.02);box(x,2.75,6.38,1.85,.06,.06,C.metal,.02)}
+box(-.85,1.55,6.4,1.25,2.45,.12,M(0x27384b),.04);box(-.85,1.55,6.48,1.08,2.2,.06,C.glass,.03);
+for(let x of [-4.25,-2.35,2.25,4.3])for(let row=0;row<3;row++){box(x, .9+row*.48,6.48,1.55,.045,.08,C.metal,.015);for(let j=0;j<4;j++)box(x-.58+j*.38,1.08+row*.48,6.46,.18,.27,.12,M([0xff8c39,0x47bccc,0xf4cf46,0x55a76b][j]),.03)}
+// red Taito floor, offset left like reference
+box(-1.75,5.8,2.65,7.25,2.75,6.75,C.red,.18);
+box(-1.75,7.2,2.65,7.55,.32,6.95,C.red2,.12);
+text('TAITO STATION',-1.75,6.48,6.12,5.6,.68,'#ed1d24');
+for(let y of [5.82,5.4,4.98])box(-1.75,y,6.16,5.7,.15,.12,C.dark,.04);
+// pixel alien, blocky white pixels
+const pixels=[[-1,1],[0,1],[1,1],[-2,0],[-1,0],[0,0],[1,0],[2,0],[-2,-1],[2,-1],[-3,-2],[-2,-2],[2,-2],[3,-2],[-1,-2],[0,-2],[1,-2]];
+for(let [px,py] of pixels)box(-1.75+px*.22,4.1+py*.2,6.2,.19,.19,.13,C.white,.015);
+// arcade twin speaker and wall panel
+box(1.65,4.65,6.2,1.15,1.5,.28,M(0xb66e5e),.1);for(let y of [4.3,4.95]){cyl(1.65,y,6.38,.34,.08,C.dark,Math.PI/2);cyl(1.65,y,6.43,.23,.06,C.metal,Math.PI/2)}
+// upper rounded cream tower
+box(.8,10.1,2.55,8.05,5.45,7.05,C.cream,.72);
+// tile grid on front face
+for(let x=-3.0;x<=4.6;x+=.25)box(x,10.1,6.12,.018,5.18,.025,C.tile,.006);
+for(let y=7.55;y<=12.65;y+=.25)box(.8,y,6.13,7.72,.018,.025,C.tile,.006);
+// right-side grid
+for(let z=-.85;z<=5.85;z+=.25)box(4.87,10.1,z,.025,5.15,.018,C.tile,.006);
+for(let y=7.55;y<=12.65;y+=.25)box(4.88,y,2.5,.025,.018,6.65,C.tile,.006);
+// yellow roof cap with curved lip
+box(.8,12.95,2.55,8.55,.42,7.55,C.yellow,.34);
+box(.8,12.72,2.55,8.2,.16,7.22,M(0xff8c23),.24);
+// roof top red/orange surface
+box(.8,13.13,2.55,7.85,.08,6.85,M(0xf17b27),.28);
+// framed rooftop sign with two visible faces
+box(.8,14.35,1.1,4.75,1.65,.18,M(0x273d36),.04);box(.8,14.35,4.0,4.75,1.65,.18,M(0x273d36),.04);box(-1.58,14.35,2.55,.18,1.65,2.9,M(0x273d36),.04);box(3.18,14.35,2.55,.18,1.65,2.9,M(0x273d36),.04);
+box(.8,14.35,1.2,4.48,1.38,.06,M(0xdceee0),.02);text('🍀 ITO EN',.8,14.35,1.25,4.1,.88,'#dceee0','#172b20');
+box(.8,14.35,3.9,4.48,1.38,.06,M(0xdceee0),.02);text('🍀 ITO EN',.8,14.35,3.95,4.1,.88,'#dceee0','#172b20');
+// face eyes and orange upper lids
+for(let x of [-1.2,.75]){box(x,10.25,6.35,1.0,2.55,.25,C.dark,.48);sphere(x,11.55,6.45,.49,C.yellow,1,.52,.35);sphere(x-.14,9.95,6.5,.13,C.dark);sphere(x+.14,9.95,6.5,.13,C.dark)}
+tube([[-.65,9.85,6.45],[-.52,9.55,6.6],[-.2,9.52,6.62],[.05,9.8,6.58]],.12,C.pink);
+// large dimensional pokeball on right side of curved tower
+const pb=new T.Group();pb.position.set(4.93,10.0,4.25);pb.rotation.y=Math.PI/2;root.add(pb);
+add(new T.CylinderGeometry(1.75,1.75,.48,64),M(0x79656a,.3,.2),0,0,0,pb).rotation.x=Math.PI/2;
+add(new T.SphereGeometry(1.48,64,32,0,Math.PI*2,0,Math.PI/2),M(0xed171c,.28),0,0,.22,pb);
+add(new T.SphereGeometry(1.48,64,32,0,Math.PI*2,Math.PI/2,Math.PI/2),C.white,0,0,.22,pb);
+let band=add(new T.TorusGeometry(1.47,.13,16,96),C.dark,0,0,.28,pb);
+add(new T.CylinderGeometry(.38,.38,.18,48),C.dark,0,0,1.64,pb).rotation.x=Math.PI/2;
+add(new T.CylinderGeometry(.25,.25,.12,48),C.white,0,0,1.78,pb).rotation.x=Math.PI/2;
+// colored orbit ring, ellipse around middle tower, spheres on front/right arc
+let orbit=new T.Group();orbit.position.set(.8,7.45,2.55);root.add(orbit);
+let tor=add(new T.TorusGeometry(4.15,.18,12,120),M(0xf4edf0,.25),0,0,0,orbit);tor.rotation.x=Math.PI/2;tor.scale.set(1,.72,1);
+let cols=[0xf0454d,0x3389e8,0xffd04a,0xe78cc4,0x27a975,0xf4f0e8,0xd78a52,0x9a82d5,0x37b9b1,0xe7b83a,0xe15e79,0x3e9d61];
+for(let i=0;i<12;i++){let a=-1.25+i*2.5/11;sphere(.8+4.15*Math.sin(a),7.45,2.55+2.98*Math.cos(a),.32,M(cols[i],.24),1,1,.82)}
+// electrical conduit, junction boxes and satellite dish
+for(let x of [-3.3,-2.9,-2.5])box(x,12.05,6.2,.23,.58,.16,C.white,.04);
+tube([[-3.3,12.3,6.22],[-3.3,12.55,6.22],[-2.5,12.55,6.22],[-2.5,11.8,6.22]],.055,C.metal);
+box(3.85,11.8,6.2,.55,.72,.18,C.white,.05);box(3.85,11.8,6.32,.3,.5,.04,C.metal,.02);
+cyl(5.3,9.2,4.1,.46,.12,C.metal,Math.PI/2);tube([[5.3,9.2,4.1],[5.55,8.8,4.1],[5.55,8.4,4.1]],.05,C.dark);
+// black inset on side
+box(4.94,8.0,2.4,1.6,.65,.18,C.dark,.28);
+// vending machine, front-right
+box(2.5,1.55,6.72,1.0,2.65,.55,M(0x0755a8),.12);box(2.5,2.0,7.02,.78,1.4,.06,C.glass,.04);
+for(let i=0;i<3;i++)for(let j=0;j<3;j++)box(2.22+j*.26,2.35-i*.42,7.07,.17,.22,.07,M([0xf04742,0x44b8cf,0xf0cf40][(i+j)%3]),.02);
+text('KIRIN',2.5,.55,7.02,.7,.25,'#0755a8');
+// payment machines
+for(let x of [3.55,4.35]){box(x,.85,6.85,.55,1.25,.65,M(0x364454),.09);box(x,.95,7.2,.38,.45,.06,C.metal,.025)}
+// trees with leafy irregular clusters
+function tree(x,z){cyl(x,1,z,.19,2.0,C.wood);for(let i=0;i<18;i++){let a=i*2.4,rr=.45+(i%4)*.18;sphere(x+Math.cos(a)*rr,2.3+(i%5)*.18,z+Math.sin(a)*rr,.42,M(i%3?0x5a9f3e:0x80b34d,.9),1.1,.9,1.0)}}
+tree(-7,2);tree(-7,-2.4);tree(7,-1.5);
+// van and wheels
+box(8,1.0,2.6,3.7,1.45,1.9,M(0x187f78),.28);box(8,1.55,2.2,2.35,.72,1.78,M(0xd9ded8),.18);
+for(let x of [6.85,9.1]){let w=add(new T.CylinderGeometry(.4,.4,.22,32),C.dark,x,.45,3.45);w.rotation.z=Math.PI/2}
+text('DELIVERY',8,1.0,3.58,1.8,.32,'#16877c');
+// bicycles and rails
+function bike(x,z){for(let dx of [-.65,.65]){let w=add(new T.TorusGeometry(.36,.045,8,32),C.dark,x+dx,.43,z);w.rotation.y=Math.PI/2}tube([[x-.65,.43,z],[x-.2,.92,z],[x+.65,.43,z],[x-.65,.43,z]],.045,C.metal);tube([[x-.2,.92,z],[x+.18,.92,z],[x+.65,.43,z]],.04,C.dark)}
+bike(-6,6.9);bike(5.9,6.8);
+for(let x of [-5.7,5.7]){for(let z of [6.3,8.3,10.3])cyl(x,.6,z,.05,1.8,C.metal,Math.PI/2);tube([[x,.85,5.6],[x,.85,10.8]],.05,C.metal)}
+// miniature people
+function person(x,z,shirt){cyl(x,.76,z,.19,1.15,M(0x20222b));sphere(x,1.48,z,.22,M(0xc99b7a));box(x,1.0,z,.43,.62,.28,M(shirt),.08);cyl(x-.13,.3,z,.08,.6,M(0x20232a));cyl(x+.13,.3,z,.08,.6,M(0x20232a))}
+person(-2.8,7.6,0x20232b);person(.2,8.0,0x2b3340);person(4.5,7.4,0x29252a);
+// base shadows
+const floor=add(new T.PlaneGeometry(200,200),M(0xf2eff3),0,-.53,0);floor.rotation.x=-Math.PI/2;
+const target=new T.Vector3(.2,7.0,1.3);let theta=.72,phi=1.12,r=31,drag=false,lx=0,ly=0,pinch=0;
+function cam(){camera.position.set(target.x+r*Math.sin(phi)*Math.sin(theta),target.y+r*Math.cos(phi),target.z+r*Math.sin(phi)*Math.cos(theta));camera.lookAt(target)}cam();
+let el=renderer.domElement;el.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;el.setPointerCapture(e.pointerId)});el.addEventListener('pointermove',e=>{if(!drag)return;theta-=(e.clientX-lx)*.008;phi=Math.max(.25,Math.min(1.5,phi+(e.clientY-ly)*.006));lx=e.clientX;ly=e.clientY;cam()});el.addEventListener('pointerup',()=>drag=false);el.addEventListener('pointercancel',()=>drag=false);el.addEventListener('wheel',e=>{r=Math.max(18,Math.min(48,r+e.deltaY*.03));cam()},{passive:true});
+el.addEventListener('touchstart',e=>{if(e.touches.length===2)pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)},{passive:true});el.addEventListener('touchmove',e=>{if(e.touches.length===2){let n=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinch){r=Math.max(18,Math.min(48,r+(pinch-n)*.045));cam()}pinch=n}},{passive:true});
+function loop(){requestAnimationFrame(loop);renderer.render(scene,camera)}loop();addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+})();
+</script></body></html>
