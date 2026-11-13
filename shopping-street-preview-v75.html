@@ -1,0 +1,1275 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>369 CITY – Phố thương mại Isometric | V75</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#070b20;font-family:system-ui,-apple-system,sans-serif}#scene{position:fixed;inset:0}canvas{display:block;width:100%;height:100%;touch-action:none}
+.panel{position:fixed;z-index:3;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;pointer-events:none}.card{flex:1 1 0;min-width:0;max-width:48%;background:#07152cf2;color:#fff;border:1px solid #23d8ff;border-radius:12px;padding:9px 11px;box-shadow:0 0 18px #00cfff66,inset 0 0 12px #b000ff22;pointer-events:auto;overflow-wrap:anywhere}.card strong{display:block;font-size:clamp(12px,2vw,16px);line-height:1.2;letter-spacing:.2px}.sub{font-size:clamp(9px,1.4vw,10px);line-height:1.3;color:#9beeff;margin-top:4px;white-space:normal}
+.bottom{position:fixed;z-index:3;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;align-items:end;gap:8px}.pill{background:#07152cf2;color:white;border:1px solid #24dfff;border-radius:10px;padding:10px 12px;font-size:12px;box-shadow:0 0 16px #00cfff55;max-width:68%}
+button{background:#ec36d9;color:#fff;border:1px solid #ffb9fa;border-radius:10px;padding:11px 13px;font-weight:800;font-size:12px;box-shadow:0 0 16px #e000ff88}
+#shopInfo{position:fixed;z-index:4;left:50%;transform:translateX(-50%);bottom:78px;width:min(430px,calc(100vw - 28px));display:none;background:#07152cf5;color:white;border:1px solid #20ddff;border-radius:14px;padding:14px;box-shadow:0 0 24px #00cfff77}
+#shopInfo strong{font-size:17px;color:#6df4ff}#shopInfo p{margin:6px 0 10px;font-size:13px;color:#d8e8ff}#closeInfo{float:right;padding:5px 9px}#giftActions{display:none;margin-top:10px}#giftActions button{margin:3px}#giftItems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:8px}#giftItems .giftItem{background:#10264a;border:1px solid #2bdfff;border-radius:10px;padding:9px;font-size:12px}#giftItems b{color:#ffe07a}#giftPost{display:none;margin-top:9px}#giftPost input{width:100%;box-sizing:border-box;margin:4px 0;padding:9px;border-radius:8px;background:#08142a;color:white;border:1px solid #2bdfff}
+@media(min-width:700px){.card{max-width:48%;padding:10px 13px}.card strong{font-size:20px}.sub,.hint,.pill,button{font-size:14px}}
+
+/* Player controls */
+#playerJoy{position:fixed;z-index:6;left:18px;bottom:24px;width:116px;height:116px;border-radius:50%;border:2px solid #46eaff;background:#07152caa;box-shadow:0 0 20px #00cfff88;touch-action:none;display:flex;align-items:center;justify-content:center}
+#playerKnob{width:48px;height:48px;border-radius:50%;background:linear-gradient(145deg,#43efff,#a32cff);border:2px solid #fff;box-shadow:0 0 15px #19e5ff;pointer-events:none}
+#playerActions{position:fixed;z-index:6;right:10px;bottom:100px;display:flex;flex-direction:column;gap:7px}
+#playerActions button{width:42px;height:42px;min-width:42px;min-height:42px;padding:0;border-radius:12px;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 0 9px #e000ff55}
+#playerState{display:none!important}
+@media(min-width:700px){#playerJoy{width:100px;height:100px;left:24px;bottom:24px}#playerKnob{width:42px;height:42px}#playerActions{right:18px;bottom:24px}#playerActions button{width:44px;height:44px;min-width:44px;min-height:44px}}
+
+#walletBar{position:fixed;z-index:8;top:68px;right:12px;display:flex;align-items:center;gap:8px;background:#07152cf2;border:1px solid #f4bf43;border-radius:12px;padding:8px 11px;color:#fff;box-shadow:0 0 16px #ffbd3d55;font-size:12px;max-width:calc(100vw - 24px)}#walletBar button{padding:7px 10px;font-size:11px;white-space:nowrap}#walletBalances{display:flex;gap:10px;align-items:center;flex-wrap:wrap}#walletBalances b{white-space:nowrap}#walletModal{display:none;position:fixed;z-index:20;inset:0;background:#020817dd;align-items:center;justify-content:center;padding:16px}#walletModal.open{display:flex}#walletCard{width:min(420px,100%);max-height:85vh;overflow:auto;background:#091832;border:1px solid #31dcff;border-radius:18px;padding:18px;color:#fff;box-shadow:0 0 32px #00cfff66}#walletCard h2{margin:0 0 12px;color:#8defff;font-size:20px}#walletCard label{display:block;font-size:12px;color:#b8d9ee;margin:10px 0 5px}#walletCard input{width:100%;padding:12px;border-radius:9px;border:1px solid #3c648a;background:#061126;color:white;font-size:16px}#walletCard .walletActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}#walletCard .walletActions button{flex:1}#walletHistory{font-size:12px;color:#d6eaff;margin-top:12px;max-height:180px;overflow:auto}#walletStatus{font-size:12px;color:#ffdc8a;min-height:18px;margin-top:8px}#walletClose{float:right;background:#253a5b;border-color:#6283aa}#walletLock{font-size:11px;color:#ffc979;line-height:1.4;margin-top:10px}@media(max-width:520px){#walletBar{top:64px;left:12px;right:12px;justify-content:space-between;font-size:10px;padding:7px 8px}#walletBalances{gap:7px}#walletBar button{font-size:10px;padding:7px}}
+
+/* 369 CITY marketplace product page inspired by familiar shopping apps */
+#productDetail{display:none;position:fixed;z-index:30;inset:0;background:#f7f8fc;color:#202638;font-family:system-ui,-apple-system,sans-serif}
+#productDetail.open{display:flex;flex-direction:column}
+.pdTop{height:54px;flex:none;display:flex;align-items:center;gap:9px;padding:8px 12px;background:#fff;border-bottom:1px solid #e8eaf0}
+.pdTop button{background:#f1f4f8;color:#26334b;border:0;box-shadow:none;border-radius:50%;width:38px;height:38px;padding:0;font-size:20px}
+#pdBack{font-size:30px}.pdSearch{flex:1;min-width:0;background:#f1f2f5;border-radius:9px;padding:10px;color:#858b98;font-size:13px;white-space:nowrap;overflow:hidden}
+#pdCart{position:relative}#pdCartCount{position:absolute;right:-4px;top:-5px;background:#ee4a37;color:white;border-radius:12px;font-size:10px;padding:1px 5px}
+.pdScroll{overflow:auto;overscroll-behavior:contain;flex:1;padding-bottom:12px}
+.pdHero{height:min(43vh,390px);min-height:235px;background:linear-gradient(145deg,#d9f6ff,#fff0f9 58%,#e9eaff);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pdBadge{position:absolute;top:14px;left:14px;background:#ffffffd9;color:#197b9b;border-radius:16px;padding:6px 10px;font-weight:800;font-size:11px}
+.pdArt{font-size:clamp(100px,28vw,190px);filter:drop-shadow(0 20px 12px #27324b33);transform:translateY(-4px)}
+.pdDots{position:absolute;bottom:13px;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:6px;color:#7b83a0}
+.pdPhotoCount{position:absolute;right:12px;bottom:10px;background:#26334bb8;color:#fff;border-radius:15px;padding:4px 9px;font-size:11px}
+.pdPrice{padding:13px 16px;background:#fff;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.pdPrice strong{font-size:23px;color:#ed513b}.pdPrice span{font-size:13px;color:#a3a8b2;text-decoration:line-through}.pdPrice em{font-style:normal;background:#fff0eb;color:#e65a43;padding:3px 6px;font-size:11px}.pdPrice small{width:100%;font-size:11px;color:#8a909c}
+.pdTitle,.pdSection{background:#fff;margin-top:7px;padding:14px 16px}
+.pdTitle h2{margin:0 0 6px;font-size:18px;color:#202638}.pdTitle div{font-size:12px;color:#e89a22}.pdTitle p,.pdSection p{font-size:13px;line-height:1.5;color:#667084;margin:8px 0 0}
+.pdSection>b{font-size:14px}.pdSection p+p{margin-top:7px}
+#pdVariants{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.pdVariant{background:#f3f5f9;color:#43516a;border:1px solid #dce2eb;box-shadow:none;font-size:12px;padding:8px 12px}.pdVariant.selected{border-color:#ed4a9d;color:#df368e;background:#fff3fa}
+.pdBottom{flex:none;display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid #e7e9ef}
+.pdBottom button{flex:1;min-height:46px;border-radius:9px;font-size:13px}.pdBottom #pdAddCart{background:#17a995;border-color:#17a995;box-shadow:none}.pdBottom #pdBuy{background:#ef513b;border-color:#ef513b;box-shadow:none}
+#pdToast{display:none;position:absolute;bottom:78px;left:50%;transform:translateX(-50%);background:#17243c;color:#fff;padding:10px 16px;border-radius:22px;font-size:12px;white-space:nowrap;z-index:3}
+
+/* Modal states: keep game controls out of the shopping surface */
+body.ui-modal-open #playerJoy,body.ui-modal-open #playerActions,body.ui-modal-open .bottom{display:none!important}
+body.ui-modal-open #shopInfo{z-index:20;bottom:18px;max-height:calc(100dvh - 300px);overflow:auto}
+#giftItems{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#giftItems .giftItem{padding:8px;background:linear-gradient(155deg,#10284a,#07152c);border:1px solid #22dfff;border-radius:13px;box-shadow:inset 0 0 16px #00cfff12;overflow:hidden;cursor:pointer}
+.giftProductArt{height:100px;display:flex;align-items:center;justify-content:center;font-size:62px;background:radial-gradient(circle at 50% 42%,#264d78 0,#142b50 48%,#0a1933 100%);border-radius:9px;margin-bottom:8px;text-shadow:0 5px 12px #0009}
+.giftProductName{font-size:12px;color:#e9f8ff;font-weight:700;line-height:1.3;margin-bottom:3px}
+#giftItems .giftItem b{display:block;color:#ffe27a;font-size:13px;margin:2px 0}
+#giftItems .giftItem small{display:block;color:#8edff4;font-size:10px;margin-top:2px}
+#giftPostOpen{background:linear-gradient(100deg,#d82fe0,#8d43ff);border:1px solid #f4a8ff;box-shadow:0 0 14px #d92de766}
+#productDetail{background:radial-gradient(ellipse at 50% 20%,#173c69 0,#09172f 48%,#050b1d 100%);color:#effaff}
+.pdTop{background:#07152cf5;border-bottom:1px solid #20dfff66}
+.pdTop button{background:#10284a;color:#8ef4ff;border:1px solid #28dfff66}
+.pdSearch{background:#10284a;color:#9ceeff}
+#pdCartCount{background:#ed36d9}
+.pdHero{background:radial-gradient(circle at 50% 46%,#244b77 0,#112a4c 44%,#07152c 100%);border-bottom:1px solid #23dfff55}
+.pdBadge{background:#092442eF;color:#71edff;border:1px solid #22dfff99}
+.pdArt{filter:drop-shadow(0 16px 14px #000b);text-shadow:0 0 28px #28dfff66}
+.pdDots{color:#6eeaff}
+.pdPhotoCount{background:#07152ce8;border:1px solid #25dfff88;color:#baf8ff}
+.pdPrice,.pdTitle,.pdSection{background:#0b1b36;color:#effaff;border-top:1px solid #1d8eb866;border-bottom:1px solid #1d8eb844}
+.pdPrice strong{color:#ffe17a}.pdPrice span{color:#8b9db9}.pdPrice em{background:#56265f;color:#ffb8fa;border:1px solid #d83de866}
+.pdPrice small{color:#8ee8f7}
+.pdTitle h2{color:#f4fbff}.pdTitle div{color:#ffdc75}.pdTitle p,.pdSection p{color:#b6cce5}
+.pdSection>b{color:#72edff}
+.pdVariant{background:#10284a;color:#b8d6ef;border:1px solid #2a6b91}
+.pdVariant.selected{border-color:#e83bdf;color:#ffbafa;background:#44204f}
+.pdBottom{background:#07152cf5;border-top:1px solid #20dfff77}
+.pdBottom #pdAddCart{background:linear-gradient(100deg,#12a997,#087c9a);border-color:#4ce8e0;color:#fff;box-shadow:0 0 14px #00d6c455}
+.pdBottom #pdBuy{background:linear-gradient(100deg,#e62fd8,#9637ed);border-color:#ff9af2;color:#fff;box-shadow:0 0 16px #d52de966}
+#pdToast{background:#0c2344;border:1px solid #26dfff;color:#dffaff}
+
+/* White shop surfaces; retain 369 CITY cyan / magenta accents */
+#shopInfo{background:#fff;color:#1d2a40;border-color:#27c9e8;box-shadow:0 10px 32px #00152d66}
+#shopInfo strong{color:#087e9b}
+#shopInfo p{color:#52627a}
+#closeInfo{background:#e934d8;color:#fff}
+#giftItems .giftItem{background:#fff;border:1px solid #c9e4ed;box-shadow:0 3px 12px #173c5812}
+.giftProductArt{background:linear-gradient(145deg,#eefaff,#fdf0fb);text-shadow:none}
+.giftProductName{color:#26344b}
+#giftItems .giftItem b{color:#d59b00}
+#giftItems .giftItem small{color:#617b91}
+#giftPost{background:#f7fbff;border:1px solid #c8e7f0;border-radius:12px;padding:12px;color:#26344b}
+#giftPost h3{font-size:15px;color:#087e9b;margin:0 0 10px}
+#giftPost label{display:block;font-size:12px;font-weight:700;color:#52627a;margin:8px 0 3px}
+#giftPost input{background:#fff;color:#25334b;border:1px solid #b9d9e5;padding:11px;border-radius:8px}
+#giftPost input[type=file]{font-size:11px}
+#giftPost button{margin:8px 4px 0 0}
+#giftPostMsg{display:block;color:#64748b;font-size:11px;line-height:1.4;margin-top:8px}
+#giftPostCancel{background:#eaf1f7;color:#40516b;border:1px solid #cad7e4;box-shadow:none}
+#productDetail{background:#f5f8fc;color:#202b40}
+.pdTop{background:#fff;border-bottom:1px solid #dbe5ee}
+.pdTop button{background:#edf7fb;color:#087f9e;border:1px solid #c8e8f1}
+.pdSearch{background:#f0f5fa;color:#5c7288}
+#pdCartCount{background:#e934d8}
+.pdHero{background:linear-gradient(145deg,#e4f8ff,#fff3fb 58%,#eef0ff);border-bottom:1px solid #d7e5ed}
+.pdBadge{background:#fff;color:#087f9e;border:1px solid #b8e6f0}
+.pdArt{filter:drop-shadow(0 16px 12px #27324b33);text-shadow:none}
+.pdDots{color:#5c9fb3}
+.pdPhotoCount{background:#25364bbd;color:#fff}
+.pdPrice,.pdTitle,.pdSection{background:#fff;color:#202b40;border-top:1px solid #e6edf3;border-bottom:1px solid #e6edf3}
+.pdPrice strong{color:#e84b3d}.pdPrice span{color:#929cac}.pdPrice em{background:#fff0f7;color:#d934a8;border:1px solid #f4c1e7}
+.pdPrice small{color:#8491a1}
+.pdTitle h2{color:#202b40}.pdTitle div{color:#d99a22}.pdTitle p,.pdSection p{color:#68778b}
+.pdSection>b{color:#263d55}
+.pdVariant{background:#f2f5fa;color:#43516a;border:1px solid #dce2eb}
+.pdVariant.selected{border-color:#e83bdf;color:#cf2ba8;background:#fff1fa}
+.pdBottom{background:#fff;border-top:1px solid #e1e8ef}
+.pdBottom #pdAddCart{background:#16a997;border-color:#16a997;color:#fff;box-shadow:none}
+.pdBottom #pdBuy{background:#ed39ce;border-color:#ed39ce;color:#fff;box-shadow:0 0 12px #ed39ce44}
+#pdToast{background:#fff;color:#26344b;border:1px solid #b7e4ef;box-shadow:0 4px 16px #00152d22}
+
+.pdRating{display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:12px;color:#d99a22}
+#pdReviewOpen{background:#eafaff;color:#087e9b;border:1px solid #a9dce9;border-radius:16px;padding:5px 10px;font-size:11px;box-shadow:none}
+.pdActionModal{display:none;position:absolute;z-index:8;inset:0;background:#07152c99;align-items:center;justify-content:center;padding:18px}
+.pdActionModal.open{display:flex}
+.pdActionCard{position:relative;width:min(100%,390px);background:#fff;color:#26344b;border:1px solid #b8e5ef;border-radius:17px;padding:20px;box-shadow:0 14px 45px #00152d55}
+.pdActionCard h3{margin:0 30px 12px 0;color:#087e9b;font-size:18px}
+.pdActionCard label{display:block;font-size:12px;font-weight:700;margin:12px 0 5px;color:#52627a}
+.pdActionCard select,.pdActionCard textarea{width:100%;box-sizing:border-box;padding:11px;border:1px solid #cbdce7;border-radius:9px;background:#f8fbfe;color:#26344b;font:inherit}
+.pdActionCard textarea{min-height:95px;resize:vertical}
+.pdActionCard>button:not(.pdActionClose){width:100%;margin-top:14px;background:linear-gradient(100deg,#e934d8,#913eea);color:white;border:0}
+.pdActionClose{position:absolute;right:12px;top:12px;background:#eef4f8;color:#40516b;border:0;box-shadow:none;border-radius:50%;width:32px;height:32px;padding:0}
+.pdActionCard small{display:block;color:#718096;font-size:11px;margin-top:9px;line-height:1.4}
+.pdDemoNotice{padding:10px;background:#fff7e8;border:1px solid #f3d49b;border-radius:9px;color:#86611e;font-size:12px;line-height:1.5}
+#pdBuySummary{display:flex;justify-content:space-between;gap:12px;font-weight:800;padding:10px 0}
+
+.pdChoiceRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.pdQty{display:flex;align-items:center;gap:0;margin-top:9px;border:1px solid #d5e0eb;border-radius:9px;width:max-content;overflow:hidden}
+.pdQty button{width:40px;height:36px;background:#eef5fb;color:#24364e;border:0;box-shadow:none}
+.pdQty strong{min-width:38px;text-align:center;color:#23334c}
+.pdQty small{padding:0 9px;color:#77859a;font-size:11px}
+.pdCheckoutCard{max-height:calc(100% - 18px);overflow:auto}
+.pdCheckoutSection{border-top:1px solid #e5edf4;padding:12px 0}
+.pdCheckoutSection>b{display:block;color:#087e9b;margin-bottom:9px}
+.pdCheckoutSection input:not([type=radio]),.pdCheckoutSection textarea{display:block;width:100%;box-sizing:border-box;margin:7px 0;padding:11px;border:1px solid #d4e0e9;border-radius:9px;background:#f8fbff;color:#24344b;font:inherit;font-size:13px}
+.pdCheckoutSection textarea{min-height:70px}
+.pdShipOption{display:flex;align-items:center;gap:8px;padding:9px;border:1px solid #dce6ef;border-radius:9px;margin:7px 0;font-size:12px}
+.pdShipOption span{flex:1}
+.pdShipOption strong{font-size:11px;color:#718096}
+#pdEta{font-size:11px;color:#60758c}
+.pdCheckoutTotal{display:grid;grid-template-columns:1fr auto;gap:8px;padding:12px 0;border-top:1px solid #e5edf4;font-size:13px}
+.pdCheckoutTotal strong{color:#e34c9b}
+#authGate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;background:rgba(3,10,28,.96);color:#fff;font-family:inherit}#authGate[hidden]{display:none}#authGateCard{width:min(100%,460px);background:#0b1c38;border:1px solid #22dfff;border-radius:22px;padding:24px;box-shadow:0 0 35px #00d9ff35}#authGateCard h1{font-size:25px;margin:0 0 8px;color:#7deaff}#authGateCard p{color:#c3d9f0;line-height:1.5}#authGateCard label{display:block;margin:12px 0 6px;color:#b9d7f2}#authGateCard input{width:100%;box-sizing:border-box;padding:14px;border-radius:11px;border:1px solid #41688f;background:#06142c;color:white;font:inherit;font-size:16px}#authGateActions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}#authGateActions button{padding:13px 8px;border:1px solid #f38bff;border-radius:11px;background:#d82bd5;color:white;font-weight:900;font-size:14px}#authGateMsg{min-height:24px;margin:12px 0 0;color:#ffd16a;font-size:13px;overflow-wrap:anywhere}</style>
+</head>
+<body>
+<div id="authGate" hidden>
+ <div id="authGateCard">
+  <h1>🐧 CHÀO MỪNG ĐẾN 369 CITY</h1>
+  <p>Đăng ký hoặc đăng nhập một lần để vào thành phố, sử dụng ví, mua hàng và quản lý gian hàng bằng cùng một tài khoản.</p>
+  <label for="gateEmail">Email</label><input id="gateEmail" type="email" autocomplete="email" placeholder="Nhập email của bạn">
+  <label for="gatePassword">Mật khẩu</label><input id="gatePassword" type="password" autocomplete="new-password" placeholder="Ít nhất 6 ký tự">
+  <div id="authGateActions"><button id="gateLogin" type="button">ĐĂNG NHẬP</button><button id="gateSignup" type="button">TẠO TÀI KHOẢN</button></div>
+  <div id="authGateMsg" role="status">Vui lòng đăng nhập hoặc tạo tài khoản để bắt đầu.</div>
+ </div>
+</div>
+
+<div id="scene"></div>
+<div class="panel"><div class="card"><strong>🏙️ 369 CITY</strong><div class="sub">PHỐ MUA SẮM + QUẢNG TRƯỜNG · PIXEL NEON</div></div><div class="card" style="text-align:right"><strong>🛍️ SHOPPING STREET</strong><div class="sub">8 gian hàng + quảng trường</div></div></div>
+
+<div id="walletBar"><div id="walletBalances"><b>🪙 XU: —</b><b>🟡 COIN: —</b></div><button id="walletOpen">👛 VÍ CỦA TÔI</button></div>
+<div id="walletModal"><div id="walletCard"><button id="walletClose">ĐÓNG</button><h2>👛 VÍ 369 CITY</h2><div id="walletSignedOut"><p>Đăng nhập để xem số dư XU và COIN của bạn.</p><label>Email</label><input id="walletEmail" type="email" autocomplete="email" placeholder="Email của bạn"><label>Mật khẩu</label><input id="walletPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu"><div class="walletActions"><button id="walletLogin">ĐĂNG NHẬP</button><button id="walletSignup">TẠO TÀI KHOẢN</button></div></div><div id="walletSignedIn" style="display:none"><p id="walletUserLabel"></p><div id="walletDetails"></div><div class="walletActions"><button id="walletTopup" type="button">💳 NẠP XU</button><button id="sellerOrdersOpen" type="button">📦 ĐƠN HÀNG NGƯỜI BÁN</button></div><div id="walletTopupInfo" style="display:none;background:#10284a;border:1px solid #42618b;border-radius:10px;padding:12px;margin-top:10px;font-size:13px;line-height:1.45"><b style="color:#ffe08a">CHỌN GÓI NẠP XU</b><p style="margin:7px 0;color:#c7d9ef">Thanh toán qua PayPal. XU chỉ được cộng sau khi PayPal xác nhận giao dịch hoàn tất.</p><div id="walletTopupPackages" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><span style="color:#9fb9d4">Đang tải gói nạp...</span></div><p id="walletTopupMessage" style="margin:9px 0 0;color:#ffc979"></p></div><div id="walletLock">🔒 Đổi XU sang COIN và thanh toán hàng thật đang tạm khóa đến khi hoàn tất xác nhận pháp lý.</div><div class="walletActions"><button id="walletRefresh">LÀM MỚI SỐ DƯ</button><button id="walletLogout">ĐĂNG XUẤT</button></div><h3 style="font-size:14px;color:#8defff;margin:16px 0 4px">LỊCH SỬ GIAO DỊCH</h3><div id="walletHistory">Chưa tải lịch sử.</div></div><div id="walletStatus"></div></div></div>
+<div id="shopInfo"><button id="closeInfo">ĐÓNG</button><strong id="shopTitle">CỬA HÀNG</strong><p id="shopDesc">Thông tin cửa hàng</p><div id="giftActions"><button id="giftPostOpen" type="button" aria-label="Công cụ người bán" title="Công cụ người bán">⚙️</button><div id="giftItems"><div class="giftItem"><div class="giftProductArt">🧸</div><div class="giftProductName">Gấu bông Pixel</div><b>120 COIN</b><small>Người bán: Mèo Xanh</small></div><div class="giftItem"><div class="giftProductArt">🎒</div><div class="giftProductName">Ba lô Neon</div><b>90 COIN</b><small>Người bán: Bắp Rang</small></div><div class="giftItem"><div class="giftProductArt">🪴</div><div class="giftProductName">Chậu cây mini</div><b>45 COIN</b><small>Người bán: Hana</small></div><div class="giftItem"><div class="giftProductArt">🎧</div><div class="giftProductName">Tai nghe ảo</div><b>150 COIN</b><small>Người bán: Ken</small></div></div><div style="margin-top:10px"><button id="giftEnter">🚪 VÀO GIFT SHOP</button></div><div id="giftPost"><h3>ĐĂNG SẢN PHẨM THỬ NGHIỆM</h3><label for="giftName">Tên sản phẩm</label><input id="giftName" maxlength="50" placeholder="Ví dụ: Gấu bông 369"><label for="giftPrice">Giá COIN</label><input id="giftPrice" type="number" min="1" max="1000000" placeholder="Ví dụ: 120"><label for="giftDescInput">Mô tả</label><input id="giftDescInput" maxlength="180" placeholder="Mô tả ngắn về sản phẩm"><label for="giftSellerInput">Tên người bán</label><input id="giftSellerInput" maxlength="30" placeholder="Tên hiển thị"><label for="giftImageInput">Ảnh sản phẩm</label><input id="giftImageInput" type="file" accept="image/*"><img id="giftImagePreview" alt="Ảnh xem trước sản phẩm" style="display:none;width:100%;max-height:170px;object-fit:contain;background:#f4f7fb;border-radius:10px;margin:8px 0"><button id="giftPublish" type="button">ĐĂNG THỬ SẢN PHẨM</button><button id="giftPostCancel" type="button">HỦY</button><small id="giftPostMsg">Sản phẩm thử nghiệm sẽ chỉ lưu trên trình duyệt của thiết bị này.</small></div></div></div>
+<div id="sellerOrdersModal" style="display:none;position:fixed;inset:0;z-index:30;background:#061126ee;color:#fff;padding:16px;overflow:auto">
+ <div style="max-width:720px;margin:0 auto;background:#0b1c38;border:1px solid #21dfff;border-radius:16px;padding:16px">
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><h2 style="margin:0">📦 ĐƠN HÀNG NGƯỜI BÁN</h2><button id="sellerOrdersClose" type="button">ĐÓNG</button></div>
+ <p style="font-size:12px;color:#a9c7e7">Chỉ hiển thị yêu cầu đặt hàng gửi đến tài khoản của bạn.</p><div id="sellerOrdersList">Đang tải đơn hàng...</div>
+ </div></div>
+ <div id="productDetail" aria-hidden="true">
+ <div class="pdTop"><button id="pdBack" aria-label="Quay lại">‹</button><div class="pdSearch">⌕　Tìm sản phẩm trong 369 CITY</div><button id="pdShare">↗</button><button id="pdCart">🛒<span id="pdCartCount">0</span></button></div>
+ <div class="pdScroll">
+  <div class="pdHero"><div class="pdBadge">369 CITY · GIFT SHOP</div><div id="pdArt" class="pdArt">🧸</div><div class="pdDots">● ● ● ●</div><div class="pdPhotoCount">1/4</div></div>
+  <div class="pdPrice"><strong id="pdPrice">120 COIN</strong><span id="pdOldPrice">150 COIN</span><em>−20%</em><small>Giá trong thế giới ảo 369 CITY</small></div>
+  <div class="pdTitle"><h2 id="pdName">Gấu bông Pixel</h2><div class="pdRating">⭐ <span id="pdRatingValue">4.9</span>　|　<span id="pdReviewCount">0</span> đánh giá　<button type="button" id="pdReviewOpen">✍️ Viết đánh giá</button></div><p id="pdDesc">Gấu bông mềm mại phong cách Pixel, món quà đáng yêu để trang trí căn phòng của bạn.</p></div>
+  <div class="pdSection"><b>Màu sắc</b><div id="pdVariants"><button class="pdVariant selected" type="button">Mặc định</button><button class="pdVariant" type="button">Phiên bản Neon</button></div><b style="display:block;margin-top:13px">Kích thước</b><div id="pdSizes" class="pdChoiceRow"><button class="pdVariant selected" type="button">Một kích thước</button></div><b style="display:block;margin-top:13px">Số lượng</b><div class="pdQty"><button type="button" id="pdQtyMinus">−</button><strong id="pdQtyValue">1</strong><button type="button" id="pdQtyPlus">＋</button><small id="pdStock">Còn hàng</small></div></div>
+  <div class="pdSection"><b>Thông tin giao nhận</b><p>📦 Với hàng vật lý, người mua sẽ nhập địa chỉ và chọn cách giao hàng ở bước thanh toán.</p><p>🛡️ Đơn hàng hiện là bản thử nghiệm, chưa gửi cho người bán hoặc đơn vị vận chuyển.</p></div>
+  <div class="pdSection"><b>Chi tiết sản phẩm</b><p id="pdDetails">Thiết kế độc quyền của cư dân 369 CITY. Có thể dùng để trang trí không gian cá nhân.</p></div>
+  <div class="pdSection"><b>Đánh giá sản phẩm　⭐ 4.9</b><p>“Hình ảnh dễ thương, màu sắc đẹp.”</p><p>“Rất hợp để sưu tầm trong 369 CITY.”</p></div>
+ </div>
+ <div class="pdBottom"><button id="pdAddCart">＋ Thêm vào giỏ</button><button id="pdBuy">Mua ngay</button></div>
+ <div id="pdReviewModal" class="pdActionModal" aria-hidden="true"><div class="pdActionCard"><button type="button" class="pdActionClose" id="pdReviewClose">✕</button><h3>Đánh giá sản phẩm</h3><p id="pdReviewProduct"></p><label for="pdReviewStars">Số sao</label><select id="pdReviewStars"><option value="5">⭐⭐⭐⭐⭐ - Rất tốt</option><option value="4">⭐⭐⭐⭐ - Tốt</option><option value="3">⭐⭐⭐ - Bình thường</option><option value="2">⭐⭐ - Chưa tốt</option><option value="1">⭐ - Không hài lòng</option></select><label for="pdReviewText">Nhận xét</label><textarea id="pdReviewText" maxlength="300" placeholder="Chia sẻ cảm nhận của bạn..."></textarea><button type="button" id="pdReviewSubmit">GỬI ĐÁNH GIÁ</button><small id="pdReviewMsg">Đánh giá thử nghiệm được lưu trên thiết bị này.</small></div></div><div id="pdBuyModal" class="pdActionModal" aria-hidden="true"><div class="pdActionCard pdCheckoutCard"><button type="button" class="pdActionClose" id="pdBuyClose">✕</button><h3>Thanh toán đơn hàng</h3><div id="pdBuySummary"></div><div class="pdCheckoutSection"><b>📍 Địa chỉ nhận hàng</b><input id="pdShipName" placeholder="Họ và tên người nhận" autocomplete="name"><input id="pdShipPhone" placeholder="Số điện thoại" inputmode="tel" autocomplete="tel"><textarea id="pdShipAddress" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố" autocomplete="street-address"></textarea></div><div class="pdCheckoutSection"><b>🚚 Phương thức vận chuyển</b><label class="pdShipOption"><input type="radio" name="pdShip" value="standard" checked><span>Giao hàng tiêu chuẩn</span><strong>Phí sẽ được xác nhận</strong></label><label class="pdShipOption"><input type="radio" name="pdShip" value="express"><span>Giao hàng nhanh</span><strong>Phí sẽ được xác nhận</strong></label><p id="pdEta">Thời gian nhận hàng dự kiến: sẽ cập nhật theo địa chỉ giao.</p></div><div class="pdCheckoutTotal"><span>Tạm tính</span><strong id="pdCheckoutSubtotal"></strong><span>Phí vận chuyển</span><strong>Chưa tính</strong><span>Tổng thanh toán</span><strong id="pdCheckoutTotal"></strong></div><p class="pdDemoNotice">Bản thử nghiệm: chưa thu tiền, chưa trừ COIN và chưa tạo vận đơn thật. Phí ship và ngày giao sẽ cần kết nối đơn vị vận chuyển.</p><button type="button" id="pdConfirmBuy">XÁC NHẬN ĐẶT HÀNG THỬ</button><small id="pdCheckoutMsg">Thông tin chỉ được lưu trên thiết bị đang thử nghiệm.</small></div></div><div id="pdToast"></div>
+</div>
+<div id="playerJoy" aria-label="Điều khiển di chuyển"><div id="playerKnob"></div></div>
+<div id="playerActions"><button id="playerJump" aria-label="Nhảy" title="Nhảy">🐧</button><button id="playerShop" aria-label="Tương tác cửa hàng" title="Tương tác cửa hàng" style="display:none">🛍️</button><button id="playerLeaveShop" aria-label="Ra khỏi cửa hàng" title="Ra khỏi cửa hàng" style="display:none">🚪</button><button id="playerCenter" aria-label="Theo nhân vật" title="Theo nhân vật">🎯</button><button id="playerPlaza" aria-label="Về quảng trường" title="Về quảng trường">🏙️</button></div>
+
+<div class="bottom"><div class="pill">Bản thử nghiệm riêng · Chưa đưa vào game chính</div><button id="reset">ĐẶT LẠI GÓC NHÌN</button></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+// 369 CITY wallet: authenticated balance and transaction history
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+const walletClient=createClient('https://pazfwdgmojkdblfgikwg.supabase.co','sb_publishable__2bDRA8f4ar1Q7O1u9jqCw_j9sA5MNv');
+const walletModal=document.getElementById('walletModal'),walletStatus=document.getElementById('walletStatus');
+let walletSession=null;
+function walletMsg(s){walletStatus.textContent=s||''}
+function walletOpen(){walletModal.classList.add('open');walletMsg('')}
+function walletClose(){walletModal.classList.remove('open')}
+document.getElementById('walletOpen').onclick=walletOpen;
+document.getElementById('walletClose').onclick=walletClose;
+walletModal.addEventListener('click',e=>{if(e.target===walletModal)walletClose()});
+function walletNum(n){return Number(n||0).toLocaleString('vi-VN')}
+async function walletLoad(){
+ if(!walletSession){document.getElementById('walletBalances').innerHTML='<b>🪙 XU: —</b><b>🟡 COIN: —</b>';document.getElementById('walletSignedOut').style.display='block';document.getElementById('walletSignedIn').style.display='none';return}
+ document.getElementById('walletSignedOut').style.display='none';document.getElementById('walletSignedIn').style.display='block';
+ document.getElementById('walletUserLabel').textContent='Đang đăng nhập: '+(walletSession.user.email||'người chơi');
+ walletMsg('Đang tải ví...');
+ const {data,error}=await walletClient.rpc('currency_get_my_balances');
+ if(error){walletMsg('Không tải được ví: '+error.message);return}
+ const b=Array.isArray(data)?data[0]:data;
+ if(!b){walletMsg('Chưa tìm thấy thông tin ví.');return}
+ document.getElementById('walletBalances').innerHTML='<b>🪙 XU: '+walletNum(Number(b.xu_earned)+Number(b.xu_purchased))+'</b><b>🟡 COIN: '+walletNum(b.coin_balance)+'</b>';
+ document.getElementById('walletDetails').innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px"><div style="background:#10284a;padding:12px;border-radius:10px">🪙 <b>XU kiếm được</b><div style="font-size:22px;color:#ffd16a">'+walletNum(b.xu_earned)+'</div></div><div style="background:#10284a;padding:12px;border-radius:10px">🪙 <b>XU đã nạp</b><div style="font-size:22px;color:#ffd16a">'+walletNum(b.xu_purchased)+'</div></div><div style="background:#10284a;padding:12px;border-radius:10px;grid-column:1/-1">🟡 <b>COIN</b><div style="font-size:24px;color:#ffe27a">'+walletNum(b.coin_balance)+'</div><small>Quy đổi dự kiến: '+walletNum(b.earned_xu_per_coin)+' XU kiếm được = 1 COIN</small></div></div>';
+ const {data:history,error:historyError}=await walletClient.rpc('currency_get_my_history',{p_limit:15});
+ document.getElementById('walletHistory').innerHTML=historyError?'Không tải được lịch sử.':(history||[]).length?(history||[]).map(x=>'<div style="padding:8px 0;border-bottom:1px solid #29415f"><b>'+x.currency+'</b> · '+(Number(x.amount)>0?'+':'')+walletNum(x.amount)+'<br><span style="color:#9fb9d4">'+(x.reason||'Giao dịch')+' · '+new Date(x.created_at).toLocaleString('vi-VN')+'</span></div>').join(''):'Chưa có giao dịch.';
+ walletMsg('Ví đã cập nhật.');
+}
+document.getElementById('walletLogin').onclick=async()=>{const email=document.getElementById('walletEmail').value.trim(),password=document.getElementById('walletPassword').value;if(!email||!password){walletMsg('Vui lòng nhập email và mật khẩu.');return}walletMsg('Đang đăng nhập...');const {data,error}=await walletClient.auth.signInWithPassword({email,password});if(error){walletMsg(error.message);return}walletSession=data.session;await walletLoad();await walletHandlePayPalReturn()};
+document.getElementById('walletSignup').onclick=async()=>{const email=document.getElementById('walletEmail').value.trim(),password=document.getElementById('walletPassword').value;if(!email||password.length<6){walletMsg('Nhập email và mật khẩu ít nhất 6 ký tự.');return}walletMsg('Đang tạo tài khoản...');const {data,error}=await walletClient.auth.signUp({email,password});if(error){walletMsg(error.message);return}if(data.session){walletSession=data.session;await walletLoad()}else walletMsg('Đã gửi email xác nhận. Hãy xác nhận email rồi đăng nhập.')};
+document.getElementById('walletRefresh').onclick=walletLoad;
+async function walletLoadTopupPackages(){
+ const box=document.getElementById('walletTopupPackages'),msg=document.getElementById('walletTopupMessage');
+ box.innerHTML='<span style="color:#9fb9d4">Đang tải gói nạp...</span>';msg.textContent='';
+ const {data,error}=await walletClient.functions.invoke('paypal-list-packages',{method:'GET'});
+ if(error||!data||!data.configured||!Array.isArray(data.packages)||!data.packages.length){box.innerHTML='<span style="color:#ffd08a;grid-column:1/-1">Chưa cấu hình gói nạp PayPal.</span>';msg.textContent='Cần cấu hình gói nạp và thông tin PayPal trong Supabase.';return}
+ box.innerHTML='';
+ data.packages.forEach(pack=>{
+  const btn=document.createElement('button');btn.type='button';
+  btn.style.cssText='background:#173d66;color:#fff;border:1px solid #4d83b8;border-radius:9px;padding:12px 8px;font-weight:700;cursor:pointer';
+  btn.textContent=Number(pack.xu).toLocaleString('vi-VN')+' XU - '+Number(pack.amount).toFixed(2)+' USD';
+  btn.addEventListener('click',()=>walletCreatePayPalOrder(String(pack.code),btn));box.appendChild(btn);
+ });
+}
+async function walletCreatePayPalOrder(code,button){
+ const msg=document.getElementById('walletTopupMessage');
+ button.disabled=true;msg.textContent='Đang tạo đơn PayPal...';
+ try{const {data,error}=await walletClient.functions.invoke('paypal-create-order',{body:{package_code:code}});
+  if(error)throw error;if(!data||!data.approve_url)throw new Error(data&&data.error?data.error:'Không tạo được đơn PayPal.');
+  window.location.href=data.approve_url;
+ }catch(e){msg.textContent=e.message||'Lỗi tạo thanh toán.';button.disabled=false}
+}
+let paypalReturnOrder=new URLSearchParams(window.location.search).get('token');
+let paypalReturnHandled=false;
+async function walletHandlePayPalReturn(){
+ const p=new URLSearchParams(window.location.search);
+ if(p.get('paypal')==='cancel'){document.getElementById('walletTopupInfo').style.display='block';document.getElementById('walletTopupMessage').textContent='Bạn đã hủy thanh toán.';window.history.replaceState({},document.title,window.location.pathname);return}
+ if(p.get('paypal')!=='success'||!paypalReturnOrder||paypalReturnHandled||!walletSession)return;
+ paypalReturnHandled=true;document.getElementById('walletTopupInfo').style.display='block';document.getElementById('walletTopupMessage').textContent='Đang xác minh PayPal...';
+ try{const {data,error}=await walletClient.functions.invoke('paypal-capture-order',{body:{order_id:paypalReturnOrder}});
+  if(error)throw error;if(!data||!data.ok)throw new Error(data&&data.error?data.error:'Thanh toán chưa được xác nhận.');
+  document.getElementById('walletTopupMessage').textContent='Đã xác nhận thanh toán. XU đã được cộng vào ví.';window.history.replaceState({},document.title,window.location.pathname);paypalReturnOrder=null;await walletLoad();
+ }catch(e){document.getElementById('walletTopupMessage').textContent=(e.message||'Chưa xác minh được.')+' Không thanh toán lại nếu tiền đã bị trừ.'}
+}
+document.getElementById('walletTopup').onclick=async()=>{const el=document.getElementById('walletTopupInfo');el.style.display=el.style.display==='none'?'block':'none';if(el.style.display==='block')await walletLoadTopupPackages()};
+document.getElementById('walletLogout').onclick=async()=>{await walletClient.auth.signOut();walletSession=null;await walletLoad();walletMsg('Đã đăng xuất.')};
+walletClient.auth.getSession().then(async({data})=>{walletSession=data.session;await walletLoad();authGateHide();await walletHandlePayPalReturn()});
+function authGateShow(message){document.getElementById('authGate').hidden=false;if(message)document.getElementById('authGateMsg').textContent=message}
+function authGateHide(){document.getElementById('authGate').hidden=true}
+async function authGateLogin(){
+ const email=document.getElementById('gateEmail').value.trim(),password=document.getElementById('gatePassword').value;
+ const msg=document.getElementById('authGateMsg');
+ if(!email||!password){msg.textContent='Vui lòng nhập email và mật khẩu.';return}
+ msg.textContent='Đang đăng nhập...';
+ const {data,error}=await walletClient.auth.signInWithPassword({email,password});
+ if(error){msg.textContent='Đăng nhập chưa thành công: '+error.message;return}
+ walletSession=data.session;await walletLoad();authGateHide();
+}
+async function authGateSignup(){
+ const email=document.getElementById('gateEmail').value.trim(),password=document.getElementById('gatePassword').value;
+ const msg=document.getElementById('authGateMsg');
+ if(!email||!/^\\S+@\\S+\\.\\S+$/.test(email)){msg.textContent='Vui lòng nhập địa chỉ email hợp lệ.';return}
+ if(password.length<6){msg.textContent='Mật khẩu cần có ít nhất 6 ký tự.';return}
+ msg.textContent='Đang tạo tài khoản...';
+ const {data,error}=await walletClient.auth.signUp({email,password});
+ if(error){msg.textContent='Chưa tạo được tài khoản: '+error.message;return}
+ if(data.session){walletSession=data.session;await walletLoad();authGateHide();msg.textContent='Tài khoản đã sẵn sàng.'}
+ else{msg.textContent='Đã gửi email xác nhận đến '+email+'. Hãy mở email, bấm xác nhận rồi quay lại đây để đăng nhập.'}
+}
+document.getElementById('gateLogin').onclick=authGateLogin;
+document.getElementById('gateSignup').onclick=authGateSignup;
+document.getElementById('gatePassword').addEventListener('keydown',e=>{if(e.key==='Enter')authGateLogin()});
+walletClient.auth.onAuthStateChange((_event,session)=>{walletSession=session;walletLoad()}); 
+
+async function sellerOrdersLoad(){
+ const root=document.getElementById('sellerOrdersList');
+ if(!walletSession){root.textContent='Bạn cần đăng nhập trước.';return}
+ root.textContent='Đang tải đơn hàng...';
+ const {data,error}=await walletClient.from('mall_order_inquiries').select('*').eq('seller_id',walletSession.user.id).order('created_at',{ascending:false}).limit(50);
+ if(error){root.textContent='Không tải được đơn hàng: '+error.message;return}
+ if(!data||!data.length){root.textContent='Chưa có yêu cầu đặt hàng nào gửi đến gian hàng của bạn.';return}
+ const labels={new:'MỚI',accepted:'ĐÃ XÁC NHẬN',rejected:'ĐÃ TỪ CHỐI',preparing:'ĐANG CHUẨN BỊ',shipped:'ĐÃ GỬI HÀNG',delivered:'ĐÃ GIAO',cancelled:'ĐÃ HỦY'};
+ root.innerHTML='';
+ data.forEach(order=>{
+  const card=document.createElement('div');card.style.cssText='background:#13294b;border:1px solid #31547d;border-radius:12px;padding:12px;margin:10px 0';
+  const title=document.createElement('b');title.textContent=order.product_name+' × '+order.quantity;card.appendChild(title);
+  const details=document.createElement('p');details.style.cssText='font-size:12px;line-height:1.55;color:#d2e4fa;white-space:pre-wrap';
+  details.textContent='Tổng: '+Number(order.total_coin).toLocaleString('vi-VN')+' COIN\nNgười nhận: '+order.recipient_name+' · '+order.recipient_phone+'\nĐịa chỉ: '+order.shipping_address+'\nGiao hàng: '+(order.shipping_method==='express'?'Nhanh':'Tiêu chuẩn')+'\nTrạng thái: '+(labels[order.status]||order.status)+'\nNgày đặt: '+new Date(order.created_at).toLocaleString('vi-VN');
+  card.appendChild(details);
+  const actions=document.createElement('div');actions.style.cssText='display:flex;gap:7px;flex-wrap:wrap';
+  const choices=[['accepted','XÁC NHẬN'],['preparing','CHUẨN BỊ'],['shipped','ĐÃ GỬI'],['delivered','ĐÃ GIAO'],['rejected','TỪ CHỐI']];
+  choices.forEach(([status,label])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.style.cssText='font-size:11px;padding:8px';b.onclick=async()=>{b.disabled=true;const {error:updateError}=await walletClient.from('mall_order_inquiries').update({status,updated_at:new Date().toISOString()}).eq('id',order.id).eq('seller_id',walletSession.user.id);if(updateError){alert('Không cập nhật được: '+updateError.message);b.disabled=false}else await sellerOrdersLoad()};actions.appendChild(b)});
+  card.appendChild(actions);root.appendChild(card);
+ });
+}
+document.getElementById('sellerOrdersOpen').onclick=async()=>{document.getElementById('sellerOrdersModal').style.display='block';await sellerOrdersLoad()};
+document.getElementById('sellerOrdersClose').onclick=()=>{document.getElementById('sellerOrdersModal').style.display='none'};
+
+
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js';
+const host=document.getElementById('scene'),scene=new THREE.Scene();scene.background=new THREE.Color(0xb8d5e4);scene.fog=new THREE.Fog(0xb8d5e4,110,190);
+const camera=new THREE.PerspectiveCamera(43,innerWidth/innerHeight,.1,260);camera.position.set(38,48,48);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.0));renderer.setSize(innerWidth,innerHeight);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.72;renderer.shadowMap.enabled=false;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.065;controls.target.set(0,2.4,-91);controls.minDistance=18;controls.maxDistance=95;controls.maxPolarAngle=Math.PI*.48;controls.minPolarAngle=.18;
+scene.add(new THREE.AmbientLight(0xd5e7ff,.85));scene.add(new THREE.HemisphereLight(0x92caff,0x354a78,.75));const moon=new THREE.DirectionalLight(0xeaf4ff,1.0);moon.position.set(-25,42,22);moon.castShadow=true;moon.shadow.mapSize.set(1024,1024);scene.add(moon);
+const mat=c=>new THREE.MeshStandardMaterial({color:c,roughness:.46,metalness:.18}),glow=c=>new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:.12,roughness:.58});
+const M={ground:mat(0xd7cfb7),road:mat(0x8d918b),dark:mat(0x35444b),wall:mat(0xe5c99f),glass:new THREE.MeshStandardMaterial({color:0x8cc7d9,emissive:0x285b6a,emissiveIntensity:.22,metalness:.18,roughness:.25}),floor:mat(0xcab98f),gold:glow(0xffc34d),cyan:glow(0x19bcd0),pink:glow(0xe83e9d),purple:glow(0x8652bb),lime:glow(0x7dff7a),white:mat(0xf8f1df),wood:mat(0x87517d),leaf:mat(0x168c79)};
+const materialAliases={cream:mat(0xf2e8d5),edge:glow(0x35eaff),grass:mat(0x126b54),green:mat(0x168c79),green2:mat(0x25bd82)};
+function box(x,y,z,w,h,d,material,parent=scene){const resolved=typeof material==='string'?(M[material]||materialAliases[material]||M.dark):material;const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),resolved);o.position.set(x,y+h/2,z);o.castShadow=false;o.receiveShadow=false;parent.add(o);return o}
+function point(x,y,z,color,intensity=1.5,dist=10){const l=new THREE.PointLight(color,intensity,dist);l.position.set(x,y,z);scene.add(l)}
+function labelTexture(text,bg='#091632',fg='#ffffff',small=false){const c=document.createElement('canvas');c.width=512;c.height=160;const g=c.getContext('2d');g.fillStyle=bg;g.fillRect(0,0,512,160);g.strokeStyle='#24dcff';g.lineWidth=7;g.strokeRect(5,5,502,150);g.fillStyle=fg;g.font='bold '+(small?34:46)+'px monospace';g.textAlign='center';g.textBaseline='middle';g.shadowColor=fg;g.shadowBlur=12;g.fillText(text,256,82,470);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return new THREE.MeshStandardMaterial({map:t,emissive:0xffffff,emissiveMap:t,emissiveIntensity:.06,roughness:.9})}
+function sign(parent,x,y,z,w,h,text,accent){box(x,y,z,w+.28,h+.28,.22,M.dark,parent);box(x,y,z+.14,w+.12,h+.12,.08,accent,parent);const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),labelTexture(text,'#091632','#ffffff'));p.position.set(x,y,z+.20);parent.add(p)}
+// broad street base: polished midnight-blue pixel tiles, not a flat asphalt strip
+box(0,-.55,0,110,.5,110,M.ground);box(0,-.18,0,37,.18,64,M.road);
+const roadTile=new THREE.MeshStandardMaterial({color:0x3c568b,roughness:.28,metalness:.38});const roadTileAlt=new THREE.MeshStandardMaterial({color:0x304675,roughness:.30,metalness:.35});const roadSeam=glow(0x365cff);
+for(let z=-31;z<=31;z+=2){for(let x=-7;x<=7;x+=2){box(x,.012,z,1.94,.07,1.94,((Math.round(x/2)+Math.round(z/2))%2===0)?roadTile:roadTileAlt)}}
+// Removed the two long dark roadside strips and their bright edge lines beside the stage.
+// subtle central pixel motif and directional arrows
+for(let z=-25;z<=25;z+=5){box(0,.045,z,.10,.025,1.5,roadSeam)}
+function roadArrow(z){for(let k=0;k<3;k++){const y=.075+k*.62;const v=box(0,y,z+k*.72,1.25,.055,.18,M.pink);v.rotation.z=k%2?-.58:.58}}
+roadArrow(16);roadArrow(-15);
+// pixel-style shops: shop facades face the central avenue
+const shopData=[
+ {name:'NEON FASHION',desc:'Thời trang và phụ kiện avatar. Khu vực dự kiến cho người chơi thuê gian hàng.',x:-13,z:-19,color:0xff28c8,tag:'FASHION'},
+ {name:'369 BEAUTY',desc:'Mỹ phẩm, phụ kiện làm đẹp và vật phẩm trang trí nhân vật.',x:13,z:-19,color:0x18ddff,tag:'BEAUTY'},
+ {name:'PIXEL MARKET',desc:'Cửa hàng tổng hợp để trưng bày và bán vật phẩm.',x:-13,z:-6,color:0xffb936,tag:'MARKET'},
+ {name:'GAME STORE',desc:'Vật phẩm game, mini game và quà tặng trong thành phố.',x:13,z:-6,color:0x9c4cff,tag:'GAME'},
+ {name:'369 FOOD',desc:'Quầy đồ ăn và nước uống phong cách phố đêm.',x:-13,z:7,color:0x18ddff,tag:'FOOD'},
+ {name:'DRINK & TEA',desc:'Quầy trà và nước giải khát phong cách phố đêm.',x:13,z:7,color:0xff28c8,tag:'DRINK'},
+ {name:'KARAOKE BOX',desc:'Phòng karaoke riêng và khu giao lưu bằng giọng nói.',x:-13,z:20,color:0x9c4cff,tag:'KARAOKE'},
+ {name:'GIFT & TOYS',desc:'Quà lưu niệm, đồ sưu tầm và vật phẩm trang trí.',x:13,z:20,color:0xffb936,tag:'GIFTS'}
+];
+const shopMeshes=[];
+function shop(d,index){
+ const g=new THREE.Group();g.position.set(d.x,0,d.z);g.rotation.y=d.x<0?Math.PI/2:-Math.PI/2;scene.add(g);const a=glow(d.color);
+ // raised foundation, back wall, side walls and bright roof cornice
+ box(0,.22,0,9.5,.45,8.4,M.dark,g);box(0,.52,0,9.15,.12,8.05,a,g);
+ box(0,3.25,-3.7,9.1,5.1,.38,M.wall,g);box(-4.45,2.2,0,.32,3.5,7.6,M.dark,g);box(4.45,2.2,0,.32,3.5,7.6,M.dark,g);
+ box(0,5.9,-.1,9.8,.34,8.7,M.dark,g);box(0,6.1,-.1,9.95,.16,8.85,a,g);
+ // V74: modular multi-storey voxel facade inspired by the supplied isometric shopping street.
+ // Each shop keeps its original click target, interior, stock and wallet behavior.
+ const upperPalette=[0xf4b27e,0x8ed5cf,0xf3d36f,0x9b8be6,0x9ed8ee,0xf3a6c8,0xb6d99a,0xe9b8df];
+ const upperWall=mat(upperPalette[index%upperPalette.length]);
+ const trimMat=glow(d.color),frameMat=mat(0x172544),warmGlass=new THREE.MeshStandardMaterial({color:0x9adff5,emissive:0x397d9d,emissiveIntensity:.42,metalness:.28,roughness:.2});
+ // A compact second storey rises behind the original neon shopfront.
+ box(0,6.26,-2.02,9.05,3.55,3.35,upperWall,g);
+ box(0,6.28,-.29,9.18,.18,.18,trimMat,g);
+ box(0,9.72,-2.02,9.35,.22,3.62,M.dark,g);
+ box(0,9.86,-2.02,9.48,.12,3.72,trimMat,g);
+ // Strong corner piers and horizontal floor bands give the building a readable voxel silhouette.
+ for(const x of [-4.35,4.35]){
+  box(x,6.35,-.22,.34,3.25,.34,trimMat,g);
+  box(x,9.45,-.22,.5,.16,.42,M.dark,g);
+ }
+ box(0,6.62,-.18,8.65,.14,.18,M.dark,g);
+ // Three large lit upper-floor windows, each framed in chunky colored blocks.
+ for(const x of [-2.8,0,2.8]){
+  box(x,7.22,-.205,1.82,1.78,.18,frameMat,g);
+  box(x,7.28,-.095,1.58,1.52,.055,warmGlass,g);
+  box(x,7.28,-.055,.10,1.52,.07,trimMat,g);
+  box(x,7.28,-.045,1.58,.09,.07,trimMat,g);
+  box(x,6.52,-.02,2.08,.13,.62,M.dark,g);
+  // Small balcony rails and square posts, aligned to the window bays.
+  box(x,6.98,.25,1.96,.08,.055,trimMat,g);
+  for(const dx of [-.88,.88])box(x+dx,6.62,.25,.09,.72,.09,trimMat,g);
+  for(let k=0;k<5;k++)box(x-.72+k*.36,6.68,.25,.045,.45,.045,trimMat,g);
+ }
+ // Upper-floor brand plaque and roofline pixel details.
+ sign(g,0,8.95,-.12,5.8,.72,d.name,trimMat);
+ for(let k=0;k<7;k++){
+  const xx=-3.9+k*1.3;
+  box(xx,9.98,-2.0,.72,.18,.72,k%2?M.pink:M.cyan,g);
+ }
+ // Small lit canopy blocks at the upper windows echo the dense layered shopfronts in the reference.
+ for(let k=0;k<6;k++)box(-3.5+k*1.4,8.22,.02,.82,.12,.42,k%2?trimMat:M.gold,g);
+
+ // front-facing shop sign; Gift Shop gets a unique oversized 3D neon identity.
+ if(d.tag==='GIFTS'){
+  const signBack=glow(0xff2acb),signGold=glow(0xffc64b),signCyan=glow(0x24eaff);
+  box(0,5.02,3.91,9.15,1.62,.34,M.dark,g);
+  box(0,5.02,4.105,8.98,1.43,.09,signGold,g);
+  box(0,5.02,4.17,8.78,1.26,.08,signBack,g);
+  box(0,5.02,4.225,8.58,1.10,.055,mat(0x17132f),g);
+  const giftSignCanvas=document.createElement('canvas');giftSignCanvas.width=1200;giftSignCanvas.height=260;
+  const gc=giftSignCanvas.getContext('2d');
+  const gg=gc.createLinearGradient(0,0,1200,260);gg.addColorStop(0,'#25113e');gg.addColorStop(.48,'#35134f');gg.addColorStop(1,'#171e45');gc.fillStyle=gg;gc.fillRect(0,0,1200,260);
+  gc.strokeStyle='#ffd45b';gc.lineWidth=9;gc.strokeRect(10,10,1180,240);
+  gc.shadowColor='#ff35d0';gc.shadowBlur=22;gc.fillStyle='#fff7ff';gc.font='900 118px Arial';gc.textAlign='center';gc.textBaseline='middle';gc.fillText('GIFT SHOP',675,116);
+  gc.shadowBlur=0;gc.fillStyle='#ffdc74';gc.font='bold 38px Arial';gc.fillText('QUÀ TẶNG  •  ĐỒ SƯU TẦM',675,207);
+  const giftSignTex=new THREE.CanvasTexture(giftSignCanvas);giftSignTex.colorSpace=THREE.SRGBColorSpace;giftSignTex.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+  const signFace=new THREE.Mesh(new THREE.PlaneGeometry(8.48,1.02),new THREE.MeshBasicMaterial({map:giftSignTex,side:THREE.DoubleSide}));signFace.position.set(0,5.02,4.263);g.add(signFace);
+  // Physical 3D gift icon mounted above the marquee.
+  const iconGift=new THREE.Group();iconGift.position.set(0,6.02,4.18);g.add(iconGift);
+  box(0,0,0,.82,.52,.34,signBack,iconGift);box(0,.02,.19,.12,.54,.035,signGold,iconGift);box(0,.27,.19,.82,.10,.035,signGold,iconGift);
+  const loopA=new THREE.Mesh(new THREE.TorusGeometry(.17,.045,8,18,Math.PI),signBack);loopA.position.set(-.12,.34,.2);loopA.rotation.z=.25;iconGift.add(loopA);
+  const loopB=loopA.clone();loopB.position.x=.12;loopB.rotation.z=Math.PI-.25;iconGift.add(loopB);
+  // Penguin mascot relief and gift parcel at the left end of the sign.
+  const mascot=new THREE.Group();mascot.position.set(-3.65,4.35,4.30);mascot.scale.setScalar(.72);g.add(mascot);
+  const pengBlack=mat(0x101827),pengWhite=mat(0xfff7ee),pengOrange=mat(0xffa52d);
+  const body=new THREE.Mesh(new THREE.SphereGeometry(.56,16,12),pengBlack);body.scale.set(.78,1.0,.38);body.position.y=.55;mascot.add(body);
+  const belly=new THREE.Mesh(new THREE.SphereGeometry(.43,16,12),pengWhite);belly.scale.set(.82,1.0,.28);belly.position.set(0,.50,.18);mascot.add(belly);
+  const head=new THREE.Mesh(new THREE.SphereGeometry(.42,16,12),pengBlack);head.scale.set(1,.9,.42);head.position.set(0,1.15,0);mascot.add(head);
+  const face=new THREE.Mesh(new THREE.SphereGeometry(.30,16,12),pengWhite);face.scale.set(1,.86,.25);face.position.set(0,1.11,.16);mascot.add(face);
+  const beak=new THREE.Mesh(new THREE.ConeGeometry(.13,.22,6),pengOrange);beak.rotation.x=Math.PI/2;beak.position.set(0,1.07,.34);mascot.add(beak);
+  for(const ex of [-.13,.13]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.045,8,8),M.dark);eye.position.set(ex,1.23,.31);mascot.add(eye)}
+  const parcel=new THREE.Group();parcel.position.set(.58,.28,.25);mascot.add(parcel);
+  box(0,.18,0,.42,.38,.28,signBack,parcel);box(0,.18,.15,.07,.39,.025,signGold,parcel);box(0,.37,.15,.42,.06,.025,signGold,parcel);
+  for(const [x,col] of [[-4.35,signCyan],[4.35,signBack]]){box(x,5.02,4.18,.10,1.22,.10,col,g);point(x,5.02,4.3,col.color.getHex(),.32,2.8)}
+ }else{
+  box(0,4.95,3.86,8.9,1.3,.25,M.dark,g);sign(g,0,5.05,4.02,8.25,1.0,d.tag,a);
+ }
+ // glass shop front panels with mullions and a central door
+ for(const x of [-3.0,-1.5,1.5,3.0]){box(x,2.25,3.83,1.28,3.0,.18,M.glass,g);box(x-.68,2.25,3.96,.09,3.05,.08,a,g)}
+ // Central doorway kept open for the player to enter; side glass panels remain.
+ // colorful awning stripe canopy above display windows
+ for(let i=0;i<9;i++){const xx=-4+i*.99;box(xx,3.85,4.42,.94,.28,1.25,i%2?a:M.pink,g)}
+ // shelves, display cubes and bright window props
+ for(let row=0;row<2;row++)for(let k=0;k<5;k++){const xx=-3.6+k*1.8;box(xx,1.05+row*1.15,3.25,.72,.62,.35,k%2?a:M.cyan,g)}
+ // pixel display plinths at each corner
+ for(const xx of [-3.7,3.7]){box(xx,.72,4.9,1.05,.65,.85,M.purple,g);box(xx,1.12,4.9,.72,.12,.62,a,g)}
+ // Record the interior objects separately from the exterior storefront.
+ const interiorStart=g.children.length;
+ // Gift Shop interior display and friendly pixel shopkeeper
+ if(d.tag==='GIFTS'){
+  // GIFT SHOP — premium pixel-neon boutique interior with layered materials and product props.
+  const woodTexCanvas=document.createElement('canvas');woodTexCanvas.width=512;woodTexCanvas.height=512;
+  const wc=woodTexCanvas.getContext('2d');wc.fillStyle='#b8758d';wc.fillRect(0,0,512,512);
+  for(let y=0;y<512;y+=64){wc.fillStyle=y%128?'#d69ab0':'#bd8299';wc.fillRect(0,y,512,60);wc.strokeStyle='#f3c4d5';wc.lineWidth=3;wc.beginPath();wc.moveTo(0,y+5);wc.lineTo(512,y+5);wc.stroke();for(let x=0;x<512;x+=128){wc.strokeStyle='#925a76';wc.lineWidth=2;wc.strokeRect(x+(y%128?0:64),y,128,60)}}
+  for(let i=0;i<90;i++){wc.fillStyle='rgba(255,220,245,.045)';wc.fillRect(Math.random()*512,Math.random()*512,Math.random()*65+8,2)}
+  const woodTex=new THREE.CanvasTexture(woodTexCanvas);woodTex.colorSpace=THREE.SRGBColorSpace;woodTex.wrapS=woodTex.wrapT=THREE.RepeatWrapping;woodTex.repeat.set(2,1);
+  const boutiqueWood=new THREE.MeshStandardMaterial({map:woodTex,roughness:.38,metalness:.12});
+  const cream=mat(0xfff3df),blackGlass=new THREE.MeshStandardMaterial({color:0x233451,metalness:.28,roughness:.24});
+  const goldMetal=new THREE.MeshStandardMaterial({color:0xe7b85c,metalness:.82,roughness:.24});
+  const velvet=mat(0xffc5df),softPink=mat(0xff79c8),giftPaper=mat(0xfff1f7);
+  const floorCanvas=document.createElement('canvas');floorCanvas.width=512;floorCanvas.height=512;const fc=floorCanvas.getContext('2d');fc.fillStyle='#e9d8ec';fc.fillRect(0,0,512,512);
+  for(let y=0;y<512;y+=64)for(let x=0;x<512;x+=64){fc.fillStyle=((x+y)/64)%2?'#d8c4e6':'#f5dfc9';fc.fillRect(x+2,y+2,60,60);fc.strokeStyle='#a77fae';fc.lineWidth=2;fc.strokeRect(x+3,y+3,58,58);fc.fillStyle='rgba(255,255,255,.035)';fc.fillRect(x+8,y+8,44,5)}
+  const floorTex=new THREE.CanvasTexture(floorCanvas);floorTex.colorSpace=THREE.SRGBColorSpace;
+  const boutiqueFloor=new THREE.MeshStandardMaterial({map:floorTex,roughness:.34,metalness:.04,emissive:0x201329,emissiveIntensity:.035});
+  const panel=(x,y,z,w,h,material,parent=g)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),material);m.position.set(x,y,z);parent.add(m);return m};
+  const rounded=(x,y,z,w,h,dep,r,material,parent=g)=>{const shape=new THREE.Shape();const a=-w/2,b=-dep/2;
+   shape.moveTo(a+r,b);shape.lineTo(a+w-r,b);shape.quadraticCurveTo(a+w,b,a+w,b+r);shape.lineTo(a+w,b+dep-r);shape.quadraticCurveTo(a+w,b+dep,a+w-r,b+dep);shape.lineTo(a+r,b+dep);shape.quadraticCurveTo(a,b+dep,a,b+dep-r);shape.lineTo(a,b+r);shape.quadraticCurveTo(a,b,a+r,b);
+   const geo=new THREE.ExtrudeGeometry(shape,{depth:h-2*r,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:r,bevelThickness:r,curveSegments:5});geo.rotateX(-Math.PI/2);
+   const mesh=new THREE.Mesh(geo,material);mesh.position.set(x,y+r,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh};
+  // Glossy boutique floor, rug and gold inlay.
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(8.35,7.25),boutiqueFloor);floor.rotation.x=-Math.PI/2;floor.position.set(0,.64,-.05);g.add(floor);
+  box(0,.655,.95,4.5,.035,2.15,velvet,g);box(0,.68,.95,4.34,.025,2.0,goldMetal,g);
+  // Soft ambient pools and ceiling feature lights.
+  // No full-width translucent ceiling slab: keep the boutique open and unobstructed from the player's camera.
+  for(const [lx,lz,col] of [[-2.7,-1.4,0xffa7d8],[2.7,-1.4,0x7cecff],[0,2.1,0xffdf9c]]){const lamp=new THREE.Mesh(new THREE.CylinderGeometry(.48,.48,.055,32),new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:1.5,metalness:.08,roughness:.3}));lamp.position.set(lx,4.72,lz);g.add(lamp);const light=new THREE.PointLight(col,1.65,7);light.position.set(lx,4.3,lz);g.add(light)}
+  // Back feature wall with fluted panels and illuminated brand plaque.
+  box(0,2.55,-3.62,8.45,3.75,.22,mat(0x247f9b),g);
+  for(let x=-3.85;x<=3.86;x+=.42){box(x,2.6,-3.48,.035,3.35,.055,goldMetal,g)}
+  // Illustrated cartoon feature wall instead of a plain text-only sign.
+  box(0,3.82,-3.39,5.9,1.5,.14,blackGlass,g);
+  const mural=document.createElement('canvas');mural.width=1024;mural.height=420;const mc=mural.getContext('2d');
+  const mg=mc.createLinearGradient(0,0,1024,420);mg.addColorStop(0,'#ff8ccf');mg.addColorStop(.5,'#ffc9e8');mg.addColorStop(1,'#78e5ef');mc.fillStyle=mg;mc.fillRect(0,0,1024,420);
+  mc.fillStyle='rgba(255,255,255,.24)';for(let x=0;x<1024;x+=90){mc.beginPath();mc.arc(x+25,55,24,0,Math.PI*2);mc.fill()}
+  function muralPenguin(x,y,k){mc.fillStyle='#17243c';mc.beginPath();mc.ellipse(x,y,75*k,100*k,0,0,Math.PI*2);mc.fill();mc.fillStyle='#fff8ee';mc.beginPath();mc.ellipse(x,y+18*k,49*k,70*k,0,0,Math.PI*2);mc.fill();mc.fillStyle='#ffad38';mc.beginPath();mc.moveTo(x-18*k,y-5*k);mc.lineTo(x+18*k,y-5*k);mc.lineTo(x,y+12*k);mc.fill();mc.fillStyle='#18243a';for(const dx of [-19,19]){mc.beginPath();mc.arc(x+dx*k,y-29*k,6*k,0,Math.PI*2);mc.fill()}}
+  function muralBear(x,y,k){mc.fillStyle='#a96c58';mc.beginPath();mc.arc(x-34*k,y-45*k,28*k,0,Math.PI*2);mc.arc(x+34*k,y-45*k,28*k,0,Math.PI*2);mc.arc(x,y,76*k,0,Math.PI*2);mc.fill();mc.fillStyle='#f4d9c5';mc.beginPath();mc.ellipse(x,y+20*k,42*k,32*k,0,0,Math.PI*2);mc.fill();mc.fillStyle='#302235';for(const dx of [-25,25]){mc.beginPath();mc.arc(x+dx*k,y-12*k,6*k,0,Math.PI*2);mc.fill()}}
+  muralPenguin(160,230,1.05);muralBear(820,230,1.05);mc.fillStyle='#7c236e';mc.font='bold 58px Arial';mc.textAlign='center';mc.fillText('GIFT SHOP',510,120);mc.font='bold 30px Arial';mc.fillText('TOYS  •  PLUSH  •  HAPPY GIFTS',510,365);
+  const muralTex=new THREE.CanvasTexture(mural);muralTex.colorSpace=THREE.SRGBColorSpace;panel(0,3.82,-3.30,5.72,1.34,new THREE.MeshBasicMaterial({map:muralTex,side:THREE.DoubleSide}));
+  // Playful pastel ceiling panels and illustrated wall posters.
+  for(const [px,pz] of [[-2.7,-.1],[0,-.1],[2.7,-.1]]){const panelLight=new THREE.Mesh(new THREE.PlaneGeometry(1.55,.78),new THREE.MeshBasicMaterial({color:0xfff5dc,side:THREE.DoubleSide}));panelLight.rotation.x=Math.PI/2;panelLight.position.set(px,4.84,pz);g.add(panelLight)}
+  for(const [px,label,bg,fg] of [[-2.65,'TOYS & PLUSH','#ff78bd','#fff8dc'],[2.65,'GIFT IDEAS','#39c9db','#ffffff']]){const poster=new THREE.Mesh(new THREE.PlaneGeometry(1.28,.62),labelTexture(label,bg,fg,true));poster.position.set(px,3.18,-3.31);g.add(poster)}
+  // Wall-mounted floating shelves with trim and spotlighted display niches.
+  for(const side of [-1,1]){
+   const x=side*3.34;box(x,2.0,-1.15,.14,2.55,.18,goldMetal,g);
+   for(let level=0;level<3;level++){
+    const y=.98+level*.88;rounded(x,y,-1.2,1.28,.16,.88,.07,boutiqueWood,g);
+    box(x,y+.13,-.72,1.16,.045,.06,M.cyan,g);
+    // Shelves display only character-shaped plush toys and small hanging keychains; no cube-shaped stock.
+   }
+   const strip=new THREE.Mesh(new THREE.BoxGeometry(1.5,.035,.05),new THREE.MeshStandardMaterial({color:side<0?0xff31c8:0x22e6ff,emissive:side<0?0xff31c8:0x22e6ff,emissiveIntensity:1.1}));strip.position.set(x,3.82,-1.15);g.add(strip);
+  }
+  // Centre checkout island: layered wood, stone top, brass edging and POS screen.
+  rounded(0,.82,-.58,3.55,.94,1.05,.12,boutiqueWood,g);
+  rounded(0,1.28,-.58,3.72,.16,1.18,.07,mat(0xe5d6cb),g);
+  box(0,1.36,-1.17,3.55,.045,.045,goldMetal,g);
+  box(0,1.36,-.01,3.55,.045,.045,goldMetal,g);
+  const pos=new THREE.Group();pos.position.set(1.02,1.39,-.72);pos.scale.set(1.25,1.25,1.25);g.add(pos);
+  // Full point-of-sale terminal: upright monitor, thick bezel, stand, keypad and receipt printer.
+  rounded(0,.53,-.02,.82,.68,.20,.07,blackGlass,pos);
+  const screenMat=labelTexture('369 PAY\nTOTAL  12.00','#07182c','#54efff',true);panel(0,.55,.092,.68,.50,screenMat,pos);
+  rounded(0,.13,-.02,.28,.18,.24,.04,goldMetal,pos);
+  rounded(0,.035,-.02,.72,.10,.46,.04,blackGlass,pos);
+  for(let row=0;row<3;row++)for(let col=0;col<4;col++){const key=new THREE.Mesh(new THREE.BoxGeometry(.085,.03,.065),mat((row+col)%3===0?0xff69bd:0x79d9e8));key.position.set(-.24+col*.14,.115,-.12+row*.09);pos.add(key)}
+  const printer=new THREE.Group();printer.position.set(-.72,1.39,-.70);g.add(printer);rounded(0,.16,0,.46,.32,.40,.055,blackGlass,printer);box(0,.33,.205,.28,.018,.015,cream,printer);box(0,.05,.21,.24,.035,.018,goldMetal,printer);
+  const cardReader=new THREE.Group();cardReader.position.set(1.72,1.39,-.35);g.add(cardReader);rounded(0,.14,0,.32,.25,.42,.05,mat(0x253c5b),cardReader);panel(0,.20,.214,.23,.12,labelTexture('TAP','#07182c','#62efff',true),cardReader);
+  // Clearly visible POS keypad and contactless payment pad.
+  for(let row=0;row<3;row++)for(let col=0;col<4;col++){const key=new THREE.Mesh(new THREE.BoxGeometry(.075,.026,.06),mat((row+col)%3===0?0xff69bd:0x79d9e8));key.position.set(-.23+col*.105,.105,-.13+row*.085);pos.add(key)}
+  const tapPad=new THREE.Mesh(new THREE.CircleGeometry(.07,20),new THREE.MeshStandardMaterial({color:0x5be6f2,emissive:0x1c9cae,emissiveIntensity:.65}));tapPad.position.set(.25,.12,.10);pos.add(tapPad);
+  const receipt=new THREE.Mesh(new THREE.BoxGeometry(.18,.018,.34),cream);receipt.position.set(-.42,.10,-.08);pos.add(receipt);
+  // Illustrated product artwork: original canvas-drawn packaging graphics, not plain colored cubes.
+  function productArtwork(kind,accent,title){
+   const c=document.createElement('canvas');c.width=384;c.height=512;const q=c.getContext('2d');
+   const grad=q.createLinearGradient(0,0,384,512);grad.addColorStop(0,'#fff4fb');grad.addColorStop(1,'#d9eaff');q.fillStyle=grad;q.fillRect(0,0,384,512);
+   q.fillStyle=accent;q.fillRect(0,0,384,78);q.fillStyle='#ffffff';q.font='bold 29px Arial';q.textAlign='center';q.fillText('369  GIFT SHOP',192,51);
+   q.shadowColor=accent;q.shadowBlur=18;
+   if(kind==='penguin'){
+    q.fillStyle='#171b2c';q.beginPath();q.ellipse(192,265,92,125,0,0,Math.PI*2);q.fill();q.fillStyle='#fff';q.beginPath();q.ellipse(192,283,59,88,0,0,Math.PI*2);q.fill();
+    q.fillStyle='#ffad36';q.beginPath();q.moveTo(176,246);q.lineTo(208,246);q.lineTo(192,264);q.fill();q.fillRect(148,376,34,18);q.fillRect(206,376,34,18);
+   }else if(kind==='teddy'){
+    q.fillStyle='#bb825e';q.beginPath();q.arc(192,270,92,0,Math.PI*2);q.fill();q.beginPath();q.arc(122,192,38,0,Math.PI*2);q.arc(262,192,38,0,Math.PI*2);q.fill();q.fillStyle='#f8e4d3';q.beginPath();q.ellipse(192,294,53,39,0,0,Math.PI*2);q.fill();q.fillStyle='#201b2c';q.beginPath();q.arc(160,255,8,0,Math.PI*2);q.arc(224,255,8,0,Math.PI*2);q.fill();
+   }else{
+    q.fillStyle=accent;q.fillRect(102,168,180,188);q.fillStyle='#ffffff';q.fillRect(180,168,26,188);q.fillRect(102,246,180,24);q.strokeStyle='#fff';q.lineWidth=13;q.beginPath();q.ellipse(168,158,40,28,-.4,Math.PI,Math.PI*2);q.ellipse(220,158,40,28,.4,Math.PI,Math.PI*2);q.stroke();
+   }
+   q.shadowBlur=0;q.fillStyle='#18223d';q.font='bold 34px Arial';q.fillText(title,192,452);q.fillStyle=accent;q.fillRect(45,470,294,9);
+   const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+   return new THREE.MeshStandardMaterial({map:tex,roughness:.58,metalness:.04});
+  }
+  const artPenguin=productArtwork('penguin','#ef4ebd','PENGUIN FRIEND');
+  const artTeddy=productArtwork('teddy','#b77a55','TEDDY PLUSH');
+  const artGift=productArtwork('gift','#8e67ce','HAPPY GIFT');
+
+  function artCard(x,y,z,w,h,material,parent=g){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),material);m.position.set(x,y,z);parent.add(m);return m}
+  // Printed product sleeves and branded boxes across the display shelves.
+  for(const [x,y,z,kind] of [[-3.25,1.55,-1.18,'penguin'],[-3.25,2.43,-1.18,'gift'],[-3.25,3.31,-1.18,'teddy'],[3.25,1.55,-1.18,'teddy'],[3.25,2.43,-1.18,'penguin'],[3.25,3.31,-1.18,'gift']]){
+   const texMat=kind==='penguin'?artPenguin:kind==='teddy'?artTeddy:artGift;
+   artCard(x,y,z+.20,.42,.58,texMat);
+  }
+  // Checkout front receives a branded photographic-style panel.
+  artCard(0,1.05,-.035,2.8,.52,labelTexture('369 GIFT MARKET','#ff4eae','#fff8d9',true));
+  // Product plinths and gift boxes with ribbons and bow loops.
+  const gift=(x,y,z,size,paper,ribbon)=>{rounded(x,y,z,size,size*.72,size*.72,.07,paper,g);box(x,y+size*.38,z,size*.13,.035,size*.78,ribbon,g);box(x,y+size*.38,z,size*.78,.035,size*.13,ribbon,g);
+   const bow1=new THREE.Mesh(new THREE.TorusGeometry(size*.14,size*.035,7,18,Math.PI*1.55),ribbon);bow1.position.set(x-size*.1,y+size*.48,z);bow1.rotation.x=Math.PI/2;g.add(bow1);
+   const bow2=bow1.clone();bow2.position.x=x+size*.1;bow2.rotation.z=Math.PI;g.add(bow2)};
+  gift(-1.15,1.42,-.62,.5,softPink,goldMetal);gift(-.34,1.42,-.62,.43,mat(0x5dbfd3),M.pink);gift(.48,1.42,-.62,.48,mat(0x9c7bd1),goldMetal);
+  // Premium teddy plush, ceramic planter, handbag and headphones as recognizable 3D merchandise.
+  const plush=new THREE.Group();plush.position.set(-1.1,1.58,-2.62);g.add(plush);
+  const plushMat=mat(0xb98562);const sphere=(parent,x,y,z,sx,sy,sz,material)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(1,18,14),material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);parent.add(m);return m};
+  // Three-dimensional shelf merchandise: plush bears, wrapped gifts and keychains.
+  function shelfTeddy(x,y,z,scale=.34){const toy=new THREE.Group();toy.position.set(x,y,z);toy.scale.setScalar(scale);g.add(toy);sphere(toy,0,.28,0,.27,.30,.22,plushMat);sphere(toy,0,.67,0,.23,.23,.20,plushMat);for(const ex of [-.17,.17])sphere(toy,ex,.83,0,.105,.11,.09,plushMat);sphere(toy,-.075,.69,.18,.025,.03,.02,blackGlass);sphere(toy,.075,.69,.18,.025,.03,.02,blackGlass);sphere(toy,0,.59,.20,.09,.065,.035,cream);const bow=new THREE.Mesh(new THREE.TorusGeometry(.10,.025,7,14),softPink);bow.position.set(0,.48,.2);toy.add(bow)}
+  function shelfKeychain(x,y,z){const key=new THREE.Group();key.position.set(x,y,z);g.add(key);const ring=new THREE.Mesh(new THREE.TorusGeometry(.09,.018,8,16),goldMetal);ring.position.y=.24;key.add(ring);const charm=new THREE.Mesh(new THREE.SphereGeometry(.13,16,12),plushMat);charm.scale.set(.9,1.1,.55);charm.position.y=.04;key.add(charm);sphere(key,0,.04,.08,.075,.09,.035,cream)}
+  for(const side of [-1,1])for(let level=0;level<3;level++){const sx=side*3.34,sy=.98+level*.88,sz=-.86;shelfTeddy(sx-.24,sy+.20,sz,.88);shelfKeychain(sx+.48,sy+.42,sz)}
+  // Rounded plush penguin toys displayed as actual character-shaped merchandise.
+  const toyDark=mat(0x18243b),toyWhite=mat(0xfffaf0),toyOrange=mat(0xffa72f),toyPink=mat(0xff68b8);
+  function plushPenguin(x,y,z,scale=1){
+   const toy=new THREE.Group();toy.position.set(x,y,z);toy.scale.setScalar(scale);g.add(toy);
+   sphere(toy,0,.36,0,.28,.36,.23,toyDark);sphere(toy,0,.38,.18,.205,.27,.09,toyWhite);
+   sphere(toy,0,.86,0,.25,.25,.22,toyDark);sphere(toy,0,.82,.17,.18,.18,.075,toyWhite);
+   for(const ex of [-.09,.09])sphere(toy,ex,.91,.235,.023,.028,.018,blackGlass);
+   const beak=new THREE.Mesh(new THREE.ConeGeometry(.055,.11,8),toyOrange);beak.rotation.x=Math.PI/2;beak.position.set(0,.78,.27);toy.add(beak);
+   for(const ex of [-.14,.14]){const foot=new THREE.Mesh(new THREE.SphereGeometry(.08,12,10),toyOrange);foot.scale.set(1.3,.45,.8);foot.position.set(ex,.06,.06);toy.add(foot)}
+   const scarf=new THREE.Mesh(new THREE.TorusGeometry(.19,.035,8,16),toyPink);scarf.position.set(0,.66,.02);scarf.rotation.x=Math.PI/2;toy.add(scarf);
+   return toy;
+  }
+  // Character plush toys are created after their materials and factory are initialized.
+  for(const side of [-1,1])for(let level=0;level<3;level++){const sx=side*3.34,sy=.98+level*.88,sz=-.86;if(level!==1)plushPenguin(sx+.30,sy+.18,sz+.04,.52)}
+  plushPenguin(-2.5,1.2,-1.0,1.02);plushPenguin(2.48,2.08,-1.0,1.02);
+  sphere(plush,0,.32,0,.34,.38,.27,plushMat);sphere(plush,0,.78,0,.29,.3,.25,plushMat);
+  for(const ex of [-.22,.22]){sphere(plush,ex,1.0,0,.12,.14,.12,plushMat);sphere(plush,ex,1.0,.1,.07,.08,.06,softPink);sphere(plush,ex*.58,.8,.23,.035,.04,.025,blackGlass)}
+  sphere(plush,0,.72,.26,.10,.07,.05,cream);
+  // Small branded neck bow and stitched fabric patch.
+  const plushBow=new THREE.Mesh(new THREE.TorusGeometry(.13,.045,8,18),M.pink);plushBow.position.set(0,.98,.23);plush.add(plushBow);
+  artCard(0,.34,.275,.34,.20,artTeddy,plush);
+  // A colorful handheld game console, modeled with a screen and physical buttons.
+  const consoleToy=new THREE.Group();consoleToy.position.set(.05,1.54,-2.55);consoleToy.rotation.y=.12;g.add(consoleToy);
+  rounded(0,.16,0,.98,.18,.48,.09,mat(0x7c5bb2),consoleToy);
+  rounded(0,.29,.01,.72,.05,.34,.035,mat(0x1d3150),consoleToy);
+  const consoleScreen=new THREE.Mesh(new THREE.PlaneGeometry(.48,.22),labelTexture('PLAY!','#29b8d1','#fff5dc',true));consoleScreen.position.set(0,.32,.19);consoleToy.add(consoleScreen);
+  for(const [bx,bz,bc] of [[-.34,.16,0xff6aa9],[.34,.16,0xffd15b]]){const button=new THREE.Mesh(new THREE.SphereGeometry(.055,12,10),mat(bc));button.position.set(bx,.34,bz);consoleToy.add(button)}
+  // Replace bulky plant with a compact glass display pedestal for small merchandise.
+  rounded(1.35,.69,-2.65,1.12,.16,.94,.06,blackGlass,g);
+  const glassCase=new THREE.Mesh(new THREE.BoxGeometry(.88,.72,.72),new THREE.MeshPhysicalMaterial({color:0x8bdfff,transparent:true,opacity:.16,roughness:.08,metalness:.1,transmission:.65,thickness:.18}));glassCase.position.set(1.35,1.18,-2.65);g.add(glassCase);
+  for(const [gx,gz,gc] of [[1.12,-2.65,softPink],[1.38,-2.65,M.cyan],[1.64,-2.65,mat(0xb998f5)]]){const mini=new THREE.Mesh(new THREE.SphereGeometry(.13,16,12),gc);mini.position.set(gx,1.18,gz);g.add(mini)}
+  // Floating handbags and accessories on the front display.
+  const bag=new THREE.Group();bag.position.set(2.45,1.05,1.65);g.add(bag);
+  rounded(0,.36,0,.72,.72,.34,.09,softPink,bag);
+  const handle=new THREE.Mesh(new THREE.TorusGeometry(.22,.055,10,24,Math.PI),goldMetal);handle.position.set(0,.88,.01);bag.add(handle);
+  panel(0,.38,.18,.48,.27,labelTexture('369 GIFT','#311b42','#ffe2fa',true),bag);
+  artCard(0,.39,.185,.44,.25,artGift,bag);
+  // Gift Shop merchandising details: hanging price tags, plush penguins, wrapped gift bags and display lighting.
+  function hangTag(parent,x,y,z,text,color){const tag=new THREE.Group();tag.position.set(x,y,z);parent.add(tag);const card=new THREE.Mesh(new THREE.BoxGeometry(.22,.28,.025),mat(color));card.position.y=-.08;tag.add(card);const hole=new THREE.Mesh(new THREE.TorusGeometry(.035,.012,6,12),goldMetal);hole.position.set(0,.08,.02);tag.add(hole);const thread=new THREE.Mesh(new THREE.CylinderGeometry(.008,.008,.16,6),goldMetal);thread.position.y=.14;tag.add(thread);const print=new THREE.Mesh(new THREE.PlaneGeometry(.16,.12),labelTexture(text,'#fff7ef','#57324f',true));print.position.set(0,-.08,.02);tag.add(print);return tag}
+  for(const [x,y,z] of [[-3.35,1.48,-.66],[-3.35,2.36,-.66],[3.35,1.48,-.66],[3.35,2.36,-.66]])hangTag(g,x,y,z,'369',0xffd36e);
+  // Branded gift bags beside checkout, with cord handles and printed front artwork.
+  for(const [x,z,c] of [[-1.72,-.42,0xff79c8],[1.82,-.42,0x6ccfe0]]){const bag=new THREE.Group();bag.position.set(x,.72,z);g.add(bag);rounded(0,.28,0,.48,.55,.20,.045,mat(c),bag);box(0,.3,.11,.28,.22,.018,cream,bag);const logo=new THREE.Mesh(new THREE.PlaneGeometry(.23,.17),labelTexture('369','#fff4fb','#a52c86',true));logo.position.set(0,.30,.125);bag.add(logo);for(const hx of [-.13,.13]){const h=new THREE.Mesh(new THREE.TorusGeometry(.11,.018,7,16,Math.PI),goldMetal);h.position.set(hx,.64,0);bag.add(h)}}
+  // Extra plush penguin souvenir on the front display, posed upright with a tiny bow.
+  plushPenguin(-2.15,1.12,-.45,.62);
+  // Decorative framed art and neon vertical accent at entrance.
+  box(-2.2,2.75,3.34,1.28,1.45,.12,blackGlass,g);
+  panel(-2.2,2.75,3.42,1.12,1.28,labelTexture('GIVE JOY','#1b1734','#ff9be7',true));
+  // Animated penguin shopkeeper, in a tailored pink apron and cap.
+  const seller=new THREE.Group();seller.position.set(0,0,-1.72);seller.scale.setScalar(1.36);g.add(seller);
+  const sellerBlack=mat(0x151b29),sellerWhite=mat(0xf8f4ec),sellerOrange=mat(0xffa52d),uniform=mat(0xe83cae),uniformTrim=goldMetal;
+  const sellerBall=(parent,r,material,x,y,z,sx=1,sy=1,sz=1)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(r,24,18),material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=true;parent.add(m);return m};
+  sellerBall(seller,.52,sellerBlack,0,1.04,0,.9,1.08,.78);sellerBall(seller,.4,sellerWhite,0,1.03,.29,.82,.92,.48);
+  sellerBall(seller,.47,sellerBlack,0,1.93,0,.95,.9,.8);sellerBall(seller,.37,sellerWhite,0,1.91,.25,.92,.86,.52);
+  sellerBall(seller,.105,sellerOrange,0,1.76,.67,1.25,.65,1);
+  for(const ex of [-.145,.145])sellerBall(seller,.052,blackGlass,ex,2.03,.62,1,1,.5);
+  // Soft fabric polo shirt and cloth apron: rounded textile-like torso, curved sleeves and stitched seams.
+  sellerBall(seller,.48,uniform,0,1.04,.08,1.08,.91,.83);
+  const sleeveL=sellerBall(seller,.19,uniform,-.48,1.04,.06,.78,1.05,.82),sleeveR=sellerBall(seller,.19,uniform,.48,1.04,.06,.78,1.05,.82);
+  sellerBall(seller,.31,velvet,0,.92,.43,1.0,.88,.22);
+  // Apron bib, shoulder straps and curved hem in contrasting cloth.
+  const apronShape=new THREE.Shape();apronShape.moveTo(-.29,1.28);apronShape.quadraticCurveTo(-.34,1.2,-.31,.78);apronShape.quadraticCurveTo(0,.68,.31,.78);apronShape.quadraticCurveTo(.34,1.2,.29,1.28);apronShape.lineTo(-.29,1.28);
+  const apronGeo=new THREE.ShapeGeometry(apronShape,16);const apronMesh=new THREE.Mesh(apronGeo,new THREE.MeshStandardMaterial({color:0xffd7eb,roughness:.92,side:THREE.DoubleSide}));apronMesh.position.set(0,0,.56);seller.add(apronMesh);
+  for(const sx of [-.22,.22]){const strap=sellerBall(seller,.055,uniformTrim,sx,1.39,.50,.8,2.3,.45)}
+  const seam=new THREE.Mesh(new THREE.TorusGeometry(.22,.012,6,24,Math.PI),uniformTrim);seam.position.set(0,.83,.59);seller.add(seam);
+  const pocket=new THREE.Mesh(new THREE.PlaneGeometry(.27,.18),labelTexture('369','#fff0f8','#9c287d',true));pocket.position.set(0,.98,.595);seller.add(pocket);
+  // Curved fabric cap with rounded crown and projecting visor.
+  sellerBall(seller,.34,uniform,0,2.31,0,1.22,.34,.92);sellerBall(seller,.30,uniform,0,2.22,.24,1.3,.16,.72);
+  const capBadge=new THREE.Mesh(new THREE.CircleGeometry(.075,20),uniformTrim);capBadge.position.set(0,2.34,.32);seller.add(capBadge);
+  const badge=new THREE.Mesh(new THREE.PlaneGeometry(.5,.18),labelTexture('GIFT SHOP','#6d174e','#ffffff',true));badge.position.set(0,1.1,.59);seller.add(badge);
+  const wingL=sellerBall(seller,.22,sellerBlack,-.54,1.08,0,.5,1.25,.52),wingR=sellerBall(seller,.22,sellerBlack,.54,1.08,0,.5,1.25,.52);
+  seller.userData.animated={leftWing:wingL,rightWing:wingR};g.userData.giftSeller=seller;
+  // Leave a generous, unobstructed entry aisle for the player.
+ }
+ if(d.tag==='GIFTS')g.userData.interiorChildren=g.children.slice(interiorStart);
+ // side-mounted mini LED sign
+ sign(g,5.0,3.6,.2,1.2,2.4,d.tag,a);
+ // neon side strips and glowing entrance step
+ box(0,.56,4.65,2.1,.16,1.1,M.cyan,g);box(0,.7,5.1,3.2,.12,.35,M.pink,g);
+ // clickable invisible-ish hit target, plus glow marker
+ const hit=new THREE.Mesh(new THREE.BoxGeometry(9.4,6.5,8.2),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));hit.position.set(0,3.1,0);hit.userData.shop=d;g.add(hit);shopMeshes.push(hit);
+ const glowLight=new THREE.PointLight(d.color,.12,6);glowLight.position.set(0,4,5.5);g.add(glowLight);
+ // side pixel roof antenna
+ for(let k=0;k<3;k++)box(-3.5+k*.35,6.5,-2,.16,.45+(k%2)*.3,.16,k%2?M.pink:M.cyan,g);
+}
+
+shopData.forEach(shop);
+
+// V75 — rebuild the shopping street as a dense, bright isometric commercial district.
+// Main eight interactive shops stay intact; surrounding architecture, sidewalks and traffic are decorative.
+const cityPalette=[0xf0c28b,0x8fc9bd,0xf0d477,0xd9a6b9,0x9fc6dc,0xe5b28f,0xb6c99c,0xc6b1dc];
+const cityGlass=new THREE.MeshStandardMaterial({color:0x9bd6df,emissive:0x326b73,emissiveIntensity:.18,metalness:.12,roughness:.24});
+const cityFrame=mat(0xeee0c2),cityBrick=mat(0xb97855),cityRoof=mat(0x9c5545),sidewalk=mat(0xd9cba9),curb=mat(0xf3ead2),roadPaint=mat(0xf6f0df);
+function facadeBlock(x,z,w,depth,h,color,label,seed=0){
+ const g=new THREE.Group();g.position.set(x,0,z);scene.add(g);
+ const front=x<0?1:-1,fx=front*(w/2+.06);
+ box(0,.22,0,w,.44,depth,mat(0x77766a),g);
+ box(0,.44,0,w,h,depth,mat(color),g);
+ // roof parapet and rooftop service blocks
+ box(0,h+.48,0,w+.35,.32,depth+.35,cityFrame,g);
+ box(0,h+.68,0,w*.42,.18,depth*.28,cityBrick,g);
+ box(-w*.24,h+.82,-depth*.22,.72,.42,.72,mat(0xaaa69a),g);
+ // Front windows in repeated bays, with projecting sills and awnings.
+ const bays=Math.max(2,Math.floor(w/2.5));
+ for(let k=0;k<bays;k++){
+  const zz=-depth*.34+k*(depth*.68/Math.max(1,bays-1));
+  const winY=h*.66;
+  box(fx,winY,zz,.16,1.55,1.65,mat(0x5b554e),g);
+  box(fx+front*.10,winY,zz,.06,1.34,1.42,cityGlass,g);
+  box(fx+front*.15,winY,zz,.08,.08,1.48,cityFrame,g);
+  box(fx+front*.15,winY,zz,.08,1.38,.08,cityFrame,g);
+  box(fx+front*.15,winY,zz,.08,1.38,.08,cityFrame,g);
+  box(fx+front*.38,winY-.92,zz,.55,.16,1.95,cityFrame,g);
+  box(fx+front*.28,winY-1.12,zz,.75,.12,2.15,k%2?M.pink:M.cyan,g);
+ }
+ // Ground-floor shopfront and a large projecting sign facing the avenue.
+ box(fx,.95,0,.18,1.65,depth*.78,mat(0x594c43),g);
+ box(fx+front*.11,.98,0,.07,1.42,depth*.70,cityGlass,g);
+ for(let k=0;k<4;k++)box(fx+front*.18,.98,-depth*.30+k*(depth*.20),.08,1.45,.07,cityFrame,g);
+ box(fx+front*.32,2.05,0,.34,.42,depth*.84,mat(0xf8f3e8),g);
+ box(fx+front*.51,2.05,0,.08,.28,depth*.74,k%2?M.cyan:M.pink,g);
+ const c=document.createElement('canvas');c.width=512;c.height=128;const ctx=c.getContext('2d');
+ ctx.fillStyle='#fffdf3';ctx.fillRect(0,0,512,128);ctx.fillStyle=['#d83232','#168e51','#167aa5','#a44a82'][seed%4];ctx.fillRect(8,8,496,112);
+ ctx.fillStyle='#ffffff';ctx.font='bold 52px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,256,66,470);
+ const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;
+ const board=new THREE.Mesh(new THREE.PlaneGeometry(depth*.78,.82),new THREE.MeshBasicMaterial({map:tex}));
+ board.position.set(fx+front*.57,2.05,0);board.rotation.y=front>0?Math.PI/2:-Math.PI/2;g.add(board);
+ // Side wall windows create visible depth in the isometric view.
+ for(let level=0;level<Math.floor(h/2.5);level++)for(let k=0;k<3;k++){
+  box(-front*(w*.24),2.2+level*2.35,-depth*.28+k*depth*.28,.06,1.05,1.1,cityGlass,g);
+ }
+ return g;
+}
+// Close the gaps between the eight main stores with a second row of mixed-height city buildings.
+const infill=[
+ [-24,-20,9,10,10,'ROYAL HOST',0],[-24,-7,9,10,13,'UNI MART',1],[-24,7,9,10,9,'COFFEE HOUSE',2],[-24,21,9,10,12,'FAMILY MART',3],
+ [24,-20,9,10,12,'BEING SPA',4],[24,-7,9,10,9,'DREAM TEA',5],[24,7,9,10,13,'PET SHOP',6],[24,21,9,10,10,'DUSKIN',7]
+];
+infill.forEach(v=>facadeBlock(...v));
+// Continuous cream sidewalks, raised curbs and tiled pedestrian crossings.
+for(const side of [-1,1]){
+ box(side*8.65,.10,0,2.35,.20,62,sidewalk);
+ box(side*7.52,.18,0,.16,.28,62,curb);
+ for(let z=-29;z<=29;z+=2.2)box(side*8.65,.215,z,1.95,.025,1.92,(Math.round(z)%2)?mat(0xe8d8b9):mat(0xcfc2a3));
+}
+// Crossings and corner paving at four junctions.
+for(const z of [-22,-8,6,20]){
+ for(let k=0;k<7;k++)box(-.2+k*.62,.13,z, .34,.035,3.8,roadPaint);
+ box(0,.08,z-2.25,18,.06,.18,curb);box(0,.08,z+2.25,18,.06,.18,curb);
+}
+// Street trees in square planters, evenly spaced like a real pedestrian shopping lane.
+function streetTree(x,z){
+ box(x,.25,z,1.8,.5,1.8,mat(0x8c8069));box(x,.52,z,1.55,.12,1.55,mat(0x6e8b55));
+ box(x,.65,z,.34,1.75,.34,mat(0x8a5838));
+ for(const [yy,ww,dd] of [[1.65,1.6,1.5],[2.35,2.05,1.75],[3.0,1.45,1.4]])box(x,yy,z,ww,.9,dd,mat(0x39845a));
+ box(x,3.46,z,1.5,.12,1.45,mat(0x6ba45d));
+}
+for(const side of [-1,1])for(const z of [-25,-12,1,14,27])streetTree(side*8.7,z);
+// Small delivery vans and compact cars along the curb; kept outside the central walking lane.
+function cityCar(x,z,color=0xe9e9e4,rot=0){
+ const g=new THREE.Group();g.position.set(x,.18,z);g.rotation.y=rot;scene.add(g);
+ box(0,.18,0,2.6,.62,4.1,mat(color),g);box(0,.72,-.15,2.15,.72,2.15,cityGlass,g);
+ box(0,.76,1.12,2.12,.12,.10,cityFrame,g);
+ for(const sx of [-1,1])for(const zz of [-1.25,1.25]){
+  const wh=new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,.18,10),mat(0x252a2d));wh.rotation.z=Math.PI/2;wh.position.set(sx*1.28,.20,zz);g.add(wh);
+ }
+ box(0,.45,2.08,1.3,.18,.08,mat(0xffe7a4),g);
+}
+cityCar(-5.3,-27,0xf2eee0,0);cityCar(5.1,27,0x8ec6d8,Math.PI);
+// Tiny pedestrians with colorful clothing give the sidewalks a human scale.
+function citizen(x,z,coat,dir=0){
+ const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=dir;scene.add(g);
+ const skin=mat(0xe8b58e),hair=mat(0x47372e);
+ box(0,.78,0,.38,.66,.3,mat(coat),g);box(0,1.25,0,.34,.34,.32,skin,g);box(0,1.43,-.025,.36,.12,.34,hair,g);
+ box(-.12,.22,0,.12,.45,.14,mat(0x35475b),g);box(.12,.22,0,.12,.45,.14,mat(0x35475b),g);
+}
+for(let k=0;k<16;k++){
+ const z=-27+k*3.5;citizen(k%2?8.35:-8.35,z,[0xd64b43,0x2878ae,0x49a06d,0xe2a13c,0x8d62b1][k%5],k%2?Math.PI/2:-Math.PI/2);
+}
+// A warmer daylight balance instead of the near-black neon look of the previous preview.
+renderer.toneMappingExposure=1.12;
+
+// street lamps, lush pixel trees and flower beds keep the avenue green without blocking the shops
+function lamp(x,z){box(x,0,z,.22,4.5,.22,M.dark);box(x,4.45,z,.82,.38,.82,M.gold);box(x,4.85,z,.6,.35,.6,M.cyan);point(x,4.8,z,0xffb83e,.45,7)}
+function planter(x,z){box(x,.18,z,3.8,.48,2.1,M.dark);box(x,.42,z,3.55,.14,1.85,M.leaf);for(let i=0;i<11;i++){const px=x-1.55+(i%6)*.62,pz=z+(i%2?-.42:.42);box(px,.72,pz,.34,.34+(i%3)*.13,.34,i%2?M.pink:M.lime);box(px,.98,pz,.16,.16,.16,M.gold)}}
+function voxelTree(x,z,scale=1){const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);scene.add(g);box(0,.25,0,.52,2.1,.52,mat(0x82512f),g);for(const [y,sx,sz] of [[1.55,1.35,1.25],[2.25,1.65,1.45],[2.95,1.15,1.15]]){box(0,y,0,sx,.95,sz,M.leaf,g);box(0,y+.46,0,sx+.08,.10,sz+.08,M.lime,g)}for(let i=0;i<5;i++){const flower=new THREE.Mesh(new THREE.BoxGeometry(.18,.18,.18),i%2?M.pink:M.gold);flower.position.set((i-2)*.22,1.3,Math.sin(i*2)*.35);g.add(flower)}}
+function flowerIsland(x,z){box(x,.18,z,3.8,.48,2.1,M.dark);box(x,.42,z,3.55,.14,1.85,M.leaf);for(let i=0;i<14;i++){const px=x-1.5+(i%7)*.5,pz=z+(i%2?-.48:.48);box(px,.68,pz,.25,.25,.25,i%3===0?M.gold:i%3===1?M.pink:M.purple);box(px,.86,pz,.12,.12,.12,M.white)}}
+for(const z of [-25,-13,-.5,12,25]){lamp(-7.8,z);lamp(7.8,z);flowerIsland(-9.15,z);flowerIsland(9.15,z)}
+for(const z of [-19,-6,7,20]){voxelTree(-9.15,z,.78);voxelTree(9.15,z,.78)}
+
+// Extra visible green avenue: continuous planted strips, leafy trees and low flower beds
+const greenSoil=mat(0x263f39),greenLeaf=mat(0x187b50),greenBright=mat(0x36b96d),greenDark=mat(0x10563d);
+function avenueTree(x,z,s=1){
+ const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(s);scene.add(g);
+ box(0,.18,0,2.5,.36,2.0,M.dark,g);box(0,.38,0,2.25,.12,1.75,greenSoil,g);
+ box(0,.45,0,.38,1.8,.38,mat(0x80502f),g);
+ for(const [y,w,d] of [[1.25,1.45,1.25],[1.95,1.85,1.55],[2.65,1.35,1.25]]) {
+   box(0,y,0,w,.92,d,greenLeaf,g);box(-.12,y+.42,.08,w*.82,.12,d*.82,greenBright,g);
+ }
+ for(let k=0;k<4;k++){box((k-1.5)*.32,1.2,.48,.16,.16,.16,k%2?M.gold:M.pink,g)}
+}
+function greenBed(x,z){
+ box(x,.15,z,2.7,.3,3.0,M.dark);box(x,.32,z,2.5,.12,2.8,greenSoil);
+ for(let k=0;k<8;k++){const px=x+(k%2?-.62:.62),pz=z-1.05+Math.floor(k/2)*.7;box(px,.62,pz,.42,.55,.42,k%3?greenLeaf:greenBright);box(px,.93,pz,.2,.14,.2,k%2?M.pink:M.gold)}
+}
+for(const side of [-1,1]){
+ for(const z of [-25,-15,-5,5,15,25]){avenueTree(side*9.6,z,.9);greenBed(side*8.25,z+4.5)}
+}
+
+
+// Interactive objects in the central plaza (mission/event boards).
+const plazaActionMeshes=[];
+// Connected 369 CITY central plaza, imported as an adjacent world district
+{
+ const plazaGroup=new THREE.Group();
+ plazaGroup.position.set(0,0,-76);
+ scene.add(plazaGroup);
+ const plazaAmbient=new THREE.HemisphereLight(0xe0d5ff,0x65556f,1.35);plazaGroup.add(plazaAmbient);
+ const plazaWash=new THREE.PointLight(0xffb8df,8.5,68);plazaWash.position.set(0,15,0);plazaGroup.add(plazaWash);
+ const plazaWarm=new THREE.PointLight(0xffd18a,4.5,48);plazaWarm.position.set(-13,8,10);plazaGroup.add(plazaWarm);
+
+ const mat=(color)=>new THREE.MeshStandardMaterial({color,roughness:.55,metalness:.12});
+ const M={grass:mat(0x263d66),edge:mat(0x46577e),cream:mat(0x53648b),tile:mat(0x34466f),tile2:mat(0x465a85),road:mat(0x263653),blue:mat(0x168dff),water:mat(0x0875d5),white:mat(0xf2f7ff),wood:mat(0x9b5592),green:mat(0x168f82),green2:mat(0x39c9a8),dark:mat(0x182747),gold:mat(0xffc44d),red:mat(0xff4b91),purple:mat(0x7540a8)};
+ const neon=(color)=>new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:.18,roughness:.5});
+ const cyan=neon(0x16dfff),pink=neon(0xff28c8),violet=neon(0x873cff),amber=neon(0xffa52b);
+ function box(x,y,z,w,h,d,material,parent=plazaGroup){const named={cyan,pink,violet,amber};const m=typeof material==="string"?(M[material]||named[material]):material;if(!m)throw new Error("Unknown plaza material: "+material);const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y+h/2,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
+ function cylinder(x,y,z,r1,r2,h,material,seg=12){const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,seg),M[material]||material);o.position.set(x,y+h/2,z);o.castShadow=true;plazaGroup.add(o);return o}
+ function textTexture(txt,bg="#07152d",fg="#7cf5ff"){const c=document.createElement("canvas");c.width=512;c.height=160;const g=c.getContext("2d");g.fillStyle=bg;g.fillRect(0,0,512,160);g.strokeStyle="#25dfff";g.lineWidth=8;g.strokeRect(5,5,502,150);g.fillStyle=fg;g.font="bold 42px monospace";g.textAlign="center";g.textBaseline="middle";g.fillText(txt,256,82,470);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return new THREE.MeshStandardMaterial({map:t,roughness:.9})}
+ function sign(x,z,label,rot=0){box(x,1.5,z,5.2,2.2,.42,"dark");const p=new THREE.Mesh(new THREE.PlaneGeometry(4.9,1.8),textTexture(label));p.position.set(x,2.65,z+.225);p.rotation.y=rot;plazaGroup.add(p);for(const dx of [-2,2])box(x+dx,0,z,.18,1.6,.18,"wood")}
+ function tree(x,z,scale=1){const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);plazaGroup.add(g);box(0,0,0,.7,2,.7,"wood",g);for(let i=0;i<4;i++){const w=2.5-i*.48;box(0,1.25+i*.78,0,w,.78,w,i%2?"green2":"green",g)}}
+ function lamp(x,z){cylinder(x,0,z,.16,.21,5.2,"dark",8);box(x,5.05,z,1.05,.5,1.05,"gold");box(x,5.52,z,.72,.52,.72,amber);box(x,5.82,z,.9,.14,.9,cyan)}
+ function bench(x,z,rot=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;box(0,.65,0,2.5,.22,.75,"wood",g);box(0,1.05,-.28,2.5,.8,.2,"wood",g);for(const dx of [-.9,.9])box(dx,.15,0,.18,.8,.18,"dark",g);plazaGroup.add(g)}
+
+ // Surrounding lawn and raised square LEGO platform
+// Crop the oversized blue ground to the exact 46×46 plaza platform footprint; no extra rear ground beyond the plaza.\nbox(0,-.55,0,46,.5,46,'grass');
+const wet=new THREE.MeshStandardMaterial({color:0x405987,metalness:.38,roughness:.3});box(0,.12,0,43.8,.12,43.8,wet);
+box(0,-.12,0,46,.55,46,'edge');
+box(0,.16,0,43.8,.18,43.8,'cream');
+// Clean contemporary plaza paving: smooth warm graphite-violet surface, no blue checker squares.
+const plazaFill=new THREE.MeshStandardMaterial({color:0x55516f,roughness:.72,metalness:.08});box(0,.275,0,43.2,.08,43.2,plazaFill);
+const plazaInset=new THREE.MeshStandardMaterial({color:0x68617e,roughness:.78,metalness:.05});box(0,.32,0,22,.035,22,plazaInset);
+// Subtle perimeter light strips replace the old blue square-tile pattern.
+for(const x of [-20.2,20.2])box(x,.34,0,.055,.035,39.5,pink);
+for(const z of [-20.2,20.2])box(0,.34,z,39.5,.035,.055,amber);
+// Removed plaza signboards, small gold entry markers and cream paving pads circled by the user.
+// Fountain at center
+cylinder(0,.38,0,4.8,4.8,.38,'edge',32);cylinder(0,.76,0,4.25,4.25,.18,cyan,32);cylinder(0,.88,0,3.3,3.3,.12,'water',32);cylinder(0,1.0,0,.75,.95,1.25,'cream',16);cylinder(0,2.25,0,1.25,.75,.28,'blue',20);
+cylinder(0,2.53,0,.24,.24,.55,'gold',12);
+// Nhân vật chim cánh cụt của 369 CITY đứng trên bệ giữa hồ
+const penguinGroup=new THREE.Group();
+const penguinDark=mat(0x17283b),penguinWhite=mat(0xf7f4e8),penguinOrange=mat(0xffa928),penguinEye=mat(0x111820),penguinRed=mat(0xd94755);
+function pSphere(x,y,z,sx,sy,sz,material){const m=new THREE.Mesh(new THREE.SphereGeometry(1,20,16),material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=false;m.receiveShadow=false;penguinGroup.add(m);return m}
+pSphere(0,3.25,0,.82,1.05,.68,penguinDark);       // thân
+pSphere(0,3.18,.52,.53,.76,.20,penguinWhite);    // bụng trắng
+pSphere(0,4.18,0,.72,.68,.62,penguinDark);      // đầu
+pSphere(0,4.03,.51,.43,.43,.18,penguinWhite);   // mặt
+pSphere(-.22,4.25,.68,.075,.09,.055,penguinEye);pSphere(.22,4.25,.68,.075,.09,.055,penguinEye);
+const beak=new THREE.Mesh(new THREE.ConeGeometry(.19,.38,8),penguinOrange);beak.rotation.x=Math.PI/2;beak.position.set(0,4.02,.83);penguinGroup.add(beak);
+for(const side of [-1,1]){const wing=pSphere(side*.77,3.35,.02,.25,.66,.27,penguinDark);wing.rotation.z=side*.22;const foot=new THREE.Mesh(new THREE.SphereGeometry(.22,12,10),penguinOrange);foot.scale.set(1.25,.45,1);foot.position.set(side*.34,2.42,.25);penguinGroup.add(foot)}
+// Khăn choàng đỏ, tai nghe neon và vương miện: mascot biểu tượng độc quyền 369 CITY
+const scarf=new THREE.Mesh(new THREE.TorusGeometry(.58,.11,8,24),penguinRed);scarf.position.set(0,3.83,.03);scarf.rotation.x=Math.PI/2;penguinGroup.add(scarf);
+const headphone=new THREE.Mesh(new THREE.TorusGeometry(.79,.13,8,32),cyan);headphone.position.set(0,4.18,0);headphone.rotation.x=Math.PI/2;penguinGroup.add(headphone);
+for(const side of [-1,1]){const ear=new THREE.Mesh(new THREE.BoxGeometry(.24,.48,.34),violet);ear.position.set(side*.78,4.05,0);penguinGroup.add(ear)}
+// Vương miện pixel vàng với các đỉnh vuông
+const crownBase=new THREE.Mesh(new THREE.BoxGeometry(1.08,.18,.68),amber);crownBase.position.set(0,4.78,0);penguinGroup.add(crownBase);
+for(let i=0;i<5;i++){const spike=new THREE.Mesh(new THREE.BoxGeometry(.16,.42,.22),i%2?amber:M.gold);spike.position.set(-.42+i*.21,5.05,0);penguinGroup.add(spike)}
+// Huy hiệu ngôi sao phát sáng trên ngực
+const badgeRing=new THREE.Mesh(new THREE.TorusGeometry(.24,.055,8,24),M.gold);badgeRing.position.set(0,3.35,.73);penguinGroup.add(badgeRing);
+const badgeStar=new THREE.Mesh(new THREE.OctahedronGeometry(.22,0),amber);badgeStar.position.set(0,3.35,.76);penguinGroup.add(badgeStar);
+penguinGroup.scale.setScalar(1.48);penguinGroup.position.y=-.55;penguinGroup.rotation.y=Math.PI;plazaGroup.add(penguinGroup);
+// Đồng xu cầu nguyện: nằm ngang, rải tự nhiên dưới mặt nước như người chơi vừa thả xuống hồ
+for(let i=0;i<14;i++){
+  const a=i*2.399963,rad=1.65+(i%4)*.48;
+  const coin=new THREE.Mesh(new THREE.CylinderGeometry(.32,.32,.085,24),M.gold);
+  coin.position.set(Math.cos(a)*rad,1.015,Math.sin(a)*rad);coin.rotation.y=a;coin.castShadow=true;plazaGroup.add(coin);
+  const mark=new THREE.Mesh(new THREE.TorusGeometry(.13,.035,6,12),M.cream);
+  mark.position.set(coin.position.x,1.065,coin.position.z);mark.rotation.x=Math.PI/2;plazaGroup.add(mark);
+  const ripple=new THREE.Mesh(new THREE.TorusGeometry(.48+(i%3)*.08,.018,6,32),new THREE.MeshBasicMaterial({color:0xb8efff,transparent:true,opacity:.55}));
+  ripple.position.set(coin.position.x,1.035,coin.position.z);ripple.rotation.x=Math.PI/2;plazaGroup.add(ripple);
+}
+
+
+for(let i=0;i<8;i++){const a=i*Math.PI/4;box(Math.cos(a)*3.6,1.05,Math.sin(a)*3.6,.22,.42,.22,'cream')}
+// All plaza lamp posts removed as requested.
+// Tiện ích quanh quảng trường: máy bán nước tự động phong cách arcade
+function vendingMachine(x,z,accent,label){
+ const g=new THREE.Group();g.position.set(x,0,z);
+ box(0,.35,0,1.45,2.45,.72,'dark',g);box(0,.55,.39,1.18,1.82,.08,'purple',g);
+ box(0,.62,.46,.94,1.28,.045,accent,g);
+ for(let r=0;r<3;r++)for(let k=0;k<3;k++){box(-.31+k*.31,1.72-r*.34,.51,.17,.22,.045,[pink,cyan,amber][(r+k)%3],g)}
+ box(0,.52,.48,.48,.18,.06,'dark',g);box(.48,.62,.48,.12,.32,.07,amber,g);
+ const top=new THREE.Mesh(new THREE.PlaneGeometry(1.0,.2),textTexture(label,'#08152b','#ffffff'));top.position.set(0,2.42,.39);g.add(top);
+ box(0,.16,0,1.65,.16,.84,accent,g);plazaGroup.add(g);
+ const glow=new THREE.PointLight(0x16dfff,.7,5);glow.position.set(x,1.5,z+1);plazaGroup.add(glow);
+}
+// Removed the dark vending-machine kiosks circled in the plaza screenshot.
+// Bồn hoa pixel nhiều tầng và hoa neon nhỏ
+function flowerBed(x,z){
+ box(x,.38,z,3.2,.34,2.0,'green');box(x,.57,z,2.9,.12,1.7,'green2');
+ for(let i=0;i<9;i++){const px=x-1.15+(i%3)*1.15,pz=z-.55+Math.floor(i/3)*.55;
+   cylinder(px,.62,pz,.035,.035,.34,'green2',6);
+   const bloom=new THREE.Mesh(new THREE.BoxGeometry(.34,.18,.34),i%3===0?pink:i%3===1?amber:violet);bloom.position.set(px,.98,pz);plazaGroup.add(bloom);
+   const core=new THREE.Mesh(new THREE.BoxGeometry(.12,.12,.12),M.gold);core.position.set(px,1.08,pz);plazaGroup.add(core);
+ }
+}
+// Removed the four neon flower-bed clusters circled by the user.
+
+// 369 CITY LIVE STAGE — detailed 3D build matching the dedicated stage artwork.
+{
+ const stage=new THREE.Group();stage.position.set(0,.62,15.8);stage.rotation.y=Math.PI;stage.scale.setScalar(1.25);plazaGroup.add(stage);
+ // Rear assembly: move the full upright stage structure toward the back edge while leaving deck and stairs in place.
+ const stageRear=new THREE.Group();stageRear.position.z=-2.0;stage.add(stageRear);
+ const neon=(color,intensity=1.8)=>new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:intensity,metalness:.25,roughness:.28});
+ const cyanMat=neon(0x28eaff,2.2),pinkMat=neon(0xff25cf,2.2),goldMat=neon(0xffc52f,1.8),purpleMat=neon(0x7625e8,1.5);
+ const stageLight=new THREE.PointLight(0x31dfff,8,34);stageLight.position.set(0,8,3);stage.add(stageLight);
+ const pinkLight=new THREE.PointLight(0xff25cf,7,28);pinkLight.position.set(-7,4,2);stage.add(pinkLight);
+ const goldLight=new THREE.PointLight(0xffc52f,5,26);goldLight.position.set(7,4,2);stage.add(goldLight);
+ // Concert lighting: brighter rear wash and colored spotlights.
+ const rearWash=new THREE.PointLight(0x8a2cff,15,42);rearWash.position.set(0,7,-4.5);stage.add(rearWash);
+ const floorWash=new THREE.PointLight(0x20dfff,11,30);floorWash.position.set(0,2,5.5);stage.add(floorWash);
+ // Aim all three rear spotlights steeply down onto the stage floor.
+ const spotSpecs=[[-4.5,7.8,-2.55,0xff2bd2],[0,8.2,-2.55,0x20eaff],[4.5,7.8,-2.55,0xffc52f]];
+ const beamUp=new THREE.Vector3(0,1,0);
+ for(const [sx,sy,sz,color] of spotSpecs){
+  const source=new THREE.Vector3(sx,sy,sz);
+  const target=new THREE.Vector3(sx*.25,1.35,1.55);
+  const spot=new THREE.SpotLight(color,105,24,Math.PI/6,.62,1.35);
+  spot.position.copy(source);spot.target.position.copy(target);stageRear.add(spot,spot.target);
+  // Transparent cone axis is aligned from the floor target back to the lamp,
+  // so the visible beam travels down onto the stage instead of projecting outward.
+  const beamLength=source.distanceTo(target);
+  const beam=new THREE.Mesh(new THREE.ConeGeometry(1.05,beamLength,20,1,true),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.065,depthWrite:false,side:THREE.DoubleSide}));
+  beam.position.copy(source).add(target).multiplyScalar(.5);
+  beam.quaternion.setFromUnitVectors(beamUp,source.clone().sub(target).normalize());
+  stageRear.add(beam);
+ }
+ // Six compact stainless hanging spotlights mounted under the front truss.
+ const fixtureMetal=new THREE.MeshStandardMaterial({color:0xdbe6f2,metalness:.94,roughness:.18});
+ const fixtureGlow=[0xff2bd2,0x20eaff,0xffc52f,0x20eaff,0xff2bd2,0x20eaff];
+ for(let i=0;i<6;i++){
+  const x=-5+i*2;
+  const housing=new THREE.Mesh(new THREE.CylinderGeometry(.18,.24,.34,12),fixtureMetal);
+  // Hang each lamp directly beneath the centered steel lattice truss.
+  housing.position.set(x,5.55,-1.42);housing.rotation.x=Math.PI/2;stageRear.add(housing);
+  const lens=new THREE.Mesh(new THREE.CircleGeometry(.17,16),new THREE.MeshBasicMaterial({color:fixtureGlow[i]}));
+  lens.position.set(x,5.35,-1.42);lens.rotation.x=-Math.PI/2;stageRear.add(lens);
+  // Preserve the existing colors, intensity, beam angle and floor target.
+  const lamp=new THREE.SpotLight(fixtureGlow[i],64,20,Math.PI/8,.68,1.2);
+  lamp.position.set(x,5.32,-1.42);lamp.target.position.set(x*.3,1.18,1.45);stageRear.add(lamp,lamp.target);
+ }
+ // Center the black steel lattice truss over the rear of the stage, aligned to the screen width.
+ const trussMat=new THREE.MeshStandardMaterial({color:0x8793a5,metalness:.94,roughness:.2,emissive:0x263449,emissiveIntensity:.2});
+ const trussBar=(a,b,r=.075)=>{
+  const va=new THREE.Vector3(...a),vb=new THREE.Vector3(...b),delta=new THREE.Vector3().subVectors(vb,va);
+  const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,delta.length(),8),trussMat);
+  mesh.position.copy(va).add(vb).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());stageRear.add(mesh);
+ };
+ // The truss is centered on x=0, directly above the rear screen, not offset toward either wing.
+ const trussLeft=-5.25,trussRight=5.25,trussY=5.95;
+ // Place the entire truss in the gap between the LED screen and the circular neon arch.
+ // Local z=-1.94 is the screen plane; z=-0.62 is the arch plane.
+ // These two rails sit in front of the screen and behind the arch.
+ for(const z of [-1.62,-1.22]){
+  trussBar([trussLeft,trussY,z],[trussRight,trussY,z],.085);
+  trussBar([trussLeft,trussY,z],[trussLeft,trussY-.5,z],.085);
+  trussBar([trussRight,trussY,z],[trussRight,trussY-.5,z],.085);
+  for(let x=trussLeft+.3;x<trussRight-.2;x+=.55){
+   trussBar([x,trussY,z],[x+.55,trussY-.5,z],.035);
+   trussBar([x+.55,trussY,z],[x,trussY-.5,z],.035);
+  }
+ }
+
+ // Wide raised stage deck with a layered front fascia.
+ // Trim the black deck and fascia to the stair width so no dark side blocks protrude.
+ // Keep the black foundation and fascia no wider than the first stair, removing both side ears.
+ box(0,.48,-1.30,12.20,.72,6.7,"dark",stage);
+ box(0,.88,-1.30,12.20,.12,6.45,"purple",stage);
+ box(0,.98,-1.30,12.20,.08,6.2,amber,stage);
+ box(0,1.06,-1.30,12.20,.08,5.95,"purple",stage);
+ // Glossy purple stage floor with continuous cyan and pink LED edges.
+ const stageTop=new THREE.Mesh(new THREE.BoxGeometry(12.20,.045,5.7),new THREE.MeshStandardMaterial({color:0x123653,emissive:0x0b2945,emissiveIntensity:.42,metalness:.58,roughness:.24}));
+ stageTop.position.set(0,1.145,-1.30);stage.add(stageTop);
+ for(const z of [-4.05,1.45]){const strip=new THREE.Mesh(new THREE.BoxGeometry(12.20,.075,.11),neon(z<0?0x25eaff:0xff28d2,2.8));strip.position.set(0,1.2,z);stage.add(strip)}
+
+ // Four broad, full-width front stairs matching the reference: wide purple treads with bright pink front-edge neon.
+ // Each lower tier steps forward and down; widths grow slightly toward the floor for a grand entrance.
+ for(let k=0;k<3;k++){
+  // Three broad front stairs; one lower tier removed as requested.
+  const z=2.55+k*.72;
+  const topY=1.145-k*.245;
+  // Keep every stair exactly the same width as the trimmed stage base.
+  // No lower tier widens outward, so the black ends cannot stick out at either side.
+  const width=12.20;
+  const depth=.78;
+  const bodyY=topY-.18;
+  box(0,bodyY,z,width,.36,depth,"dark",stage);
+  box(0,topY-.025,z,width,.055,depth-.08,"purple",stage);
+  // Continuous hot-pink LED strip runs flush with the side edges of every stair.
+  const frontZ=z+depth/2-.035;
+  const lip=new THREE.Mesh(new THREE.BoxGeometry(width,.075,.085),neon(0xff25d2,3.2));
+  lip.position.set(0,topY-.005,frontZ);stage.add(lip);
+  // A subtle cyan underglow keeps the step edges readable without changing the stage lighting.
+  const under=new THREE.Mesh(new THREE.BoxGeometry(width-.08,.035,.045),neon(0x20dfff,1.5));
+  under.position.set(0,topY-.205,frontZ+.015);stage.add(under);
+  const stepGlow=new THREE.PointLight(0xff28d2,2.4,15);
+  stepGlow.position.set(0,topY+.12,frontZ+.12);stage.add(stepGlow);
+ }
+ // Removed the two tall side truss posts and the overhead crossbar
+ // marked in the latest screenshot; keep the neon arch and graphic wings.
+ // Nested neon arches, with real 3D tube geometry.
+ const archOuter=new THREE.Mesh(new THREE.TorusGeometry(5.35,.22,12,72,Math.PI),cyanMat);archOuter.position.set(0,3.12,-.62);stageRear.add(archOuter);
+ const archInner=new THREE.Mesh(new THREE.TorusGeometry(5.02,.12,10,72,Math.PI),pinkMat);archInner.position.set(0,3.12,-.54);stageRear.add(archInner);
+ const archGold=new THREE.Mesh(new THREE.TorusGeometry(4.72,.055,8,72,Math.PI),goldMat);archGold.position.set(0,3.12,-.48);stageRear.add(archGold);
+ // Recessed LED wall with a spectrum equalizer, not a flat empty sign.
+ box(0,3.48,-2.25,10.5,3.65,.42,"dark",stageRear);
+ box(0,3.48,-2.00,10.18,3.35,.08,violet,stageRear);
+ const canvas=document.createElement("canvas");canvas.width=1200;canvas.height=520;
+ const ctx=canvas.getContext("2d");const bg=ctx.createLinearGradient(0,0,0,520);bg.addColorStop(0,"#120b35");bg.addColorStop(.55,"#24105f");bg.addColorStop(1,"#071b43");ctx.fillStyle=bg;ctx.fillRect(0,0,1200,520);
+ ctx.strokeStyle="#26eaff";ctx.lineWidth=7;ctx.strokeRect(12,12,1176,496);
+ ctx.textAlign="center";ctx.shadowColor="#ff24d2";ctx.shadowBlur=32;ctx.fillStyle="#fff";ctx.font="900 142px Arial";ctx.fillText("369 CITY",600,195);
+ ctx.shadowBlur=0;ctx.fillStyle="#80f5ff";ctx.font="bold 52px Arial";ctx.fillText("LIVE • MUSIC • FRIENDS",600,265);
+ const bars=[65,95,130,85,150,195,115,82,135,185,105,75,145,190,120,88,150,205,120,80,145,180,110,70,130,165,100,65];
+ bars.forEach((h,i)=>{const x=115+i*35;const g=ctx.createLinearGradient(0,520-h,0,520);g.addColorStop(0,i%3===0?"#ff32d4":"#28eaff");g.addColorStop(1,"#5426ff");ctx.fillStyle=g;ctx.fillRect(x,500-h,23,h)});
+ const tex=new THREE.CanvasTexture(canvas);tex.colorSpace=THREE.SRGBColorSpace;
+ const screen=new THREE.Mesh(new THREE.PlaneGeometry(9.82,3.0),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));screen.position.set(0,3.48,-1.94);stageRear.add(screen);
+ // Removed the extra upper logo board circled by the user; keep the truss and neon arch unobstructed.
+ // Use the two dedicated neon graphic panels as real transparent textures on 3D side structures.
+ const wingLoader=new THREE.TextureLoader();
+ const addWing=(url,x,width,height,edgeColor)=>{
+  // Keep only the two graphic wing panels; remove the extra tall side poles,
+  // thick outer rails and little protruding brackets marked in the user's screenshot.
+  const tex=wingLoader.load(url,(loaded)=>{loaded.colorSpace=THREE.SRGBColorSpace;loaded.needsUpdate=true;});
+  tex.colorSpace=THREE.SRGBColorSpace;
+  const art=new THREE.Mesh(new THREE.PlaneGeometry(width,height),new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide,depthWrite:false}));
+  art.position.set(x,height/2+.35,1.02);art.renderOrder=8;stageRear.add(art);
+ };
+ addWing("./stage-left-wing.svg",-7.45,4.05,7.25,pinkMat);
+ addWing("./stage-right-wing.svg",7.45,4.05,7.25,cyanMat);
+ // No decorative penguin statue on the stage; the player avatar remains in the plaza.
+ // Removed the pixel tree behind the stage as circled by the user.
+ // Removed the thin side LED poles beside the arch; retain the stage front footlights.
+ for(let x=-5.2;x<=5.2;x+=.65)box(x,1.18,2.40,.42,.08,.08,Math.round(x*10)%2?pink:cyan,stage);
+}
+// Large readable mission and event boards on the left/right plaza edges.
+function plazaBoard(x,z,label,sub,color,rotation,action){
+ const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rotation;plazaGroup.add(g);
+ box(0,2.35,0,4.4,3.15,.42,"dark",g);
+ box(0,2.35,.24,4.18,2.92,.12,color,g);
+ const c=document.createElement("canvas");c.width=720;c.height=480;const q=c.getContext("2d");
+ const bg=q.createLinearGradient(0,0,720,480);bg.addColorStop(0,"#101b42");bg.addColorStop(1,"#30134e");q.fillStyle=bg;q.fillRect(0,0,720,480);
+ q.strokeStyle="#ffd45b";q.lineWidth=12;q.strokeRect(12,12,696,456);
+ q.textAlign="center";q.fillStyle="#fff";q.font="900 62px Arial";q.fillText(label,360,160);
+ q.fillStyle="#7ef4ff";q.font="bold 36px Arial";q.fillText(sub,360,235);
+ q.fillStyle="#ffdf7a";q.font="bold 29px Arial";q.fillText("CHẠM ĐỂ XEM",360,390);
+ const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;
+ const face=new THREE.Mesh(new THREE.PlaneGeometry(3.95,2.63),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));face.position.set(0,2.35,.315);g.add(face);
+ for(const dx of [-1.7,1.7])box(dx,.7,0,.18,1.4,.18,"gold",g);
+ const hit=new THREE.Mesh(new THREE.BoxGeometry(4.6,3.4,.8),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));hit.position.set(0,2.25,.05);hit.userData.plazaAction=action;g.add(hit);plazaActionMeshes.push(hit);
+}
+// Removed the left-side plaza board marked by the user to clear the stage view.
+// Removed the SỰ KIỆN board circled by the user.
+// Removed the remaining freestanding welcome/photo board circled by the user.
+// Khu hút thuốc riêng, có mái che, ghế và thùng tàn thuốc
+function smokingZone(){
+ const x=14,z=9;
+ box(x,.34,z,6.8,.12,4.8,'dark');box(x,2.8,z,6.8,.18,4.8,violet);
+ for(const dx of [-3.2,3.2])for(const dz of [-2.1,2.1])box(x+dx,1.4,z+dz,.16,2.1,.16,cyan);
+ box(x,2.45,z-2.05,5.7,.62,.10,'dark');
+ const label=new THREE.Mesh(new THREE.PlaneGeometry(5.4,.48),textTexture('SMOKING AREA','#10133b','#ffcf69'));label.position.set(x,2.48,z-1.98);plazaGroup.add(label);
+ // Smoking zone bench removed to keep the plaza free of wooden seating.
+ cylinder(x+2.45,.35,z+.8,.22,.22,.7,'dark',12);cylinder(x+2.45,1.05,z+.8,.24,.24,.12,'gold',12);
+ // Biểu tượng điếu thuốc cách điệu trên bảng nhỏ
+ box(x-2.35,1.1,z-1.98,.75,.12,.12,'cream');box(x-1.95,1.1,z-1.98,.18,.14,.14,pink);
+}
+// Removed the purple four-post canopy/table circled by the user.
+
+// six labeled connections to surrounding future districts
+// Removed plaza signboards, small gold entry markers and cream paving pads circled by the user.
+// entry markers, paving lights and decorative low bollards
+// Removed plaza signboards, small gold entry markers and cream paving pads circled by the user.
+// Cổng chào 369 CITY thu gọn: vòm pixel neon thanh thoát, không che quảng trường
+// Removed tall entrance gate, surrounding skyline towers and billboard screens
+// so the central plaza, fountain and gardens remain clearly visible.
+// Keep the plaza lightweight on mobile: no overhead point lights, rain particles or large fill-light arrays.
+
+
+}
+
+
+// Broad, simple tiled pedestrian connection from plaza exit to shopping avenue
+{
+ const pathMat=new THREE.MeshStandardMaterial({color:0x344b76,roughness:.72});
+ const pathEdge=new THREE.MeshStandardMaterial({color:0x16294c,roughness:.85});
+ const base=new THREE.Mesh(new THREE.BoxGeometry(8.5,.22,25),pathEdge);base.position.set(0,-.12,-43.5);scene.add(base);
+ for(let z=-55;z<=-32;z+=2){for(let x=-3;x<=3;x+=2){const tile=new THREE.Mesh(new THREE.BoxGeometry(1.92,.08,1.92),pathMat);tile.position.set(x,.035,z);scene.add(tile)}}
+}
+// floating pixel lantern strings across the street
+for(let i=0;i<13;i++){const x=-9+i*1.5;const b=new THREE.Mesh(new THREE.BoxGeometry(.2,.2,.2),i%2?M.pink:M.cyan);b.position.set(x,10,-1+Math.sin(i*.65)*1.2);scene.add(b);point(x,10,-1+Math.sin(i*.65)*1.2,i%2?0xff28c8:0x19e5ff,.08,3)}
+// Removed vending machines to leave the walking avenue open.
+// Removed the overhead portal and distant skyline wall to keep the plaza sightline open.
+const initial={pos:new THREE.Vector3(38,48,48),target:new THREE.Vector3(0,3.2,0)};
+document.getElementById('reset').onclick=()=>{camera.position.copy(initial.pos);controls.target.copy(initial.target);controls.update()};
+document.getElementById('closeInfo').onclick=()=>{document.getElementById('shopInfo').style.display='none';document.body.classList.remove('ui-modal-open')};
+let nearbyShop=null,insideShop=null;
+function openShopCard(d){
+ document.getElementById('shopTitle').textContent=d.tag==='GIFTS'?'🎁 GIFT SHOP':d.name;
+ document.getElementById('shopDesc').textContent=d.desc+(d.tag==='GIFTS'?' Người bán hàng: “Xin chào! Mời bạn vào xem các món đồ do cư dân 369 CITY đăng bán nhé!”':'');
+ document.getElementById('giftActions').style.display=d.tag==='GIFTS'?'block':'none';
+ document.getElementById('giftPost').style.display='none';document.getElementById('giftItems').style.display='grid';
+ document.getElementById('shopInfo').style.display='block';document.body.classList.add('ui-modal-open');
+}
+function enterShop(d){
+ document.getElementById('shopInfo').style.display='none';document.body.classList.remove('ui-modal-open');insideShop=d;
+ const shopGroup=scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-d.x)<.01&&Math.abs(o.position.z-d.z)<.01);
+ scene.userData.shopSceneVisibility=scene.children.map(o=>o.visible);
+ scene.children.forEach(o=>{if(o!==shopGroup&&o!==player&&!o.isLight)o.visible=false});
+ scene.userData.shopBackground=scene.background;scene.background=new THREE.Color(0x080d29);scene.userData.shopFog=scene.fog;scene.fog=null;
+ scene.userData.shopExposure=renderer.toneMappingExposure;renderer.toneMappingExposure=.78;
+ if(shopGroup){
+  shopGroup.userData.savedVisibility=shopGroup.children.map(o=>o.visible);
+  const inside=new Set(shopGroup.userData.interiorChildren||[]);
+  shopGroup.children.forEach(o=>{o.visible=inside.has(o)});
+ }
+ const toWorld=(x,y,z)=>shopGroup?shopGroup.localToWorld(new THREE.Vector3(x,y,z)):new THREE.Vector3(d.x+x,y,d.z+z);
+ // Keep the player's penguin to one side so it does not block the cashier and display shelves.
+ player.position.copy(toWorld(2.55,0,2.15));pPrev.copy(player.position);
+ const cam=toWorld(0,4.25,9.0),look=toWorld(0,1.65,-1.05);
+ camera.position.copy(cam);controls.target.copy(look);controls.update();
+ controls.enableZoom=true;controls.minDistance=1.2;controls.maxDistance=24;
+ controls.enablePan=false;renderer.domElement.style.touchAction='none';
+ document.getElementById('playerShop').style.display='none';
+ document.getElementById('playerLeaveShop').style.display='flex';
+
+}
+function leaveShop(){
+ if(!insideShop)return;
+ const d=insideShop,side=d.x<0?1:-1;
+ scene.children.forEach((o,i)=>{o.visible=scene.userData.shopSceneVisibility?.[i]??true});scene.userData.shopSceneVisibility=null;
+ scene.background=scene.userData.shopBackground||new THREE.Color(0x080d29);scene.userData.shopBackground=null;scene.fog=scene.userData.shopFog??new THREE.Fog(0x080d29,65,125);scene.userData.shopFog=null;renderer.toneMappingExposure=scene.userData.shopExposure??.72;scene.userData.shopExposure=null;
+ const shopGroup=scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-d.x)<.01&&Math.abs(o.position.z-d.z)<.01);
+ if(shopGroup&&shopGroup.userData.savedVisibility){shopGroup.children.forEach((obj,i)=>{obj.visible=shopGroup.userData.savedVisibility[i]??true});shopGroup.userData.savedVisibility=null;}
+ player.position.set(d.x+side*5.7,0,d.z);pPrev.copy(player.position);
+ camera.position.set(player.position.x+side*7,8,player.position.z+9);
+ controls.target.set(player.position.x,1.6,player.position.z);controls.update();
+ controls.enableZoom=true;controls.enablePan=true;controls.minDistance=3;controls.maxDistance=65;
+ insideShop=null;document.getElementById('playerLeaveShop').style.display='none';
+}
+document.getElementById('giftEnter').onclick=()=>{const d=shopData.find(x=>x.tag==='GIFTS');if(d){enterShop(d);loadMallProducts()}};
+const giftCatalog=[
+ {name:'Gấu bông Pixel',price:120,old:150,emoji:'🧸',seller:'Mèo Xanh',desc:'Gấu bông mềm mại phong cách Pixel, món quà đáng yêu để trang trí căn phòng của bạn.',detail:'Gấu bông sưu tầm phong cách Pixel. Phù hợp trang trí phòng và làm quà tặng cho bạn bè trong 369 CITY.'},
+ {name:'Ba lô Neon',price:90,old:120,emoji:'🎒',seller:'Bắp Rang',desc:'Ba lô neon nổi bật dành cho chuyến dạo phố mua sắm.',detail:'Ba lô thời trang phong cách neon, phụ kiện trang trí nhân vật.'},
+ {name:'Chậu cây mini',price:45,old:60,emoji:'🪴',seller:'Hana',desc:'Chậu cây mini xanh mát cho góc phòng thêm sinh động.',detail:'Cây cảnh mini để bàn, vật phẩm trang trí không gian riêng.'},
+ {name:'Tai nghe ảo',price:150,old:180,emoji:'🎧',seller:'Ken',desc:'Tai nghe phong cách tương lai dành cho cư dân thành phố.',detail:'Phụ kiện tai nghe ảo phong cách công nghệ, dùng để làm đẹp nhân vật.'}
+];
+let pdCartCount=0,pdCurrent=null;
+function pdOpen(item){pdCurrent=item;document.getElementById('pdName').textContent=item.name;document.getElementById('pdPrice').textContent=item.price+' COIN';document.getElementById('pdOldPrice').textContent=item.old+' COIN';const art=document.getElementById('pdArt');art.textContent='';if(item.image){const img=document.createElement('img');img.src=item.image;img.alt=item.name;img.style.cssText='width:min(58vw,240px);height:min(34vh,240px);object-fit:contain';art.appendChild(img)}else art.textContent=item.emoji||'🎁';document.getElementById('pdDesc').textContent=item.desc;document.getElementById('pdDetails').textContent=item.detail;pdRefreshReviews();pdSetupChoices(item);document.getElementById('productDetail').classList.add('open');document.body.classList.add('ui-modal-open');document.getElementById('productDetail').setAttribute('aria-hidden','false')}
+function pdClose(){document.getElementById('productDetail').classList.remove('open');document.body.classList.remove('ui-modal-open');document.getElementById('productDetail').setAttribute('aria-hidden','true')}
+document.getElementById('giftItems').addEventListener('click',e=>{const card=e.target.closest('.giftItem');if(!card)return;if(card.dataset.mallProduct){const p=mallProductCache.find(x=>x.id===card.dataset.mallProduct);if(p)pdOpen({productId:p.id,name:p.name,price:Number(p.price_coin||0),old:Number(p.price_coin||0),emoji:'🛍️',image:p.image_url||'',seller:'Gian hàng 369 CITY',desc:p.description||'Sản phẩm đang được bán trong gian hàng 369 CITY.',detail:'Đơn đặt hàng sẽ được gửi đến người bán để xác nhận. Chưa trừ COIN và chưa thanh toán.'});return}if(card.dataset.demoIndex!==undefined){const p=readDemoProducts()[Number(card.dataset.demoIndex)];if(p)pdOpen(p);return}const cards=[...document.querySelectorAll('#giftItems .giftItem:not([data-demo-product]):not([data-mall-product])')],n=cards.indexOf(card);if(giftCatalog[n])pdOpen(giftCatalog[n])});
+document.getElementById('pdBack').onclick=pdClose;
+document.getElementById('pdAddCart').onclick=()=>{pdCartCount++;document.getElementById('pdCartCount').textContent=pdCartCount;const t=document.getElementById('pdToast');t.textContent='Đã thêm vào giỏ hàng thử nghiệm';t.style.display='block';setTimeout(()=>t.style.display='none',1800)};
+function pdToastMessage(message){const t=document.getElementById('pdToast');t.textContent=message;t.style.display='block';setTimeout(()=>t.style.display='none',2500)}
+function pdShowModal(id){document.getElementById(id).classList.add('open');document.getElementById(id).setAttribute('aria-hidden','false')}
+function pdHideModal(id){document.getElementById(id).classList.remove('open');document.getElementById(id).setAttribute('aria-hidden','true')}
+function pdReviews(){try{return JSON.parse(localStorage.getItem('369city-product-reviews-v1')||'{}')}catch(e){return{}}}
+function pdRefreshReviews(){if(!pdCurrent)return;const list=pdReviews()[pdCurrent.name]||[];document.getElementById('pdReviewCount').textContent=String(list.length);if(list.length){const avg=list.reduce((a,r)=>a+Number(r.stars),0)/list.length;document.getElementById('pdRatingValue').textContent=avg.toFixed(1)}else document.getElementById('pdRatingValue').textContent='4.9'}
+let pdQuantity=1,pdColor='Mặc định',pdSize='Một kích thước';
+function pdUpdateCheckout(){if(!pdCurrent)return;const total=Number(pdCurrent.price||0)*pdQuantity;document.getElementById('pdCheckoutSubtotal').textContent=total.toLocaleString('vi-VN')+' COIN';document.getElementById('pdCheckoutTotal').textContent=total.toLocaleString('vi-VN')+' COIN';document.getElementById('pdBuySummary').textContent=pdCurrent.name+' · '+pdColor+' · '+pdSize+' · SL '+pdQuantity}
+function pdSetupChoices(item){pdQuantity=1;pdColor='Mặc định';pdSize='Một kích thước';document.getElementById('pdQtyValue').textContent='1';const colors=item.colors||['Mặc định','Phiên bản Neon'];const sizes=item.sizes||['Một kích thước'];const render=(id,values,selected,setter)=>{const root=document.getElementById(id);root.innerHTML='';values.forEach((value,index)=>{const b=document.createElement('button');b.type='button';b.className='pdVariant'+(index===0?' selected':'');b.textContent=value;b.onclick=()=>{root.querySelectorAll('button').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');setter(value)};root.appendChild(b)})};render('pdVariants',colors,pdColor,v=>pdColor=v);render('pdSizes',sizes,pdSize,v=>pdSize=v)}
+document.getElementById('pdQtyMinus').onclick=()=>{pdQuantity=Math.max(1,pdQuantity-1);document.getElementById('pdQtyValue').textContent=String(pdQuantity)};
+document.getElementById('pdQtyPlus').onclick=()=>{pdQuantity=Math.min(99,pdQuantity+1);document.getElementById('pdQtyValue').textContent=String(pdQuantity)};
+document.getElementById('pdBuy').onclick=()=>{if(!pdCurrent){pdToastMessage('Bạn hãy chọn sản phẩm trước.');return}pdUpdateCheckout();pdShowModal('pdBuyModal')};
+document.getElementById('pdBuyClose').onclick=()=>pdHideModal('pdBuyModal');
+document.getElementById('pdConfirmBuy').onclick=async()=>{if(!pdCurrent)return;const name=document.getElementById('pdShipName').value.trim(),phone=document.getElementById('pdShipPhone').value.trim(),address=document.getElementById('pdShipAddress').value.trim();const msg=document.getElementById('pdCheckoutMsg');if(!name||!phone||!address){msg.textContent='Vui lòng nhập tên, số điện thoại và địa chỉ nhận hàng.';return}if(!walletSession){msg.textContent='Bạn cần đăng nhập tài khoản người mua trước khi đặt hàng.';return}if(pdCurrent.productId){const button=document.getElementById('pdConfirmBuy');button.disabled=true;msg.textContent='Đang gửi yêu cầu đến người bán...';try{const {data,error}=await walletClient.rpc('mall_create_order_inquiry',{p_product_id:pdCurrent.productId,p_quantity:pdQuantity,p_recipient_name:name,p_recipient_phone:phone,p_shipping_address:address,p_shipping_method:document.querySelector('input[name=pdShip]:checked')?.value||'standard',p_color:pdColor,p_size:pdSize});if(error)throw error;msg.textContent='';pdHideModal('pdBuyModal');pdToastMessage('Đã gửi yêu cầu đặt hàng đến người bán. Chưa trừ COIN, chưa thanh toán.');document.getElementById('pdShipName').value='';document.getElementById('pdShipPhone').value='';document.getElementById('pdShipAddress').value='';}catch(e){msg.textContent=e.message||'Không gửi được yêu cầu đặt hàng.'}finally{button.disabled=false}return}msg.textContent='Sản phẩm mẫu này chưa được liên kết với gian hàng thật nên chưa thể gửi đơn cho người bán. Hãy chọn sản phẩm có nhãn “Sản phẩm từ gian hàng”.'};
+document.getElementById('pdReviewOpen').onclick=()=>{if(!pdCurrent)return;document.getElementById('pdReviewProduct').textContent=pdCurrent.name;document.getElementById('pdReviewText').value='';document.getElementById('pdReviewMsg').textContent='Đánh giá thử nghiệm được lưu trên thiết bị này.';pdShowModal('pdReviewModal')};
+document.getElementById('pdReviewClose').onclick=()=>pdHideModal('pdReviewModal');
+document.getElementById('pdReviewSubmit').onclick=()=>{if(!pdCurrent)return;const review=document.getElementById('pdReviewText').value.trim();if(!review){document.getElementById('pdReviewMsg').textContent='Bạn hãy nhập nhận xét trước khi gửi.';return}try{const all=pdReviews();all[pdCurrent.name]=all[pdCurrent.name]||[];all[pdCurrent.name].push({stars:Number(document.getElementById('pdReviewStars').value),text:review,at:new Date().toISOString()});localStorage.setItem('369city-product-reviews-v1',JSON.stringify(all));pdHideModal('pdReviewModal');pdRefreshReviews();pdToastMessage('Cảm ơn bạn đã đánh giá sản phẩm!')}catch(e){document.getElementById('pdReviewMsg').textContent='Không lưu được đánh giá trên thiết bị này.'}};
+document.getElementById('pdReviewModal').addEventListener('click',e=>{if(e.target.id==='pdReviewModal')pdHideModal('pdReviewModal')});
+document.getElementById('pdBuyModal').addEventListener('click',e=>{if(e.target.id==='pdBuyModal')pdHideModal('pdBuyModal')});
+document.getElementById('pdShare').onclick=()=>{const t=document.getElementById('pdToast');t.textContent='Chia sẻ sản phẩm sẽ được bổ sung';t.style.display='block';setTimeout(()=>t.style.display='none',1800)};
+document.querySelectorAll('.pdVariant').forEach(b=>b.onclick=()=>{document.querySelectorAll('.pdVariant').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')});
+
+const giftStorageKey='369city-giftshop-demo-v1';
+function readDemoProducts(){try{return JSON.parse(localStorage.getItem(giftStorageKey)||'[]')}catch(e){return[]}}
+function renderGiftProducts(){const root=document.getElementById('giftItems');root.querySelectorAll('[data-demo-product]').forEach(n=>n.remove());readDemoProducts().forEach((p,idx)=>{const card=document.createElement('div');card.className='giftItem';card.dataset.demoProduct='1';card.innerHTML='<div class="giftProductArt"></div><div class="giftProductName"></div><b></b><small></small>';const art=card.querySelector('.giftProductArt');if(p.image){const img=document.createElement('img');img.src=p.image;img.alt=p.name;img.style.cssText='width:100%;height:100%;object-fit:contain';art.textContent='';art.appendChild(img)}else art.textContent=p.emoji||'🎁';card.querySelector('.giftProductName').textContent=p.name;card.querySelector('b').textContent=p.price+' COIN';card.querySelector('small').textContent='Người bán: '+(p.seller||'Bạn');card.dataset.demoIndex=String(idx);root.appendChild(card)})}
+renderGiftProducts();
+let mallProductCache=[];
+async function loadMallProducts(){
+ const root=document.getElementById('giftItems');
+ root.querySelectorAll('[data-mall-product], [data-mall-heading]').forEach(n=>n.remove());
+ const status=document.createElement('div');status.dataset.mallHeading='1';status.style.cssText='grid-column:1/-1;padding:10px 12px;border-radius:10px;background:#e0f7ff;color:#087b9b;font-weight:900;font-size:13px';status.textContent='⏳ ĐANG TẢI SẢN PHẨM THẬT TỪ GIAN HÀNG...';root.prepend(status);
+ try{
+  const {data,error}=await walletClient.from('mall_products').select('id,name,description,price_coin,stock,image_url,seller_id,store_id').eq('active',true).gt('stock',0).order('created_at',{ascending:false}).limit(50);
+  if(error)throw error;
+  mallProductCache=data||[];
+  if(!mallProductCache.length){status.textContent='Chưa có sản phẩm thật đang mở bán trong gian hàng.';return}
+  status.textContent='🛍️ '+mallProductCache.length+' SẢN PHẨM THẬT TỪ GIAN HÀNG · CHỌN ĐỂ GỬI YÊU CẦU ĐẶT HÀNG';
+  [...mallProductCache].reverse().forEach(p=>{
+   const card=document.createElement('div');card.className='giftItem';card.dataset.mallProduct=p.id;
+   const art=document.createElement('div');art.className='giftProductArt';
+   if(p.image_url){const img=document.createElement('img');img.src=p.image_url;img.alt=p.name;img.style.cssText='width:100%;height:100%;object-fit:contain';art.appendChild(img)}else art.textContent='🛍️';
+   const name=document.createElement('div');name.className='giftProductName';name.textContent=p.name;
+   const price=document.createElement('b');price.textContent=Number(p.price_coin||0).toLocaleString('vi-VN')+' COIN';
+   const seller=document.createElement('small');seller.textContent='SẢN PHẨM THẬT · Còn '+p.stock;
+   card.append(art,name,price,seller);root.insertBefore(card,status.nextSibling);
+  });
+ }catch(error){
+  status.textContent='⚠️ Không tải được sản phẩm thật: '+(error.message||'Lỗi kết nối Supabase');
+  console.error('Lỗi tải mall_products:',error);
+ }
+}
+loadMallProducts();
+document.getElementById('giftPostOpen').onclick=()=>{document.getElementById('giftItems').style.display='none';document.getElementById('giftPost').style.display='block'};
+document.getElementById('giftPostCancel').onclick=()=>{document.getElementById('giftPost').style.display='none';document.getElementById('giftItems').style.display='grid'};
+const giftImageInput=document.getElementById('giftImageInput'),giftImagePreview=document.getElementById('giftImagePreview');let giftImageData='';
+giftImageInput.addEventListener('change',()=>{const file=giftImageInput.files&&giftImageInput.files[0];if(!file)return;if(!file.type.startsWith('image/')){document.getElementById('giftPostMsg').textContent='Vui lòng chọn tệp hình ảnh.';giftImageInput.value='';return}if(file.size>1500000){document.getElementById('giftPostMsg').textContent='Ảnh tối đa 1.5 MB để lưu thử trên điện thoại. Bạn hãy chọn ảnh nhỏ hơn.';giftImageInput.value='';return}const reader=new FileReader();reader.onload=()=>{giftImageData=String(reader.result||'');giftImagePreview.src=giftImageData;giftImagePreview.style.display='block'};reader.readAsDataURL(file)});
+document.getElementById('giftPublish').onclick=()=>{const n=document.getElementById('giftName').value.trim(),p=Number(document.getElementById('giftPrice').value),desc=document.getElementById('giftDescInput').value.trim(),seller=document.getElementById('giftSellerInput').value.trim()||'Bạn';const msg=document.getElementById('giftPostMsg');if(!n||!Number.isFinite(p)||p<1){msg.textContent='Bạn hãy nhập tên sản phẩm và giá COIN hợp lệ.';return}const items=readDemoProducts();items.unshift({name:n,price:p,old:p,emoji:'🎁',seller,desc:desc||'Sản phẩm do cư dân 369 CITY đăng bán.',detail:desc||'Sản phẩm thử nghiệm do cư dân đăng bán.',image:giftImageData});try{localStorage.setItem(giftStorageKey,JSON.stringify(items));renderGiftProducts();document.getElementById('giftPost').style.display='none';document.getElementById('giftItems').style.display='grid';document.getElementById('giftName').value='';document.getElementById('giftPrice').value='';document.getElementById('giftDescInput').value='';document.getElementById('giftSellerInput').value='';giftImageInput.value='';giftImageData='';giftImagePreview.style.display='none';msg.textContent='';}catch(e){msg.textContent='Không đủ bộ nhớ để lưu ảnh. Hãy thử ảnh nhỏ hơn.'}};
+
+const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();renderer.domElement.addEventListener('pointerup',e=>{if(Math.abs(e.clientX-(window._downX??e.clientX))>8||Math.abs(e.clientY-(window._downY??e.clientY))>8)return;pointer.x=e.clientX/innerWidth*2-1;pointer.y=-(e.clientY/innerHeight)*2+1;ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects([...shopMeshes,...plazaActionMeshes],false);if(hits.length){const hit=hits[0].object;openShopCard(hit.userData.shop||hit.userData.plazaAction)}});
+renderer.domElement.addEventListener('pointerdown',e=>{window._downX=e.clientX;window._downY=e.clientY});
+
+// 369 CITY player: penguin avatar + mobile joystick + keyboard + jump
+const player=new THREE.Group();scene.add(player);
+const pBlack=mat(0x171923),pWhite=mat(0xf4f1ec),pOrange=mat(0xffa32b),pEye=mat(0x090b12);
+function pBall(parent,r,material,x,y,z,sx=1,sy=1,sz=1,seg=10){const m=new THREE.Mesh(new THREE.SphereGeometry(r,seg,Math.max(6,seg-2)),material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=true;parent.add(m);return m}
+pBall(player,.72,pBlack,0,1.15,0,.88,1.2,.72,10);pBall(player,.59,pWhite,0,1.12,.28,.78,1.06,.56,10);
+pBall(player,.58,pBlack,0,2.25,0,.9,.88,.78,10);pBall(player,.48,pWhite,0,2.2,.28,.9,.86,.55,10);
+pBall(player,.12,pOrange,0,2.05,.78,1.2,.65,1,8);for(const x of [-.2,.2])pBall(player,.07,pEye,x,2.34,.73,1,1,.45,8);
+const pWings=[];for(const x of [-.66,.66]){const w=pBall(player,.25,pBlack,x,1.2,0,.55,1.4,.55,8);w.rotation.z=x<0?-.35:.35;pWings.push(w)}
+for(const x of [-.3,.3]){const leg=new THREE.Mesh(new THREE.CylinderGeometry(.075,.09,.34,8),pBlack);leg.position.set(x,.27,.10);player.add(leg);const foot=new THREE.Mesh(new THREE.BoxGeometry(.52,.20,.62),pOrange);foot.position.set(x,.12,.22);player.add(foot)}
+player.position.set(0,0,-91);
+const pJoy=document.getElementById('playerJoy'),pKnob=document.getElementById('playerKnob');
+let pMoveX=0,pMoveY=0,pJoyActive=false,pJoyId=null,pJumpV=0,pJumping=false;
+function pSetJoy(e){const r=pJoy.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const max=Math.min(r.width,r.height)*.34,len=Math.hypot(dx,dy);if(len>max){dx=dx/len*max;dy=dy/len*max}pKnob.style.transform='translate('+dx+'px,'+dy+'px)';const mag=Math.hypot(dx,dy)/max;pMoveX=mag<.1?0:dx/max;pMoveY=mag<.1?0:dy/max}
+pJoy.addEventListener('pointerdown',e=>{e.preventDefault();pJoyActive=true;pJoyId=e.pointerId;pJoy.setPointerCapture(e.pointerId);pSetJoy(e)});
+pJoy.addEventListener('pointermove',e=>{if(pJoyActive&&e.pointerId===pJoyId){e.preventDefault();pSetJoy(e)}});
+function pEndJoy(e){if(e&&pJoyId!==null&&e.pointerId!==pJoyId)return;pJoyActive=false;pJoyId=null;pMoveX=0;pMoveY=0;pKnob.style.transform='translate(0,0)'}
+pJoy.addEventListener('pointerup',pEndJoy);pJoy.addEventListener('pointercancel',pEndJoy);pJoy.addEventListener('lostpointercapture',()=>pEndJoy());
+const pKeys={};addEventListener('keydown',e=>{pKeys[e.key.toLowerCase()]=true});addEventListener('keyup',e=>{pKeys[e.key.toLowerCase()]=false});
+function pJump(){if(!pJumping){pJumpV=8;pJumping=true}}
+document.getElementById('playerJump').addEventListener('click',pJump);
+
+document.getElementById('playerShop').addEventListener('click',()=>{if(nearbyShop)openShopCard(nearbyShop)});
+document.getElementById('playerLeaveShop').addEventListener('click',leaveShop);
+document.getElementById('playerPlaza').addEventListener('click',()=>{
+ pEndJoy();player.position.set(0,.46,-91);pPrev.copy(player.position);
+ camera.position.set(0,22,-111);controls.target.set(0,2.2,-91);controls.update();
+
+});
+
+document.getElementById('playerCenter').addEventListener('click',()=>{const dx=player.position.x-controls.target.x,dz=player.position.z-controls.target.z;camera.position.x+=dx;camera.position.z+=dz;controls.target.set(player.position.x,2.1,player.position.z);controls.update()});
+let pPrev=new THREE.Vector3();pPrev.copy(player.position);const pClock=new THREE.Clock();
+function shopBlocked(x,z){
+ const radius=.48;
+ for(const d of shopData){
+  const halfX=4.25,halfZ=4.45;
+  const insideX=x+radius>d.x-halfX&&x-radius<d.x+halfX;
+  const insideZ=z+radius>d.z-halfZ&&z-radius<d.z+halfZ;
+  if(!insideX||!insideZ)continue;
+  const back=d.x<0?d.x-halfX:d.x+halfX;
+  const doorway=Math.abs(z-d.z)<.82;
+  // The central doorway is a corridor through the front wall, but the rear wall stays solid.
+  if(doorway&&(d.x<0?x>back+.7:x<back-.7))continue;
+  return true;
+ }
+ return false;
+}
+function updatePlayer(){
+ const dt=Math.min(pClock.getDelta(),.04);
+ let ix=pMoveX+(pKeys['d']||pKeys['arrowright']?1:0)-(pKeys['a']||pKeys['arrowleft']?1:0);
+ let iy=pMoveY+(pKeys['s']||pKeys['arrowdown']?1:0)-(pKeys['w']||pKeys['arrowup']?1:0);
+ const len=Math.hypot(ix,iy);if(len>1){ix/=len;iy/=len}
+ // Move along the avenue; the camera's horizontal viewing direction defines forward.
+ const dir=new THREE.Vector3();camera.getWorldDirection(dir);dir.y=0;dir.normalize();
+ const right=new THREE.Vector3(dir.z,0,-dir.x);
+ const move=right.multiplyScalar(-ix).add(dir.multiplyScalar(-iy));
+ const speed=insideShop?6.2:15.5;
+ if(insideShop){
+  const d=insideShop,sg=scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-d.x)<.01&&Math.abs(o.position.z-d.z)<.01);
+  const candidate=player.position.clone().addScaledVector(move,speed*dt);
+  const local=sg?sg.worldToLocal(candidate.clone()):candidate.clone().sub(new THREE.Vector3(d.x,0,d.z));
+  local.x=THREE.MathUtils.clamp(local.x,-3.85,3.85);local.z=THREE.MathUtils.clamp(local.z,-3.05,3.55);local.y=0;
+  // Solid local-space collision boxes: side shelving, central checkout and shopkeeper.
+  const obstacles=[[-3.25,-1.15,.88,.72],[3.25,-1.15,.88,.72],[0,-.55,2.0,.72],[0,-1.35,.62,.62]];
+  const blocked=obstacles.some(([ox,oz,hx,hz])=>Math.abs(local.x-ox)<hx+.38&&Math.abs(local.z-oz)<hz+.38);
+  if(!blocked)player.position.copy(sg?sg.localToWorld(local):local.add(new THREE.Vector3(d.x,0,d.z)));
+ }else{
+  const nx=THREE.MathUtils.clamp(player.position.x+move.x*speed*dt,-24,24);
+  const nz=THREE.MathUtils.clamp(player.position.z+move.z*speed*dt,-99,29.5);
+  if(!shopBlocked(nx,player.position.z))player.position.x=nx;
+  if(!shopBlocked(player.position.x,nz))player.position.z=nz;
+ }
+ nearbyShop=null;
+ if(!insideShop){
+  for(const d of shopData){
+   const front=d.x<0?d.x+4.8:d.x-4.8;
+   if(Math.hypot(player.position.x-front,player.position.z-d.z)<3.2){nearbyShop=d;break}
+  }
+ }
+ document.getElementById('playerShop').style.display=nearbyShop?'flex':'none';
+ if(len>.08){player.rotation.y=Math.atan2(move.x,move.z);pWings.forEach((w,i)=>w.rotation.z=(i===0?-.35:.35)+Math.sin(performance.now()*.012)*.16)}
+ // Match avatar foot height to the actual transformed 3D stage deck and each of its three stair treads.
+ const onMainStage=Math.abs(player.position.x)<6.1&&player.position.z>-63.88&&player.position.z<-55.15;
+ const onStageSteps=Math.abs(player.position.x)<6.5&&player.position.z<=-63.88&&player.position.z>-66.58;
+ const stairIndex=Math.max(0,Math.min(2,Math.floor((-player.position.z-63.875)/.9)));
+ const stageDeckY=.62+1.25*1.1675;
+ const stairTopY=.62+1.25*(1.1475-stairIndex*.245);
+ const floorY=insideShop?.tag==='GIFTS'?.625:(onMainStage?stageDeckY:(onStageSteps?stairTopY:(player.position.z < -54.1 ? .46 : (player.position.z < -31 ? .08 : 0))));
+ if(pJumping){pJumpV-=18*dt;player.position.y+=pJumpV*dt;if(player.position.y<=floorY){player.position.y=floorY;pJumpV=0;pJumping=false}}
+ else player.position.y=floorY+(len>.08?Math.abs(Math.sin(performance.now()*.012))*.035:0);
+ const dx=player.position.x-pPrev.x,dz=player.position.z-pPrev.z;
+ if(Math.abs(dx)+Math.abs(dz)>.00001){camera.position.x+=dx;camera.position.z+=dz;controls.target.x+=dx;controls.target.z+=dz;pPrev.copy(player.position)}
+ controls.update();
+}
+
+const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.045,.22,.68);composer.addPass(bloom);
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight)});
+const animClock=new THREE.Clock();
+function animate(){requestAnimationFrame(animate);const t=animClock.getElapsedTime();controls.update();updatePlayer();
+ const giftGroup=scene.children.find(o=>o.type==='Group'&&o.userData.giftSeller);
+ if(giftGroup&&giftGroup.userData.giftSeller){const seller=giftGroup.userData.giftSeller;seller.position.y=.035+Math.sin(t*2.4)*.045;seller.rotation.y=Math.sin(t*1.1)*.10;const w=seller.userData.animated;if(w){w.leftWing.rotation.z=Math.sin(t*3.1)*.28-.12;w.rightWing.rotation.z=-Math.sin(t*3.1)*.28+.12;}}
+ composer.render()}animate();
+</script>
+</body></html><script async data-explicit-opt-in="true" data-deployment-id="dpl_D592Jxd9qoEM1gJh9C2HGdRfNZ12" src="https://vercel.live/_next-live/feedback/feedback.js"></script>
