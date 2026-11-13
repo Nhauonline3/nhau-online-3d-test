@@ -772,7 +772,10 @@ function flowerBed(x,z){
  };
  // The truss is centered on x=0, directly above the rear screen, not offset toward either wing.
  const trussLeft=-5.25,trussRight=5.25,trussY=5.95;
- for(const z of [-2.65,-2.05]){
+ // Place the entire truss in the gap between the LED screen and the circular neon arch.
+ // Local z=-1.94 is the screen plane; z=-0.62 is the arch plane.
+ // These two rails sit in front of the screen and behind the arch.
+ for(const z of [-1.62,-1.22]){
   trussBar([trussLeft,trussY,z],[trussRight,trussY,z],.085);
   trussBar([trussLeft,trussY,z],[trussLeft,trussY-.5,z],.085);
   trussBar([trussRight,trussY,z],[trussRight,trussY-.5,z],.085);
