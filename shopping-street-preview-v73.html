@@ -853,15 +853,7 @@ function flowerBed(x,z){
  addWing("./stage-left-wing.svg",-7.45,4.05,7.25,pinkMat);
  addWing("./stage-right-wing.svg",7.45,4.05,7.25,cyanMat);
  // No decorative penguin statue on the stage; the player avatar remains in the plaza.
- // A single pixel tree sits behind the stage, outside the wing panels and clear of the lighting.
- const stageTree=new THREE.Group();stageTree.position.set(-10.35,0,-2.55);stage.add(stageTree);
- box(0,0,0,2.1,.28,2.0,"dark",stageTree);
- box(0,.28,0,1.8,.12,1.7,mat(0x315b45),stageTree);
- box(0,.40,0,.42,2.05,.42,mat(0x80502f),stageTree);
- for(const [y,w,d] of [[1.65,1.75,1.55],[2.45,2.15,1.85],[3.25,1.7,1.55]]){
-  box(0,y,0,w,.9,d,mat(0x187b50),stageTree);
-  box(0,y+.25,0,w*.72,.34,d*.72,mat(0x36b96d),stageTree);
- }
+ // Removed the pixel tree behind the stage as circled by the user.
  // Removed the thin side LED poles beside the arch; retain the stage front footlights.
  for(let x=-5.2;x<=5.2;x+=.65)box(x,1.18,3.15,.42,.08,.08,Math.round(x*10)%2?pink:cyan,stage);
 }
