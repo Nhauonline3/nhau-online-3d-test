@@ -797,13 +797,25 @@ function flowerBed(x,z){
  stageTop.position.set(0,1.145,-.55);stage.add(stageTop);
  for(const z of [-3.95,2.82]){const strip=new THREE.Mesh(new THREE.BoxGeometry(13.05,.075,.11),neon(z<0?0x25eaff:0xff28d2,2.8));strip.position.set(0,1.2,z);stage.add(strip)}
 
- // Broad, connected steps — each tread is a full-width continuous slab.
- for(let k=0;k<6;k++){
-  const z=2.72+k*.58,y=.08+k*.14;
-  box(0,y,z,11.2,.36,1.0,k%2?"purple":"dark",stage);
-  box(0,y+.19,z+.47,11.05,.065,.08,k%2?pink:cyan,stage);
-  box(0,y-.17,z+.02,11.12,.045,.08,k%2?cyan:pink,stage);
-  const stepGlow=new THREE.PointLight(k%2?0xff28d2:0x20eaff,2.2,13);stepGlow.position.set(0,y+.25,z+.3);stage.add(stepGlow);
+ // Four broad, full-width front stairs matching the reference: wide purple treads with bright pink front-edge neon.
+ // Each lower tier steps forward and down; widths grow slightly toward the floor for a grand entrance.
+ for(let k=0;k<4;k++){
+  const z=3.48+k*.72;
+  const topY=1.10-k*.245;
+  const width=12.45+k*.38;
+  const depth=1.08;
+  const bodyY=topY-.18;
+  box(0,bodyY,z,width,.36,depth,"dark",stage);
+  box(0,topY-.025,z,width-.10,.055,depth-.08,"purple",stage);
+  // Continuous hot-pink LED strip along the front lip of every stair.
+  const frontZ=z+depth/2-.035;
+  const lip=new THREE.Mesh(new THREE.BoxGeometry(width-.04,.075,.085),neon(0xff25d2,3.2));
+  lip.position.set(0,topY-.005,frontZ);stage.add(lip);
+  // A subtle cyan underglow keeps the step edges readable without changing the stage lighting.
+  const under=new THREE.Mesh(new THREE.BoxGeometry(width-.18,.035,.045),neon(0x20dfff,1.5));
+  under.position.set(0,topY-.205,frontZ+.015);stage.add(under);
+  const stepGlow=new THREE.PointLight(0xff28d2,2.4,15);
+  stepGlow.position.set(0,topY+.12,frontZ+.12);stage.add(stepGlow);
  }
  // Removed the two tall side truss posts and the overhead crossbar
  // marked in the latest screenshot; keep the neon arch and graphic wings.
