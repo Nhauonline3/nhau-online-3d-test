@@ -788,10 +788,11 @@ function flowerBed(x,z){
  }
 
  // Wide raised stage deck with a layered front fascia.
- box(0,.48,-.55,14.2,.72,8.2,"dark",stage);
- box(0,.88,-.55,13.9,.12,7.95,"purple",stage);
- box(0,.98,-.55,13.5,.08,7.6,amber,stage);
- box(0,1.06,-.55,13.2,.08,7.3,"purple",stage);
+ // Trim the black deck and fascia to the stair width so no dark side blocks protrude.
+ box(0,.48,-.55,13.65,.72,8.2,"dark",stage);
+ box(0,.88,-.55,13.58,.12,7.95,"purple",stage);
+ box(0,.98,-.55,13.48,.08,7.6,amber,stage);
+ box(0,1.06,-.55,13.35,.08,7.3,"purple",stage);
  // Glossy purple stage floor with continuous cyan and pink LED edges.
  const stageTop=new THREE.Mesh(new THREE.BoxGeometry(12.9,.045,6.9),new THREE.MeshStandardMaterial({color:0x123653,emissive:0x0b2945,emissiveIntensity:.42,metalness:.58,roughness:.24}));
  stageTop.position.set(0,1.145,-.55);stage.add(stageTop);
@@ -836,9 +837,7 @@ function flowerBed(x,z){
  bars.forEach((h,i)=>{const x=115+i*35;const g=ctx.createLinearGradient(0,520-h,0,520);g.addColorStop(0,i%3===0?"#ff32d4":"#28eaff");g.addColorStop(1,"#5426ff");ctx.fillStyle=g;ctx.fillRect(x,500-h,23,h)});
  const tex=new THREE.CanvasTexture(canvas);tex.colorSpace=THREE.SRGBColorSpace;
  const screen=new THREE.Mesh(new THREE.PlaneGeometry(9.82,3.0),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));screen.position.set(0,3.48,-1.94);stage.add(screen);
- // A real 3D logo plaque integrated into the top of the truss.
- box(0,7.1,-1.35,5.9,.72,.38,"dark",stage);
- const logo=new THREE.Mesh(new THREE.PlaneGeometry(5.45,.52),textTexture("369 CITY","#1b0b42","#ffe45b"));logo.position.set(0,7.1,-1.13);stage.add(logo);
+ // Removed the extra upper logo board circled by the user; keep the truss and neon arch unobstructed.
  // Use the two dedicated neon graphic panels as real transparent textures on 3D side structures.
  const wingLoader=new THREE.TextureLoader();
  const addWing=(url,x,width,height,edgeColor)=>{
