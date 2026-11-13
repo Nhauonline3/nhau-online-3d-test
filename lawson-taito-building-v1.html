@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>NHẬU ONLINE · Lawson Taito 3D</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111426;color:white;font-family:system-ui}#view{position:fixed;inset:0}canvas{display:block;width:100%;height:100%;touch-action:none}.hud{position:fixed;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.tag{background:#151d36dc;border:1px solid #8094c9;border-radius:12px;padding:9px 12px;font-size:12px;backdrop-filter:blur(8px)}.help{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);white-space:nowrap;background:#151d36dc;border:1px solid #8094c9;border-radius:20px;padding:8px 13px;font-size:11px;color:#e7ebff;pointer-events:none}
+</style></head><body><div id="view"></div><div class="hud"><div class="tag"><b>NHẬU ONLINE · 369 CITY</b><br>LAWSON × TAITO · MÔ HÌNH 3D THỬ NGHIỆM</div><div class="tag">Kéo để xoay · Chụm để thu phóng</div></div><div class="help">Đây là mô hình 3D thật có thể xoay xem các mặt</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script><script>
+(()=>{if(!window.THREE){document.body.insertAdjacentHTML('beforeend','<p style="position:fixed;top:45%;padding:20px">Không tải được thư viện 3D. Hãy mở bằng Safari có Internet.</p>');return}
+const T=THREE,scene=new T.Scene();scene.background=new T.Color(0x171a2b);scene.fog=new T.Fog(0x171a2b,42,90);
+const camera=new T.PerspectiveCamera(38,innerWidth/innerHeight,.1,150);let renderer=new T.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.outputColorSpace=T.SRGBColorSpace;document.getElementById('view').appendChild(renderer.domElement);
+scene.add(new T.HemisphereLight(0xe4efff,0x51402d,2.2));let sun=new T.DirectionalLight(0xffe1b9,3.1);sun.position.set(-12,24,18);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);scene.add(sun);
+const mat=(c,r=.65,e=0)=>new T.MeshStandardMaterial({color:c,roughness:r,metalness:.08,emissive:e,emissiveIntensity:.22});
+const white=mat(0xf3eee5),cream=mat(0xe9dfcf),red=mat(0xe51d20),blue=mat(0x0876d7),navy=mat(0x14203a),yellow=mat(0xffc928),black=mat(0x17151a),glass= new T.MeshStandardMaterial({color:0x8dd8ed,roughness:.22,metalness:.15,emissive:0x17445b,emissiveIntensity:.35}),silver=mat(0xb8c3cc,.35,.04);
+function box(parent,x,y,z,w,h,d,m,bevel=0){let g=new T.BoxGeometry(w,h,d);let o=new T.Mesh(g,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
+function sphere(parent,x,y,z,r,m,sx=1,sy=1,sz=1,seg=20){let o=new T.Mesh(new T.SphereGeometry(r,seg,Math.max(8,seg-4)),m);o.position.set(x,y,z);o.scale.set(sx,sy,sz);o.castShadow=true;parent.add(o);return o}
+function cylinder(parent,x,y,z,r1,r2,h,m,axis='y'){let o=new T.Mesh(new T.CylinderGeometry(r1,r2,h,24),m);o.position.set(x,y,z);if(axis==='x')o.rotation.z=Math.PI/2;if(axis==='z')o.rotation.x=Math.PI/2;o.castShadow=true;parent.add(o);return o}
+function label(parent,text,x,y,z,w,h,bg,fg='#fff',rotY=0){let c=document.createElement('canvas');c.width=1024;c.height=256;let q=c.getContext('2d');q.fillStyle=bg;q.fillRect(0,0,1024,256);q.fillStyle=fg;q.font='900 116px Arial';q.textAlign='center';q.textBaseline='middle';q.fillText(text,512,130);let tx=new T.CanvasTexture(c);tx.colorSpace=T.SRGBColorSpace;let m=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:tx}));m.position.set(x,y,z);m.rotation.y=rotY;parent.add(m);return m}
+const city=new T.Group();scene.add(city);
+// square display base and street
+box(city,0,-.28,0,25,.55,22,mat(0xaaa9ae));box(city,0,.005,0,24.6,.08,21.6,mat(0x777983));
+for(let x=-11;x<=11;x+=1){for(let z=-9;z<=9;z+=1)box(city,x,.06,z,.96,.035,.96,mat((x+z)%2?0xc7c2bf:0xb9b5b4))}
+box(city,0,.12,0,10,.18,9,navy);
+// building footprint front at z=5
+// Lawson ground floor
+box(city,0,1.75,4.4,10,3.25,8.3,white);
+box(city,0,3.38,4.4,10.3,.32,8.55,blue);box(city,0,3.57,4.4,10.35,.12,8.6,white);
+label(city,'LAWSON',0,3.4,8.72,5.2,.62, '#0876d7');
+label(city,'LAWSON',4.98,3.4,4.4,5.2,.62,'#0876d7','#fff',Math.PI/2);
+// storefront windows and door front
+for(let x of [-3.55,-1.25,1.2,3.55]){box(city,x,1.7,8.59,2.05,2.15,.08,glass);box(city,x,1.7,8.66,.07,2.25,.06,silver);box(city,x,2.82,8.66,2.1,.08,.06,silver)}
+box(city,-.02,1.45,8.68,1.2,2.65,.1,mat(0x24394a));box(city,-.02,1.45,8.75,1.02,2.4,.05,glass);
+for(let x of [-4.7,4.7])box(city,x,1.7,8.7,.12,2.8,.16,white);
+// shelves visible through glass
+for(let x of [-3.6,-1.3,1.2,3.55]){for(let y of [.9,1.5,2.1]){box(city,x,y,8.45,1.65,.06,.08,silver);for(let k=0;k<4;k++)box(city,x-.62+k*.4,y+.16,8.42,.18,.25,.12,mat([0xff8a32,0x45c9d0,0xf2d14a,0x6dbf6a][k]))}}
+// Lawson sign bands
+box(city,0,3.16,4.5,10.45,.22,8.7,blue);box(city,0,3.02,4.5,10.48,.12,8.75,white);
+// arcade floor red front
+box(city,-1.65,6.2,4.45,6.8,2.55,8.25,red);box(city,-1.65,7.55,4.45,7,.24,8.5,mat(0xff3b2c));
+label(city,'TAITO STATION',-1.65,6.95,8.68,5.7,.65,'#e51d20');
+for(let y of [6.35,5.95,5.55])box(city,-1.65,y,8.68,5.5,.13,.08,black);
+for(let i=0;i<7;i++)box(city,-1.65+(i-3)*.18,4.9,8.72,.16,.16,.08,white);
+label(city,'SPACE INVADERS',-1.65,4.68,8.69,2.9,.35,'#e51d20');
+// tiled upper tower, rounded-looking square main mass
+box(city,1.65,10.1,4.45,6.5,5.4,8.25,cream);
+// tile grid front
+for(let x=-1.45;x<=4.7;x+=.36)box(city,x,10.08,8.62,.025,5.25,.025,mat(0x9e9287));
+for(let y=7.55;y<=12.65;y+=.36)box(city,1.65,y,8.62,6.35,.025,.025,mat(0x9e9287));
+// tile grid right side
+for(let z=.6;z<=8.3;z+=.36)box(city,4.94,10.08,z,.025,5.25,.025,mat(0x9e9287));
+for(let y=7.55;y<=12.65;y+=.36)box(city,4.94,y,4.45, .025,.025,8.1,mat(0x9e9287));
+// top yellow roof rim
+box(city,1.65,12.95,4.45,7,.42,8.7,yellow);box(city,1.65,12.72,4.45,6.75,.12,8.45,mat(0xff8c24));
+// roof sign frame and panels
+box(city,1.6,14.25,4.1,4.6,1.65,.18,mat(0x273c38));box(city,1.6,14.25,7.0,4.6,1.65,.18,mat(0x273c38));box(city,-.7,14.25,5.55,.18,1.65,2.9,mat(0x273c38));box(city,3.9,14.25,5.55,.18,1.65,2.9,mat(0x273c38));
+box(city,1.6,14.25,4.2,4.35,1.38, .05,mat(0xe5f0e5));label(city,'🍀 ITO EN',1.6,14.25,4.24,3.9,.85,'#dcefe0','#15251c');
+box(city,1.6,14.25,6.92,4.35,1.38,.05,mat(0xe5f0e5));label(city,'🍀 ITO EN',1.6,14.25,6.95,3.9,.85,'#dcefe0','#15251c');
+// face-like hanging signs on upper front
+for(let x of [-.2,1.65]){box(city,x,10.5,8.78,.95,2.35,.18,black);sphere(city,x,11.55,8.9,.48,yellow,.95,.6,.2);sphere(city,x-.13,10.1,8.91,.12,black);sphere(city,x+.13,10.1,8.91,.12,black)}
+// Pokeball style giant circular wall emblem on right front
+const ballGroup=new T.Group();ballGroup.position.set(4.95,10.25,7.6);ballGroup.rotation.y=Math.PI/2;city.add(ballGroup);
+cylinder(ballGroup,0,0,0,1.85,1.85,.42,mat(0x6d5a60),'z');cylinder(ballGroup,0,0,.25,1.55,1.55,.18,white,'z');cylinder(ballGroup,0,.02,.37,1.34,1.34,.12,red,'z');box(ballGroup,0,0,.47,2.65,.13,.12,black);cylinder(ballGroup,0,0,.56,.38,.38,.18,black,'z');cylinder(ballGroup,0,0,.68,.25,.25,.12,white,'z');
+// colorful orbit ring on tower
+let ring=new T.Mesh(new T.TorusGeometry(3.5,.22,12,100),mat(0xece7f0,.28));ring.rotation.x=Math.PI/2;ring.position.set(1.65,7.85,4.45);ring.scale.set(1,.72,1);city.add(ring);
+for(let i=0;i<12;i++){let a=i/12*Math.PI*2;let colors=[0xff4242,0x3188f5,0xffcf35,0xe78bd2,0x25bb80,0xf2f0ed];sphere(city,1.65+3.5*Math.cos(a),7.9,4.45+2.5*Math.sin(a),.34,mat(colors[i%6],.22),1,1,.72,14)}
+// electrical conduits and small wall units
+for(let x of [-2.7,-1.8,-.9]){box(city,x,12.05,8.7,.18,.65,.14,white);cylinder(city,x+.35,12.05,8.72,.07,.07,.65,silver,'z')}
+box(city,3.9,8.55,8.72,.65,.9,.18,silver);for(let i=0;i<5;i++)box(city,3.68+i*.1,8.55,8.84,.035,.6,.04,black);
+// AC unit
+box(city,-4.2,5.1,8.75,1.05,1.1,.35,silver);for(let y of [4.85,5.3])cylinder(city,-4.2,y,8.96,.24,.24,.08,black,'z');
+// vending machine
+box(city,2.5,1.7,9.05,1.05,2.75,.55,mat(0x0752a6));box(city,2.5,2.15,9.36,.85,1.45,.05,glass);for(let i=0;i<3;i++)for(let j=0;j<3;j++)box(city,2.2+j*.28,2.55-i*.42,9.4,.19,.24,.08,mat([0xe33e3e,0x43b9d2,0xf3d84a][(i+j)%3]));label(city,'KIRIN',2.5,.65,9.35,.8,.3,'#074b9b');
+// sidewalk rails
+for(let x of [-5.5,5.5]){for(let z of [7,9,11])cylinder(city,x,.65,z,.055,.055,2.4,silver,'x');for(let y of [.35,1])box(city,x,.0+ y,9, .12,.08,3.9,silver)}
+// tree props
+function tree(x,z){cylinder(city,x,1,z,.22,.3,2.1,mat(0x6c4328));for(let i=0;i<12;i++){let a=i/12*Math.PI*2;sphere(city,x+Math.cos(a)*.8,2.2+(i%3)*.22,z+Math.sin(a)*.8,.65,mat(i%2?0x55a33d:0x77b94b),1,1,.9,10)}sphere(city,x,2.65,z,.85,mat(0x5b9f3e),1,1,.9,10)}
+tree(-7,2);tree(-7,-3);tree(7,-2);
+// delivery van
+box(city,8,1.05,4.1,3.8,1.65,2.1,mat(0x168b80));box(city,8,1.65,3.75,2.5,.8,2.0,mat(0xe2e5df));for(let x of [6.9,9.1])cylinder(city,x,.48,5.05,.42,.42,.22,black,'z');label(city,'DELIVERY',8,1.1,5.17,1.9,.38,'#168b80');
+// bicycles simplified
+function bike(x,z){for(let dx of [-.7,.7]){let w=new T.Mesh(new T.TorusGeometry(.42,.045,8,24),silver);w.position.set(x+dx,.48,z);city.add(w)}let frame=mat(0x202b39);cylinder(city,x,.85,z,.06,.06,1.4,frame,'x');box(city,x,.92,z,.8,.06,.06,frame)}
+bike(-6,7);bike(6,7);
+// people silhouettes
+function person(x,z,shirt){cylinder(city,x,.85,z,.22,.26,1.25,mat(0x252633));sphere(city,x,1.65,z,.22,mat(0xc69a78));box(city,x,1.1,z,.5,.68,.3,mat(shirt));box(city,x-.18,.35,z,.15,.7,.17,navy);box(city,x+.18,.35,z,.15,.7,.17,navy)}
+person(-2.8,9,0x20232c);person(.3,9.6,0x313b4a);person(4.4,8.9,0x26252d);
+// pavement decals, curb
+box(city,0,.17,10.3,24,.22,.45,white);box(city,0,.3,10.3,24,.08,.45,mat(0x686b78));
+const target=new T.Vector3(0,7,0);let theta=.72,phi=1.08,radius=34,drag=false,lastX=0,lastY=0,pinch=0;
+function updateCam(){camera.position.set(target.x+radius*Math.sin(phi)*Math.sin(theta),target.y+radius*Math.cos(phi),target.z+radius*Math.sin(phi)*Math.cos(theta));camera.lookAt(target)}
+updateCam();const el=renderer.domElement;
+el.addEventListener('pointerdown',e=>{drag=true;lastX=e.clientX;lastY=e.clientY;el.setPointerCapture(e.pointerId)});
+el.addEventListener('pointermove',e=>{if(!drag)return;theta-=(e.clientX-lastX)*.008;phi=Math.max(.25,Math.min(1.48,phi+(e.clientY-lastY)*.006));lastX=e.clientX;lastY=e.clientY;updateCam()});
+el.addEventListener('pointerup',()=>drag=false);el.addEventListener('pointercancel',()=>drag=false);
+el.addEventListener('wheel',e=>{radius=Math.max(19,Math.min(52,radius+e.deltaY*.025));updateCam()},{passive:true});
+let touches=new Map();el.addEventListener('touchstart',e=>{if(e.touches.length===2)pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)},{passive:true});el.addEventListener('touchmove',e=>{if(e.touches.length===2){let n=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinch){radius=Math.max(19,Math.min(52,radius+(pinch-n)*.045));updateCam()}pinch=n}},{passive:true});
+function animate(){requestAnimationFrame(animate);renderer.render(scene,camera)}animate();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+})();
+</script></body></html>
