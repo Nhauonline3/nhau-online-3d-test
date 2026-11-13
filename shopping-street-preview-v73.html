@@ -791,20 +791,20 @@ function flowerBed(x,z){
  // Wide raised stage deck with a layered front fascia.
  // Trim the black deck and fascia to the stair width so no dark side blocks protrude.
  // Keep the black foundation and fascia no wider than the first stair, removing both side ears.
- box(0,.48,-.55,12.20,.72,8.2,"dark",stage);
- box(0,.88,-.55,12.20,.12,7.95,"purple",stage);
- box(0,.98,-.55,12.20,.08,7.6,amber,stage);
- box(0,1.06,-.55,12.20,.08,7.3,"purple",stage);
+ box(0,.48,-1.30,12.20,.72,6.7,"dark",stage);
+ box(0,.88,-1.30,12.20,.12,6.45,"purple",stage);
+ box(0,.98,-1.30,12.20,.08,6.2,amber,stage);
+ box(0,1.06,-1.30,12.20,.08,5.95,"purple",stage);
  // Glossy purple stage floor with continuous cyan and pink LED edges.
- const stageTop=new THREE.Mesh(new THREE.BoxGeometry(12.20,.045,6.9),new THREE.MeshStandardMaterial({color:0x123653,emissive:0x0b2945,emissiveIntensity:.42,metalness:.58,roughness:.24}));
- stageTop.position.set(0,1.145,-.55);stage.add(stageTop);
- for(const z of [-3.95,2.82]){const strip=new THREE.Mesh(new THREE.BoxGeometry(12.20,.075,.11),neon(z<0?0x25eaff:0xff28d2,2.8));strip.position.set(0,1.2,z);stage.add(strip)}
+ const stageTop=new THREE.Mesh(new THREE.BoxGeometry(12.20,.045,5.7),new THREE.MeshStandardMaterial({color:0x123653,emissive:0x0b2945,emissiveIntensity:.42,metalness:.58,roughness:.24}));
+ stageTop.position.set(0,1.145,-1.30);stage.add(stageTop);
+ for(const z of [-4.05,1.45]){const strip=new THREE.Mesh(new THREE.BoxGeometry(12.20,.075,.11),neon(z<0?0x25eaff:0xff28d2,2.8));strip.position.set(0,1.2,z);stage.add(strip)}
 
  // Four broad, full-width front stairs matching the reference: wide purple treads with bright pink front-edge neon.
  // Each lower tier steps forward and down; widths grow slightly toward the floor for a grand entrance.
  for(let k=0;k<4;k++){
   // First tread meets the front edge of the stage deck; each tread is one clean step deep.
-  const z=3.30+k*.72;
+  const z=2.55+k*.72;
   const topY=1.145-k*.245;
   // Keep every stair exactly the same width as the trimmed stage base.
   // No lower tier widens outward, so the black ends cannot stick out at either side.
@@ -857,7 +857,7 @@ function flowerBed(x,z){
  // No decorative penguin statue on the stage; the player avatar remains in the plaza.
  // Removed the pixel tree behind the stage as circled by the user.
  // Removed the thin side LED poles beside the arch; retain the stage front footlights.
- for(let x=-5.2;x<=5.2;x+=.65)box(x,1.18,3.15,.42,.08,.08,Math.round(x*10)%2?pink:cyan,stage);
+ for(let x=-5.2;x<=5.2;x+=.65)box(x,1.18,2.40,.42,.08,.08,Math.round(x*10)%2?pink:cyan,stage);
 }
 // Large readable mission and event boards on the left/right plaza edges.
 function plazaBoard(x,z,label,sub,color,rotation,action){
