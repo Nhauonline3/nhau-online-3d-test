@@ -883,14 +883,8 @@ function plazaBoard(x,z,label,sub,color,rotation,action){
 }
 // Removed the left-side plaza board marked by the user to clear the stage view.
 // Removed the SỰ KIỆN board circled by the user.
-// Photo spot: a freestanding neon frame with a 369 CITY welcome plaque.
-{
- const frame=new THREE.Group();frame.position.set(0,0,-15.5);plazaGroup.add(frame);
- box(0,3.0,0,7.6,.28,.32,amber,frame);box(-3.65,1.55,0,.28,3.0,.32,cyan,frame);box(3.65,1.55,0,.28,3.0,.32,pink,frame);
- box(0,.18,0,8.2,.28,1.0,"dark",frame);
- const photo=new THREE.Mesh(new THREE.PlaneGeometry(5.7,1.35),textTexture("WELCOME TO 369 CITY","#10163a","#fff0a6"));photo.position.set(0,2.1,.19);frame.add(photo);
-}
- // Khu hút thuốc riêng, có mái che, ghế và thùng tàn thuốc
+// Removed the remaining freestanding welcome/photo board circled by the user.
+// Khu hút thuốc riêng, có mái che, ghế và thùng tàn thuốc
 function smokingZone(){
  const x=14,z=9;
  box(x,.34,z,6.8,.12,4.8,'dark');box(x,2.8,z,6.8,.18,4.8,violet);
