@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>369 CITY · Detailed facade test</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f1eef3;font-family:system-ui;color:#172033}#v{position:fixed;inset:0}canvas{width:100%;height:100%;display:block;touch-action:none}.hud{position:fixed;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.tag{padding:10px 13px;border:1px solid #aeb5c7;border-radius:13px;background:#ffffffd9;font-size:12px;box-shadow:0 3px 15px #0001}.foot{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:#ffffffdc;border:1px solid #aeb5c7;border-radius:22px;padding:8px 13px;font-size:11px;white-space:nowrap}
+</style></head><body><div id="v"></div><div class="hud"><div class="tag"><b>369 CITY · V77</b><br>Thử nghiệm mặt cong + Poké Ball nổi 3D</div><div class="tag">Vuốt để xoay · Chụm để phóng to</div></div><div class="foot">Mẫu chi tiết thử nghiệm · Chưa thay thế tòa nhà V76</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script><script>
+(()=>{if(!window.THREE){document.body.insertAdjacentHTML('beforeend','<p>Không tải được thư viện 3D.</p>');return}
+const T=THREE,scene=new T.Scene();scene.background=new T.Color(0xf1eef3);
+const camera=new T.PerspectiveCamera(35,innerWidth/innerHeight,.1,100);
+const renderer=new T.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=T.SRGBColorSpace;renderer.shadowMap.enabled=true;document.getElementById('v').appendChild(renderer.domElement);
+scene.add(new T.HemisphereLight(0xffffff,0x756b62,2.3));let key=new T.DirectionalLight(0xffe4c6,3.1);key.position.set(-8,13,12);key.castShadow=true;scene.add(key);let fill=new T.DirectionalLight(0xd8e4ff,1.2);fill.position.set(8,5,-8);scene.add(fill);
+const mat=(c,r=.5,m=0,e=0)=>new T.MeshStandardMaterial({color:c,roughness:r,metalness:m,emissive:e,emissiveIntensity:.2});
+const cream=mat(0xe7ded1,.82),tile=mat(0x9c9288,.8),yellow=mat(0xffc52c,.35),red=mat(0xf01820,.25),white=mat(0xfaf8f2,.28),dark=mat(0x201b20,.5),pink=mat(0xf58cae,.32),silver=mat(0xb5b8bc,.3,.6),green=mat(0x4c9d44,.8);
+function mesh(g,m,p,parent=scene){let o=new T.Mesh(g,m);o.position.set(...p);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
+const group=new T.Group();scene.add(group);
+// ground and curved architectural shell
+mesh(new T.BoxGeometry(20,.35,15),mat(0xaaa8a9),[0,-.4,0],group);
+const R=6.2, H=7.6, y0=.0, start=-.94, span=1.88;
+mesh(new T.CylinderGeometry(R,R,H,96,1,true,start,span),cream,[0,H/2,0],group);
+// lower red arcade band under curved upper structure
+mesh(new T.CylinderGeometry(R+.06,R+.06,1.65,96,1,true,start,span),red, [0,-.48,0],group);
+// rounded yellow cornice
+mesh(new T.CylinderGeometry(R+.24,R+.24,.38,96,1,true,start,span),yellow,[0,7.72,0],group);
+// curved tile grid: vertical meridian lines and horizontal arcs
+for(let a=start+.035;a<start+span;a+=.105){let pts=[];for(let y=.2;y<7.5;y+=.15)pts.push(new T.Vector3((R+.018)*Math.sin(a),y,(R+.018)*Math.cos(a)));let curve=new T.CatmullRomCurve3(pts);mesh(new T.TubeGeometry(curve,48,.012,5,false),tile,[0,0,0],group)}
+for(let y=.25;y<7.5;y+=.32){let pts=[];for(let a=start+.01;a<start+span;a+=.035)pts.push(new T.Vector3((R+.022)*Math.sin(a),y,(R+.022)*Math.cos(a)));let curve=new T.CatmullRomCurve3(pts);mesh(new T.TubeGeometry(curve,64,.012,5,false),tile,[0,0,0],group)}
+// curved face details: capsule eyes, orange brow caps
+function capsule(x,y,z,rad,len,material,rot=0){let g=new T.CapsuleGeometry(rad,len,8,20);let o=mesh(g,material,[x,y,z],group);o.rotation.z=rot;return o}
+capsule(-1.45,4.85,6.0,.48,1.55,dark,-.02);capsule(.25,4.85,6.0,.48,1.55,dark,.02);
+mesh(new T.SphereGeometry(.49,28,18),yellow,[-1.45,5.82,6.02],group).scale.set(1,.48,.48);
+mesh(new T.SphereGeometry(.49,28,18),yellow,[.25,5.82,6.02],group).scale.set(1,.48,.48);
+mesh(new T.SphereGeometry(.13,24,16),dark,[-1.45,4.45,6.45],group);
+mesh(new T.SphereGeometry(.13,24,16),dark,[.25,4.45,6.45],group);
+// small pink curved nose/mouth
+let smile=new T.CatmullRomCurve3([new T.Vector3(-.55,4.25,6.18),new T.Vector3(-.42,3.98,6.35),new T.Vector3(-.1,3.94,6.38),new T.Vector3(.12,4.18,6.34)]);mesh(new T.TubeGeometry(smile,36,.105,12,false),pink,[0,0,0],group);
+// dimensional Pokeball mounted on right side of facade
+const ball=new T.Group();ball.position.set(2.55,4.25,5.75);ball.rotation.y=.34;group.add(ball);
+mesh(new T.SphereGeometry(1.52,64,32,0,Math.PI*2,0,Math.PI/2),red,[0,0,0],ball);
+mesh(new T.SphereGeometry(1.52,64,32,0,Math.PI*2,Math.PI/2,Math.PI/2),white,[0,0,0],ball);
+let equator=new T.Mesh(new T.TorusGeometry(1.51,.16,18,96),dark);equator.position.z=.02;ball.add(equator);
+mesh(new T.CylinderGeometry(1.82,1.82,.2,64),mat(0x76646a,.3,.25),[0,0,-.12],ball).rotation.x=Math.PI/2;
+mesh(new T.CylinderGeometry(.43,.43,.24,48),dark,[0,0,1.48],ball).rotation.x=Math.PI/2;
+mesh(new T.CylinderGeometry(.29,.29,.13,48),white,[0,0,1.62],ball).rotation.x=Math.PI/2;
+// colorful floating beads on a curved orbit around facade
+const orbit=new T.Group();orbit.position.set(.1,2.15,0);group.add(orbit);
+let colors=[0xf34a53,0x368ce2,0xffd23e,0xe78ac3,0x31ae79,0xf3eee8,0xe9a35a,0x8d74d5];
+for(let i=0;i<12;i++){let a=-1.18+i*(2.36/11),x=(R+.42)*Math.sin(a),z=(R+.42)*Math.cos(a);let bead=mesh(new T.SphereGeometry(.28,24,18),mat(colors[i%colors.length],.24,.08),[x,0,z],orbit);bead.scale.set(1,1,.8)}
+// TAITO red arcade lower volume with raised sign and three recessed black slats
+mesh(new T.BoxGeometry(8.8,2.5,5.4),red,[-1.8,-.35,1.9],group);
+mesh(new T.BoxGeometry(9,.28,5.55),mat(0xff342b),[-1.8,1.04,1.9],group);
+function textPlane(text,x,y,z,w,h,bg,fg){let c=document.createElement('canvas');c.width=1024;c.height=256;let q=c.getContext('2d');q.fillStyle=bg;q.fillRect(0,0,1024,256);q.fillStyle=fg;q.font='900 116px Arial';q.textAlign='center';q.textBaseline='middle';q.fillText(text,512,130);let tx=new T.CanvasTexture(c);tx.colorSpace=T.SRGBColorSpace;mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:tx}),[x,y,z],group)}
+textPlane('TAITO STATION',-1.8,.48,4.64,6.8,.65,'#e51b23','#fff');
+for(let y of [-.05,-.42,-.79])mesh(new T.BoxGeometry(6.7,.13,.12),dark,[-1.8,y,4.66],group);
+// rooftop rim and framed sign
+mesh(new T.BoxGeometry(9.2,.38,8.8),yellow,[0,7.85,0],group);
+mesh(new T.BoxGeometry(4.7,1.75,.18),mat(0x293b35,.4,.4),[0,9.05,3.25],group);
+mesh(new T.BoxGeometry(4.35,1.42,.08),mat(0xdcebdc),[0,9.05,3.37],group);
+textPlane('🍀 ITO EN',0,9.05,3.43,4.1,1.0,'#dcebdc','#17321e');
+// front-side electrical conduits
+for(let x of [-3.3,-2.9,-2.5]){mesh(new T.BoxGeometry(.15,.65,.12),silver,[x,6.5,6.02],group)}
+let pipe=new T.CatmullRomCurve3([new T.Vector3(-3.3,6.7,6.05),new T.Vector3(-3.3,6.95,6.05),new T.Vector3(-2.7,6.95,6.05),new T.Vector3(-2.7,6.5,6.05)]);mesh(new T.TubeGeometry(pipe,40,.055,10,false),silver,[0,0,0],group);
+// side black inset detail
+mesh(new T.BoxGeometry(1.45,.62,.2),dark,[4.95,2.55,3.1],group);
+// floating shadow plane
+const floor=mesh(new T.PlaneGeometry(200,200),mat(0xf1eef3),[0,-.59,0]);floor.rotation.x=-Math.PI/2;
+const target=new T.Vector3(0,4.4,0);let theta=.45,phi=1.1,r=20,drag=false,lx=0,ly=0,pinch=0;
+function cam(){camera.position.set(target.x+r*Math.sin(phi)*Math.sin(theta),target.y+r*Math.cos(phi),target.z+r*Math.sin(phi)*Math.cos(theta));camera.lookAt(target)}cam();
+const el=renderer.domElement;el.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;el.setPointerCapture(e.pointerId)});el.addEventListener('pointermove',e=>{if(!drag)return;theta-=(e.clientX-lx)*.008;phi=Math.max(.35,Math.min(1.48,phi+(e.clientY-ly)*.006));lx=e.clientX;ly=e.clientY;cam()});el.addEventListener('pointerup',()=>drag=false);el.addEventListener('pointercancel',()=>drag=false);el.addEventListener('wheel',e=>{r=Math.max(12,Math.min(32,r+e.deltaY*.025));cam()},{passive:true});
+el.addEventListener('touchstart',e=>{if(e.touches.length===2)pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)},{passive:true});el.addEventListener('touchmove',e=>{if(e.touches.length===2){let n=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinch){r=Math.max(12,Math.min(32,r+(pinch-n)*.04));cam()}pinch=n}},{passive:true});
+function loop(){requestAnimationFrame(loop);renderer.render(scene,camera)}loop();addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+})();
+</script></body></html>
