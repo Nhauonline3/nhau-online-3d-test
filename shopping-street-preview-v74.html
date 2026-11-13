@@ -665,6 +665,7 @@ for(const side of [-1,1]){
 
 // Interactive objects in the central plaza (mission/event boards).
 const plazaActionMeshes=[];
+const fountainAnimations=[];
 // Connected 369 CITY central plaza, imported as an adjacent world district
 {
  const plazaGroup=new THREE.Group();
@@ -732,6 +733,26 @@ for(let i=0;i<14;i++){
   mark.position.set(coin.position.x,1.065,coin.position.z);mark.rotation.x=Math.PI/2;plazaGroup.add(mark);
   const ripple=new THREE.Mesh(new THREE.TorusGeometry(.48+(i%3)*.08,.018,6,32),new THREE.MeshBasicMaterial({color:0xb8efff,transparent:true,opacity:.55}));
   ripple.position.set(coin.position.x,1.035,coin.position.z);ripple.rotation.x=Math.PI/2;plazaGroup.add(ripple);
+}
+
+// Vòi phun nước 3D chuyển động quanh hồ: 12 tia nước, giọt bắn và vòng gợn.
+const fountainWater=new THREE.MeshStandardMaterial({color:0x55dfff,emissive:0x087dbb,emissiveIntensity:.55,transparent:true,opacity:.68,roughness:.16,metalness:.18});
+const fountainDropletMat=new THREE.MeshBasicMaterial({color:0xb8f4ff,transparent:true,opacity:.9});
+const fountainRing=new THREE.Mesh(new THREE.TorusGeometry(3.82,.055,8,64),new THREE.MeshBasicMaterial({color:0x8deeff,transparent:true,opacity:.72}));
+fountainRing.rotation.x=Math.PI/2;fountainRing.position.y=1.04;plazaGroup.add(fountainRing);
+for(let i=0;i<12;i++){
+ const a=i*Math.PI*2/12, x=Math.cos(a)*3.48, z=Math.sin(a)*3.48;
+ const nozzle=new THREE.Mesh(new THREE.CylinderGeometry(.075,.13,.18,12),M.gold);nozzle.position.set(x,1.12,z);plazaGroup.add(nozzle);
+ const jet=new THREE.Mesh(new THREE.CylinderGeometry(.035,.11,2.45,8,1,true),fountainWater);
+ jet.position.set(x,2.38,z);jet.userData.baseHeight=2.45;plazaGroup.add(jet);
+ const drops=[];
+ for(let j=0;j<5;j++){
+  const drop=new THREE.Mesh(new THREE.SphereGeometry(.075+(j%2)*.025,8,6),fountainDropletMat);
+  plazaGroup.add(drop);drops.push(drop);
+ }
+ const ripple=new THREE.Mesh(new THREE.TorusGeometry(.25,.025,6,24),new THREE.MeshBasicMaterial({color:0x9ceeff,transparent:true,opacity:.62}));
+ ripple.rotation.x=Math.PI/2;ripple.position.set(x,1.07,z);plazaGroup.add(ripple);
+ fountainAnimations.push({jet,drops,ripple,x,z,phase:i*.43,height:2.15+(i%4)*.24});
 }
 
 
@@ -1172,6 +1193,13 @@ const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.045,.
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight)});
 const animClock=new THREE.Clock();
 function animate(){requestAnimationFrame(animate);const t=animClock.getElapsedTime();controls.update();updatePlayer();
+ // Animate fountain streams and droplets with staggered cycles.
+ for(const f of fountainAnimations){
+  const pulse=.88+.12*Math.sin(t*3.2+f.phase);
+  f.jet.scale.y=pulse;f.jet.position.y=1.12+(f.height*pulse)/2;
+  f.ripple.material.opacity=.38+.28*(.5+.5*Math.sin(t*2.1+f.phase));
+  f.drops.forEach((drop,j)=>{const u=((t*0.72+j*.19+f.phase*.11)%1);const arc=Math.sin(u*Math.PI);drop.position.set(f.x+Math.cos(f.phase+j)*arc*.24,1.2+u*f.height, f.z+Math.sin(f.phase+j)*arc*.24);drop.scale.setScalar(.55+.45*arc);});
+ }
  const giftGroup=scene.children.find(o=>o.type==='Group'&&o.userData.giftSeller);
  if(giftGroup&&giftGroup.userData.giftSeller){const seller=giftGroup.userData.giftSeller;seller.position.y=.035+Math.sin(t*2.4)*.045;seller.rotation.y=Math.sin(t*1.1)*.10;const w=seller.userData.animated;if(w){w.leftWing.rotation.z=Math.sin(t*3.1)*.28-.12;w.rightWing.rotation.z=-Math.sin(t*3.1)*.28+.12;}}
  composer.render()}animate();
