@@ -351,6 +351,91 @@ const shopData=[
 const shopMeshes=[];
 function shop(d,index){
  const g=new THREE.Group();g.position.set(d.x,0,d.z);g.rotation.y=d.x<0?Math.PI/2:-Math.PI/2;scene.add(g);const a=glow(d.color);
+ // V76: the first storefront becomes a detailed black LIVE neon corner shop,
+ // inspired by the user's LEGO reference while remaining native Three.js geometry.
+ if(d.tag==='FASHION'){
+  const black=mat(0x080b14),black2=mat(0x151a27),glass=new THREE.MeshPhysicalMaterial({color:0x253b5a,metalness:.32,roughness:.12,transparent:true,opacity:.48,transmission:.28});
+  const pink=glow(0xff24ce),purple=glow(0x8b32ff),cyan=glow(0x28eaff),red=mat(0xf21d35),warm=glow(0xffa6e9);
+  const led=(x,y,z,w,h,depth,material)=>box(x,y,z,w,h,depth,material,g);
+  // Black modular corner shell, perforated roof trim and raised sidewalk.
+  led(0,.22,0,9.5,.45,8.4,black);led(0,.48,0,9.25,.10,8.12,black2);
+  led(0,5.85,-3.55,9.2,.42,.38,black);led(-4.48,2.9,0,.34,5.8,7.5,black);led(4.48,2.9,0,.34,5.8,7.5,black);
+  led(0,5.8,-.1,9.9,.38,8.8,black);led(0,6.02,-.1,9.92,.12,8.82,black2);
+  for(let side=-1;side<=1;side+=2)for(let k=0;k<17;k++){
+   const x=side<0?-4.55+k*.55:side>0?4.55:0;
+   if(side<0)led(x,6.02,0,.22,.20,.18,black2);
+   else led(0,6.02,-3.8+k*.45,.20,.20,.20,black2);
+  }
+  // Corner glass walls with heavy black framing and vivid interior lighting.
+  led(0,2.8,3.72,8.55,4.9,.20,black2);
+  for(const x of [-4.1,-2.7,-1.35,0,1.35,2.7,4.1])led(x,2.8,3.86,.13,4.75,.10,black);
+  for(const y of [.58,1.0,4.9,5.15])led(0,y,3.86,8.6,.13,.10,black);
+  for(const x of [-3.4,-1.7,0,1.7,3.4]){
+   const pane=new THREE.Mesh(new THREE.PlaneGeometry(1.48,3.55),glass);pane.position.set(x,2.95,3.80);g.add(pane);
+   led(x,2.95,3.91,.035,3.45,.025,pink);
+  }
+  // Side display windows wrap around the corner.
+  led(4.47,2.85,0,.15,4.55,7.2,black2);
+  for(const z of [-3.0,-1.5,0,1.5,3.0])led(4.57,2.9,z,.10,4.1,.12,cyan);
+  for(const y of [.8,4.95])led(4.57,y,0,.10,.13,7.1,black);
+  // Pink and purple neon sign in the front window.
+  led(-.25,3.1,3.99,5.0,1.25,.10,black);
+  led(-.25,3.1,4.07,4.75,1.02,.035,pink);
+  const liveCanvas=document.createElement('canvas');liveCanvas.width=900;liveCanvas.height=260;
+  const lc=liveCanvas.getContext('2d');lc.fillStyle='#120b20';lc.fillRect(0,0,900,260);
+  lc.shadowColor='#ff24ce';lc.shadowBlur=28;lc.strokeStyle='#ff45db';lc.lineWidth=12;lc.strokeRect(18,18,864,224);
+  lc.shadowBlur=30;lc.fillStyle='#ffb7f3';lc.font='900 150px Arial';lc.textAlign='center';lc.textBaseline='middle';lc.fillText('LIVE',450,132);
+  const liveTex=new THREE.CanvasTexture(liveCanvas);liveTex.colorSpace=THREE.SRGBColorSpace;
+  const liveFace=new THREE.Mesh(new THREE.PlaneGeometry(4.55,1.0),new THREE.MeshBasicMaterial({map:liveTex,transparent:true,side:THREE.DoubleSide}));
+  liveFace.position.set(-.25,3.1,4.105);g.add(liveFace);
+  // Large red pixel heart hanging from the canopy, built as a real extruded 3D shape.
+  const heartShape=new THREE.Shape();heartShape.moveTo(0,-.95);heartShape.bezierCurveTo(-.3,-.55,-1.35,.05,-1.35,.82);heartShape.bezierCurveTo(-1.35,1.55,-.48,1.72,0,1.05);heartShape.bezierCurveTo(.48,1.72,1.35,1.55,1.35,.82);heartShape.bezierCurveTo(1.35,.05,.3,-.55,0,-.95);
+  const heartGeo=new THREE.ExtrudeGeometry(heartShape,{depth:.32,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.07,bevelThickness:.06});
+  const heart=new THREE.Mesh(heartGeo,red);heart.position.set(1.65,3.15,4.28);heart.rotation.z=-.08;heart.scale.set(.88,.88,.88);heart.castShadow=true;g.add(heart);
+  // Pixel seams across the heart face, recalling the LEGO tile construction.
+  for(const yy of [.15,.55,.95])led(1.65,3.15+yy,4.66,1.15,.045,.025,mat(0xff6677));
+  // Hanging glitter ornament and suspended cable.
+  const cable=new THREE.Mesh(new THREE.CylinderGeometry(.018,.018,.72,8),black2);cable.position.set(-2.5,5.35,4.15);g.add(cable);
+  const orb=new THREE.Mesh(new THREE.SphereGeometry(.22,12,10),purple);orb.position.set(-2.5,4.92,4.15);g.add(orb);
+  const charm=new THREE.Mesh(new THREE.OctahedronGeometry(.42,1),new THREE.MeshStandardMaterial({color:0x6438a8,emissive:0x35106e,emissiveIntensity:.7,metalness:.55,roughness:.24}));charm.position.set(-2.5,4.55,4.15);charm.rotation.set(.3,.5,.2);g.add(charm);
+  // Pink LED canopy and tiled entrance platform.
+  for(let i=0;i<9;i++)led(-4+i,5.38,4.35,.9,.16,.75,i%2?pink:purple);
+  led(0,.58,4.62,3.0,.16,1.0,cyan);led(0,.72,5.08,3.4,.12,.28,pink);
+  for(const x of [-4.2,4.2]){led(x,3.0,4.02,.12,4.5,.12,cyan);const lamp=new THREE.PointLight(0xff32d8,1.4,8);lamp.position.set(x,3.5,4.6);g.add(lamp)}
+  // Two small display posters on the side wall.
+  for(const [z,label,col] of [[-2.35,'STYLE',0xff36ce],[1.15,'LIVE',0x28eaff]]){
+   led(4.60,2.65,z, .12,1.15,1.15,black);
+   const poster=new THREE.Mesh(new THREE.PlaneGeometry(.035,.95),labelTexture(label,'#151127',col===0xff36ce?'#ff7ee5':'#7af4ff',true));poster.position.set(4.68,2.65,z);poster.rotation.y=Math.PI/2;g.add(poster);
+  }
+  // Interior floor and neon-lit counters are separated so enter/leave keeps the original behavior.
+  const interiorStart=g.children.length;
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(8.3,7.0),mat(0x171629));floor.rotation.x=-Math.PI/2;floor.position.set(0,.64,-.05);g.add(floor);
+  for(let x=-3.5;x<=3.51;x+=1.0)led(x,.68,0,.035,.02,7.0,purple);
+  led(0,1.05,-1.15,5.2,.85,.95,black2);led(0,1.52,-1.15,5.35,.12,1.05,pink);
+  led(0,2.0,-3.3,7.9,2.8,.18,black2);
+  for(const x of [-2.7,-.9,.9,2.7]){
+   led(x,2.7,-3.18,1.35,1.45,.08,cyan);
+   const shelf=new THREE.Mesh(new THREE.BoxGeometry(1.0,.10,.48),pink);shelf.position.set(x,1.65,-2.9);g.add(shelf);
+  }
+  // Miniature mannequin silhouettes and colorful clothing rails.
+  for(let i=0;i<4;i++){
+   const x=-2.7+i*1.8;
+   const body=new THREE.Mesh(new THREE.CylinderGeometry(.25,.34,1.15,6),i%2?purple:pink);body.position.set(x,1.55,.55);g.add(body);
+   const head=new THREE.Mesh(new THREE.SphereGeometry(.22,10,8),mat(0xffc69d));head.position.set(x,2.28,.55);g.add(head);
+   led(x,2.85,.55,.75,.08,.08,cyan);
+  }
+  // Tiny block-figure customers, simple but recognizably toy-like.
+  for(const [x,z,shirt] of [[-3.1,2.0,0xffd23f],[2.9,2.1,0x22d9ef]]){
+   led(x,.95,z,.42,.48,.34,mat(shirt));led(x,1.35,z,.32,.32,.32,mat(0xffc99c));
+   led(x,.53,z-.08,.16,.42,.18,black);led(x,.53,z+.08,.16,.42,.18,black);
+  }
+  // Storefront entrance and original click target.
+  g.userData.interiorChildren=g.children.slice(interiorStart);
+  const hit=new THREE.Mesh(new THREE.BoxGeometry(9.4,6.5,8.2),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));
+  hit.position.set(0,3.1,0);hit.userData.shop=d;g.add(hit);shopMeshes.push(hit);
+  const light=new THREE.PointLight(0xff35d6,1.1,9);light.position.set(0,4.2,5.5);g.add(light);
+  return;
+ }
  // raised foundation, back wall, side walls and bright roof cornice
  box(0,.22,0,9.5,.45,8.4,M.dark,g);box(0,.52,0,9.15,.12,8.05,a,g);
  box(0,3.25,-3.7,9.1,5.1,.38,M.wall,g);box(-4.45,2.2,0,.32,3.5,7.6,M.dark,g);box(4.45,2.2,0,.32,3.5,7.6,M.dark,g);
