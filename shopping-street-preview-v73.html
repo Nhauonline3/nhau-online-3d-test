@@ -805,17 +805,19 @@ function flowerBed(x,z){
   // First tread meets the front edge of the stage deck; each tread is one clean step deep.
   const z=3.30+k*.72;
   const topY=1.145-k*.245;
-  const width=12.45+k*.38;
+  // Keep every stair exactly the same width as the trimmed stage base.
+  // No lower tier widens outward, so the black ends cannot stick out at either side.
+  const width=12.20;
   const depth=.78;
   const bodyY=topY-.18;
   box(0,bodyY,z,width,.36,depth,"dark",stage);
-  box(0,topY-.025,z,width-.10,.055,depth-.08,"purple",stage);
-  // Continuous hot-pink LED strip along the front lip of every stair.
+  box(0,topY-.025,z,width,.055,depth-.08,"purple",stage);
+  // Continuous hot-pink LED strip runs flush with the side edges of every stair.
   const frontZ=z+depth/2-.035;
-  const lip=new THREE.Mesh(new THREE.BoxGeometry(width-.04,.075,.085),neon(0xff25d2,3.2));
+  const lip=new THREE.Mesh(new THREE.BoxGeometry(width,.075,.085),neon(0xff25d2,3.2));
   lip.position.set(0,topY-.005,frontZ);stage.add(lip);
   // A subtle cyan underglow keeps the step edges readable without changing the stage lighting.
-  const under=new THREE.Mesh(new THREE.BoxGeometry(width-.18,.035,.045),neon(0x20dfff,1.5));
+  const under=new THREE.Mesh(new THREE.BoxGeometry(width-.08,.035,.045),neon(0x20dfff,1.5));
   under.position.set(0,topY-.205,frontZ+.015);stage.add(under);
   const stepGlow=new THREE.PointLight(0xff28d2,2.4,15);
   stepGlow.position.set(0,topY+.12,frontZ+.12);stage.add(stepGlow);
