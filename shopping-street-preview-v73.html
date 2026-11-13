@@ -735,12 +735,13 @@ function flowerBed(x,z){
  // Concert lighting: brighter rear wash and colored spotlights.
  const rearWash=new THREE.PointLight(0x8a2cff,15,42);rearWash.position.set(0,7,-4.5);stage.add(rearWash);
  const floorWash=new THREE.PointLight(0x20dfff,11,30);floorWash.position.set(0,2,5.5);stage.add(floorWash);
- const spotSpecs=[[-4.5,7.8,1.2,0xff2bd2],[0,8.2,.8,0x20eaff],[4.5,7.8,1.2,0xffc52f]];
+ // Direction corrected: fixtures start behind the stage and aim forward onto the performance floor.
+ const spotSpecs=[[-4.5,7.8,-2.55,0xff2bd2],[0,8.2,-2.55,0x20eaff],[4.5,7.8,-2.55,0xffc52f]];
  for(const [sx,sy,sz,color] of spotSpecs){
   const spot=new THREE.SpotLight(color,95,25,Math.PI/5,.55,1.25);
-  spot.position.set(sx,sy,sz);spot.target.position.set(sx*.25,1.35,-1.35);stage.add(spot,spot.target);
+  spot.position.set(sx,sy,sz);spot.target.position.set(sx*.25,1.35,2.15);stage.add(spot,spot.target);
   const beam=new THREE.Mesh(new THREE.ConeGeometry(1.05,5.8,20,1,true),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.105,depthWrite:false,side:THREE.DoubleSide}));
-  beam.position.set(sx*.72,4.3,2.6);beam.rotation.x=Math.PI/2.35;beam.rotation.z=-sx*.025;stage.add(beam);
+  beam.position.set(sx*.72,4.3,-.15);beam.rotation.x=Math.PI/2.35;beam.rotation.z=-sx*.025;stage.add(beam);
  }
  // Six compact stainless hanging spotlights mounted under the front truss.
  const fixtureMetal=new THREE.MeshStandardMaterial({color:0xdbe6f2,metalness:.94,roughness:.18});
@@ -752,7 +753,7 @@ function flowerBed(x,z){
   const lens=new THREE.Mesh(new THREE.CircleGeometry(.17,16),new THREE.MeshBasicMaterial({color:fixtureGlow[i]}));
   lens.position.set(x,5.62,-.18);lens.rotation.x=-Math.PI/2;stage.add(lens);
   const lamp=new THREE.SpotLight(fixtureGlow[i],58,22,Math.PI/7,.6,1.1);
-  lamp.position.set(x,5.58,-.15);lamp.target.position.set(x*.3,1.35,-1.25);stage.add(lamp,lamp.target);
+  lamp.position.set(x,5.58,-.15);lamp.target.position.set(x*.3,1.35,1.65);stage.add(lamp,lamp.target);
  }
  // Neon concert truss behind the arch.
  const trussMat=new THREE.MeshStandardMaterial({color:0xcbd5e1,metalness:.92,roughness:.2,emissive:0x334155,emissiveIntensity:.22});
@@ -819,13 +820,7 @@ function flowerBed(x,z){
  };
  addWing("./stage-left-wing.svg",-7.45,4.05,7.25,pinkMat);
  addWing("./stage-right-wing.svg",7.45,4.05,7.25,cyanMat);
- // Place a correctly grounded 3D 369 CITY penguin mascot at the front-center of the raised stage.
- // Keep the original fountain mascot in place; the stage copy faces the main screen.
- const stageMascot=penguinGroup.clone(true);
- stageMascot.scale.setScalar(.72);
- stageMascot.position.set(0,-.51,1.45);
- stageMascot.rotation.y=Math.PI;
- stage.add(stageMascot);
+ // No decorative penguin statue on the stage; the player avatar remains in the plaza.
  // A single pixel tree sits behind the stage, outside the wing panels and clear of the lighting.
  const stageTree=new THREE.Group();stageTree.position.set(-10.35,0,-2.55);stage.add(stageTree);
  box(0,0,0,2.1,.28,2.0,"dark",stageTree);
