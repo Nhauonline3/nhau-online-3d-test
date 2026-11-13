@@ -99,8 +99,9 @@ for(const x of [-1.09,1.09]){const cap=new THREE.Mesh(new THREE.SphereGeometry(.
 const liveBarGlow=new THREE.PointLight(0xff16cb,5.5,3.2);liveBarGlow.position.set(0,-.12,.34);liveBar.add(liveBarGlow);
 
 // RIGHT-HAND SIDE: long two-storey glass display wall, clearly distinct from front
-// Dark side wall backing with broad transparent window bays
-box(root,5.245,3.82,0,.10,5.35,8.15,black);
+// Recessed dark interior wall sits BEHIND the display shelves; keep the window bays open
+// (A full black slab directly behind the glass hid all the merchandise in the previous preview.)
+box(root,3.82,3.82,0,.10,5.35,8.15,black);
 for(let z=-3.55;z<=3.56;z+=1.42){
   box(root,5.315,3.88,z,.055,4.95,1.25,glass);
   box(root,5.37,3.88,z-.67,.13,5.18,.13,black2);
@@ -110,8 +111,22 @@ for(let z=-3.55;z<=3.56;z+=1.42){
   box(root,5.37,6.42,z,.13,.16,1.42,black2);
 }
 box(root,5.37,1.12,0,.18,.18,8.25,black2);box(root,5.37,6.62,0,.18,.18,8.25,black2);
-// Interior shelves, product silhouettes and warm lighting
-for(let z=-3.5;z<3.6;z+=1.4){box(root,4.45,2.15,z,.85,.14,.65,pink);box(root,4.45,3.55,z,.85,.12,.65,purple);for(let j=0;j<3;j++){box(root,4.35+j*.22,2.48,z,.13,.48,.18,j%2?cyan:warm);box(root,4.35+j*.22,3.86,z,.13,.42,.18,j%2?pink:gold)}}
+// Interior shelves, colorful boxed products and warm lighting, visible through the open glass bays
+for(let z=-3.5;z<3.6;z+=1.4){
+  box(root,4.48,2.12,z,.92,.14,.78,black2);
+  box(root,4.48,2.20,z,.88,.055,.74,pink);
+  box(root,4.48,3.58,z,.92,.14,.78,black2);
+  box(root,4.48,3.66,z,.88,.055,.74,purple);
+  box(root,4.48,5.08,z,.92,.12,.78,black2);
+  for(let j=0;j<4;j++){
+    const mats=[pink,cyan,gold,purple];
+    box(root,4.22+(j%2)*.40,2.62+(j%2)*.08,z-.23+(j>>1)*.46,.25,.68,.27,mats[j]);
+    box(root,4.22+(j%2)*.40,4.08+(j%2)*.08,z-.23+(j>>1)*.46,.25,.68,.27,mats[(j+1)%4]);
+    box(root,4.22+(j%2)*.40,5.48+(j%2)*.06,z-.23+(j>>1)*.46,.25,.58,.27,mats[(j+2)%4]);
+  }
+  const shelfGlow=new THREE.PointLight(0xff36df,1.7,2.2);
+  shelfGlow.position.set(5.0,4.0,z);root.add(shelfGlow);
+}
 for(let x=-4.4;x<=3.8;x+=1.7){const lamp=new THREE.PointLight(0xff8a30,12,4);lamp.position.set(x,6.2,3.6);root.add(lamp);box(root,x,6.45,3.72,.36,.08,.24,warm)}
 // RIGHT SIDE UPGRADE: richer illuminated display frontage, matching the reference
 // Raised black window frames and bright pink/cyan edge strips on the long right facade
