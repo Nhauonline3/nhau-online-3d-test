@@ -106,16 +106,16 @@ function createLawsonTaito(){
  put(new THREE.CylinderGeometry(.34,.34,.18,40),dark,0,0,1.25,pb).rotation.x=Math.PI/2;
  put(new THREE.CylinderGeometry(.23,.23,.12,40),white,0,0,1.39,pb).rotation.x=Math.PI/2;
  // White curved orbit with glossy colored beads around the front and side.
- const orbit=put(new THREE.TorusGeometry(4.05,.17,10,96),white,0,7.25,.05,g);orbit.rotation.x=Math.PI/2;orbit.scale.set(1,.72,1);
+ const orbit=put(new THREE.TorusGeometry(4.05,.17,10,96),white,1.15,7.25,1.4,g);orbit.rotation.x=Math.PI/2;orbit.scale.set(1,.72,1);
  const colors=[0xf0444d,0x328be8,0xffd34c,0xe78ac5,0x27ad79,0xf2eee8,0xe99b4c,0x9878d1,0x45bfc1,0xf0c343,0xe65c79,0x3d9d63];
- for(let i=0;i<12;i++){const a=-1.2+i*2.4/11;sph(1.15+4.05*Math.sin(a),7.25,.05+2.92*Math.cos(a),.29,m(colors[i],.22,.05),1,1,.82)}
+ for(let i=0;i<12;i++){const a=-1.2+i*2.4/11;sph(1.15+4.05*Math.sin(a),7.25,1.4+2.92*Math.cos(a),.29,m(colors[i],.22,.05),1,1,.82)}
  // Yellow roof cornice, orange inset roof and open two-sided ITO EN frame.
  bx(1.15,12.05,.1,7.8,.42,8.35,yellow,.28);bx(1.15,11.82,.1,7.45,.1,8.0,m(0xf27b25),.18);
- bx(1.15,13.25,-1.05,4.25,1.45,.13,m(0x293c35,.4,.35),.025);
- bx(1.15,13.25,1.25,4.25,1.45,.13,m(0x293c35,.4,.35),.025);
- bx(-.98,13.25,.1,.13,1.45,2.3,m(0x293c35,.4,.35),.025);bx(3.28,13.25,.1,.13,1.45,2.3,m(0x293c35,.4,.35),.025);
- bx(1.15,13.25,-.98,4.05,1.2,.05,m(0xe1eee2),.015);text('🍀 ITO EN',1.15,13.25,-.94,3.8,.78,'#e1eee2','#183020');
- bx(1.15,13.25,1.18,4.05,1.2,.05,m(0xe1eee2),.015);text('🍀 ITO EN',1.15,13.25,1.22,3.8,.78,'#e1eee2','#183020');
+ bx(1.15,13.25,-4.05,4.25,1.45,.13,m(0x293c35,.4,.35),.025);
+ bx(1.15,13.25,4.05,4.25,1.45,.13,m(0x293c35,.4,.35),.025);
+ bx(-.98,13.25,0,.13,1.45,8.1,m(0x293c35,.4,.35),.025);bx(3.28,13.25,0,.13,1.45,8.1,m(0x293c35,.4,.35),.025);
+ bx(1.15,13.25,-4.0,4.05,1.2,.05,m(0xe1eee2),.015);text('🍀 ITO EN',1.15,13.25,-3.96,3.8,.78,'#e1eee2','#183020');
+ bx(1.15,13.25,4.0,4.05,1.2,.05,m(0xe1eee2),.015);text('🍀 ITO EN',1.15,13.25,4.04,3.8,.78,'#e1eee2','#183020');
  // Visible electrical conduits and junction boxes on the facade.
  for(const x of [-2.5,-2.1,-1.7])bx(x,11.15,4.12,.16,.55,.12,white,.03);
  tube([[-2.5,11.4,4.18],[-2.5,11.65,4.18],[-1.7,11.65,4.18],[-1.7,11.0,4.18]],.045,silver);
