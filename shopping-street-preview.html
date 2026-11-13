@@ -726,7 +726,7 @@ function flowerBed(x,z){
 
 // 369 CITY LIVE STAGE — detailed 3D build matching the dedicated stage artwork.
 {
- const stage=new THREE.Group();stage.position.set(0,0,15.8);stage.rotation.y=Math.PI;stage.scale.setScalar(1.25);plazaGroup.add(stage);
+ const stage=new THREE.Group();stage.position.set(0,.42,15.8);stage.rotation.y=Math.PI;stage.scale.setScalar(1.25);plazaGroup.add(stage);
  const neon=(color,intensity=1.8)=>new THREE.MeshStandardMaterial({color,emissive:color,emissiveIntensity:intensity,metalness:.25,roughness:.28});
  const cyanMat=neon(0x28eaff,2.2),pinkMat=neon(0xff25cf,2.2),goldMat=neon(0xffc52f,1.8),purpleMat=neon(0x7625e8,1.5);
  const stageLight=new THREE.PointLight(0x31dfff,8,34);stageLight.position.set(0,8,3);stage.add(stageLight);
@@ -742,8 +742,20 @@ function flowerBed(x,z){
   const beam=new THREE.Mesh(new THREE.ConeGeometry(1.05,5.8,20,1,true),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.105,depthWrite:false,side:THREE.DoubleSide}));
   beam.position.set(sx*.72,4.3,2.6);beam.rotation.x=Math.PI/2.35;beam.rotation.z=-sx*.025;stage.add(beam);
  }
+ // Six compact stainless hanging spotlights mounted under the front truss.
+ const fixtureMetal=new THREE.MeshStandardMaterial({color:0xdbe6f2,metalness:.94,roughness:.18});
+ const fixtureGlow=[0xff2bd2,0x20eaff,0xffc52f,0x20eaff,0xff2bd2,0x20eaff];
+ for(let i=0;i<6;i++){
+  const x=-5+i*2;
+  const housing=new THREE.Mesh(new THREE.CylinderGeometry(.18,.24,.34,12),fixtureMetal);
+  housing.position.set(x,5.82,-.18);housing.rotation.x=Math.PI/2;stage.add(housing);
+  const lens=new THREE.Mesh(new THREE.CircleGeometry(.17,16),new THREE.MeshBasicMaterial({color:fixtureGlow[i]}));
+  lens.position.set(x,5.62,-.18);lens.rotation.x=-Math.PI/2;stage.add(lens);
+  const lamp=new THREE.SpotLight(fixtureGlow[i],58,22,Math.PI/7,.6,1.1);
+  lamp.position.set(x,5.58,-.15);lamp.target.position.set(x*.65,1.1,3.7);stage.add(lamp,lamp.target);
+ }
  // Neon concert truss behind the arch.
- const trussMat=neon(0xb52cff,1.35);
+ const trussMat=new THREE.MeshStandardMaterial({color:0xcbd5e1,metalness:.92,roughness:.2,emissive:0x334155,emissiveIntensity:.22});
  const trussBar=(a,b,r=.075)=>{
   const va=new THREE.Vector3(...a),vb=new THREE.Vector3(...b),delta=new THREE.Vector3().subVectors(vb,va);
   const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,delta.length(),8),trussMat);
@@ -766,8 +778,8 @@ function flowerBed(x,z){
  for(const z of [-3.95,2.82]){const strip=new THREE.Mesh(new THREE.BoxGeometry(13.05,.075,.11),neon(z<0?0x25eaff:0xff28d2,2.8));strip.position.set(0,1.2,z);stage.add(strip)}
 
  // Broad, connected steps — each tread is a full-width continuous slab.
- for(let k=0;k<4;k++){
-  const z=3.05+k*.68,y=.20+k*.17;
+ for(let k=0;k<5;k++){
+  const z=2.72+k*.68,y=.08+k*.17;
   box(0,y,z,11.2,.36,1.0,k%2?"purple":"dark",stage);
   box(0,y+.19,z+.47,11.05,.065,.08,k%2?pink:cyan,stage);
   box(0,y-.17,z+.02,11.12,.045,.08,k%2?cyan:pink,stage);
@@ -850,7 +862,7 @@ smokingZone();
 
 // six labeled connections to surrounding future districts
 sign(0,-21.8,'KHU MUA SAM');// Lối vào phía trước dùng cổng chào chính; bỏ bảng nhỏ gây vướng tầm nhìn
-sign(-21.8,0,'STRESS BEAR CLUB',Math.PI/2);sign(21.8,0,'DOI TIEN',-Math.PI/2);
+sign(21.8,0,'DOI TIEN',-Math.PI/2);
 sign(-15.7,-15.7,'APARTMENT',Math.PI/4);sign(15.7,-15.7,'PICKLEBALL',-Math.PI/4);
 // entry markers, paving lights and decorative low bollards
 for(const [x,z] of [[0,-17],[0,17],[-17,0],[17,0],[-12,-12],[12,-12]]){cylinder(x,.35,z,.28,.28,.45,'gold',8);cylinder(x,.8,z,.12,.12,.5,'cream',8)}
