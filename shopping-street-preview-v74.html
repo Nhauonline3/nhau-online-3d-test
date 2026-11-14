@@ -1460,7 +1460,6 @@ document.getElementById('playerPlaza').addEventListener('click',()=>{
 });
 
 document.getElementById('playerCenter').addEventListener('click',()=>{const dx=player.position.x-controls.target.x,dz=player.position.z-controls.target.z;camera.position.x+=dx;camera.position.z+=dz;controls.target.set(player.position.x,2.1,player.position.z);controls.update()});
-buildWorldCollisionIndex();
 let pPrev=new THREE.Vector3();pPrev.copy(player.position);const pClock=new THREE.Clock();
 // Static world collision index: collect solid meshes from the finished city, excluding
 // shop shells (handled by shopBlocked), the player, invisible click targets and walkable floors.
@@ -1504,6 +1503,8 @@ function buildInteriorCollisionBoxes(group){
  }
  return boxes;
 }
+// Build the collision index only after its storage and all city objects exist.
+buildWorldCollisionIndex();
 function shopBlocked(x,z){
  const radius=.48;
  for(const d of shopData){
