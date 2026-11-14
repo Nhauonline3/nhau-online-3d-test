@@ -1497,14 +1497,21 @@ function circleHitsBox(x,z,b,r=.43){
  const px=Math.max(b.minX,Math.min(x,b.maxX)),pz=Math.max(b.minZ,Math.min(z,b.maxZ));
  return (x-px)*(x-px)+(z-pz)*(z-pz)<r*r;
 }
-function worldObjectBlocked(x,z){
+function worldObjectBlockScore(x,z){
  const r=.43,minX=Math.floor((x-r)/COLLISION_CELL),maxX=Math.floor((x+r)/COLLISION_CELL);
  const minZ=Math.floor((z-r)/COLLISION_CELL),maxZ=Math.floor((z+r)/COLLISION_CELL);
+ let score=0;
  for(let cx=minX;cx<=maxX;cx++)for(let cz=minZ;cz<=maxZ;cz++){
   const bucket=worldCollisionGrid.get(collisionCellKey(cx,cz));if(!bucket)continue;
-  for(const b of bucket)if(b.maxY>.35&&b.minY<2.35&&circleHitsBox(x,z,b,r))return true;
+  for(const b of bucket)if(b.maxY>.48&&b.minY<2.05&&circleHitsBox(x,z,b,r))score++;
  }
- return false;
+ return score;
+}
+function worldObjectBlocked(x,z){return worldObjectBlockScore(x,z)>0;}
+function canMoveWorld(fromX,fromZ,toX,toZ){
+ const before=worldObjectBlockScore(fromX,fromZ),after=worldObjectBlockScore(toX,toZ);
+ // If an imprecise mesh bound has trapped the player, allow movement that exits the overlap.
+ return after===0||after<before;
 }
 function buildInteriorCollisionBoxes(group){
  const boxes=[];
@@ -1558,8 +1565,9 @@ function updatePlayer(){
  }else{
   const nx=THREE.MathUtils.clamp(player.position.x+move.x*speed*dt,-24,24);
   const nz=THREE.MathUtils.clamp(player.position.z+move.z*speed*dt,-99,29.5);
-  if(!shopBlocked(nx,player.position.z)&&!worldObjectBlocked(nx,player.position.z))player.position.x=nx;
-  if(!shopBlocked(player.position.x,nz)&&!worldObjectBlocked(player.position.x,nz))player.position.z=nz;
+  const curX=player.position.x,curZ=player.position.z;
+  if(!shopBlocked(nx,curZ)&&canMoveWorld(curX,curZ,nx,curZ))player.position.x=nx;
+  if(!shopBlocked(player.position.x,nz)&&canMoveWorld(player.position.x,curZ,player.position.x,nz))player.position.z=nz;
  }
  nearbyShop=null;
  if(!insideShop){
