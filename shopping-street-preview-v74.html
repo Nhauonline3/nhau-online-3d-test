@@ -958,15 +958,16 @@ for(const [x,z] of [[-4.8,5.25],[-1.9,5.35],[1.8,5.25],[5.5,2.5],[5.5,-2.3]]){co
 
 }
 {
- const targetData=shopData.find(d=>d.tag==='GIFTS');
+ // The standalone LIVE STORE belongs in the FIRST storefront slot (NEON FASHION),
+ // not the far-end GIFT & TOYS shop. Replace that exact building and preserve its click target.
+ const targetData=shopData.find(d=>d.tag==='FASHION');
  const targetGroup=targetData&&scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-targetData.x)<.01&&Math.abs(o.position.z-targetData.z)<.01);
  if(targetGroup){
-  const interior=new Set(targetGroup.userData.interiorChildren||[]);
   const hit=shopMeshes.find(o=>o.userData.shop===targetData);
   for(const child of [...targetGroup.children]){
-   if(!interior.has(child)&&child!==hit)targetGroup.remove(child);
+   if(child!==hit)targetGroup.remove(child);
   }
-  targetGroup.userData.interiorChildren=[...interior];
+  targetGroup.userData.interiorChildren=[];
   buildLiveStoreModel(targetGroup);
   targetGroup.userData.liveStoreReplacement=true;
  }
