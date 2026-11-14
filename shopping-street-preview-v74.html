@@ -1461,74 +1461,7 @@ document.getElementById('playerPlaza').addEventListener('click',()=>{
 
 document.getElementById('playerCenter').addEventListener('click',()=>{const dx=player.position.x-controls.target.x,dz=player.position.z-controls.target.z;camera.position.x+=dx;camera.position.z+=dz;controls.target.set(player.position.x,2.1,player.position.z);controls.update()});
 let pPrev=new THREE.Vector3();pPrev.copy(player.position);const pClock=new THREE.Clock();
-// Static world collision index: collect solid meshes from the finished city, excluding
-// shop shells (handled by shopBlocked), the player, invisible click targets and walkable floors.
-// Spatial-hash collision grid: only inspect nearby cells during movement.
-// This avoids scanning every mesh in the entire 3D city on every animation frame.
-const worldCollisionGrid=new Map();
-const COLLISION_CELL=4;
-function collisionCellKey(ix,iz){return ix+','+iz}
-function buildWorldCollisionIndex(){
- worldCollisionGrid.clear();
- const shopGroups=new Set(shopData.map(d=>scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-d.x)<.01&&Math.abs(o.position.z-d.z)<.01)).filter(Boolean));
- scene.updateMatrixWorld(true);
- scene.traverse(obj=>{
-  if(!obj.isMesh||obj===player||obj.userData.shop||obj.userData.plazaAction)return;
-  let p=obj.parent,insideShopGroup=false;
-  while(p){if(shopGroups.has(p)){insideShopGroup=true;break;}p=p.parent;}
-  if(insideShopGroup)return;
-  const mats=Array.isArray(obj.material)?obj.material:[obj.material];
-  if(mats.length&&mats.every(m=>m&&m.transparent&&m.opacity<.08))return;
-  if(!obj.geometry.boundingBox)obj.geometry.computeBoundingBox();
-  const b=obj.geometry.boundingBox.clone().applyMatrix4(obj.matrixWorld);
-  const h=b.max.y-b.min.y,w=b.max.x-b.min.x,d=b.max.z-b.min.z;
-  if(b.max.y<.28||b.min.y>2.65||h<.24||w>18||d>18||w<.08||d<.08)return;
-  const item={minX:b.min.x,maxX:b.max.x,minZ:b.min.z,maxZ:b.max.z,minY:b.min.y,maxY:b.max.y};
-  const minX=Math.floor(item.minX/COLLISION_CELL),maxX=Math.floor(item.maxX/COLLISION_CELL);
-  const minZ=Math.floor(item.minZ/COLLISION_CELL),maxZ=Math.floor(item.maxZ/COLLISION_CELL);
-  for(let cx=minX;cx<=maxX;cx++)for(let cz=minZ;cz<=maxZ;cz++){
-   const key=collisionCellKey(cx,cz);let bucket=worldCollisionGrid.get(key);
-   if(!bucket){bucket=[];worldCollisionGrid.set(key,bucket)}
-   bucket.push(item);
-  }
- });
-}
-function circleHitsBox(x,z,b,r=.43){
- const px=Math.max(b.minX,Math.min(x,b.maxX)),pz=Math.max(b.minZ,Math.min(z,b.maxZ));
- return (x-px)*(x-px)+(z-pz)*(z-pz)<r*r;
-}
-function worldObjectBlockScore(x,z){
- const r=.43,minX=Math.floor((x-r)/COLLISION_CELL),maxX=Math.floor((x+r)/COLLISION_CELL);
- const minZ=Math.floor((z-r)/COLLISION_CELL),maxZ=Math.floor((z+r)/COLLISION_CELL);
- let score=0;
- for(let cx=minX;cx<=maxX;cx++)for(let cz=minZ;cz<=maxZ;cz++){
-  const bucket=worldCollisionGrid.get(collisionCellKey(cx,cz));if(!bucket)continue;
-  for(const b of bucket)if(b.maxY>.48&&b.minY<2.05&&circleHitsBox(x,z,b,r))score++;
- }
- return score;
-}
-function worldObjectBlocked(x,z){return worldObjectBlockScore(x,z)>0;}
-function canMoveWorld(fromX,fromZ,toX,toZ){
- const before=worldObjectBlockScore(fromX,fromZ),after=worldObjectBlockScore(toX,toZ);
- // If an imprecise mesh bound has trapped the player, allow movement that exits the overlap.
- return after===0||after<before;
-}
-function buildInteriorCollisionBoxes(group){
- const boxes=[];
- if(!group)return boxes;
- group.updateMatrix();
- for(const child of group.userData.interiorChildren||[]){
-  if(!child.isMesh||!child.geometry)continue;
-  if(!child.geometry.boundingBox)child.geometry.computeBoundingBox();
-  const b=child.geometry.boundingBox.clone().applyMatrix4(child.matrix);
-  const h=b.max.y-b.min.y,w=b.max.x-b.min.x,d=b.max.z-b.min.z;
-  if(b.max.y<.32||b.min.y>2.45||h<.24||w>5.5||d>5.5||w<.08||d<.08)continue;
-  boxes.push({minX:b.min.x,maxX:b.max.x,minZ:b.min.z,maxZ:b.max.z,minY:b.min.y,maxY:b.max.y});
- }
- return boxes;
-}
-// Build the collision index only after its storage and all city objects exist.
-buildWorldCollisionIndex();
+// World collision is temporarily disabled; keep shop doorway bounds active.
 function shopBlocked(x,z){
  const radius=.48;
  for(const d of shopData){
@@ -1565,9 +1498,10 @@ function updatePlayer(){
  }else{
   const nx=THREE.MathUtils.clamp(player.position.x+move.x*speed*dt,-24,24);
   const nz=THREE.MathUtils.clamp(player.position.z+move.z*speed*dt,-99,29.5);
-  const curX=player.position.x,curZ=player.position.z;
-  if(!shopBlocked(nx,curZ)&&canMoveWorld(curX,curZ,nx,curZ))player.position.x=nx;
-  if(!shopBlocked(player.position.x,nz)&&canMoveWorld(player.position.x,curZ,player.position.x,nz))player.position.z=nz;
+  // Restore the proven V83 movement path first; collision is temporarily disabled
+  // while the object hitboxes are rebuilt to avoid trapping the player.
+  if(!shopBlocked(nx,player.position.z))player.position.x=nx;
+  if(!shopBlocked(player.position.x,nz))player.position.z=nz;
  }
  nearbyShop=null;
  if(!insideShop){
