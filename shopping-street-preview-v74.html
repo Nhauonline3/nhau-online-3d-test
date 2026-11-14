@@ -1463,8 +1463,13 @@ document.getElementById('playerCenter').addEventListener('click',()=>{const dx=p
 let pPrev=new THREE.Vector3();pPrev.copy(player.position);const pClock=new THREE.Clock();
 // Static world collision index: collect solid meshes from the finished city, excluding
 // shop shells (handled by shopBlocked), the player, invisible click targets and walkable floors.
-const worldSolidBoxes=[];
+// Spatial-hash collision grid: only inspect nearby cells during movement.
+// This avoids scanning every mesh in the entire 3D city on every animation frame.
+const worldCollisionGrid=new Map();
+const COLLISION_CELL=4;
+function collisionCellKey(ix,iz){return ix+','+iz}
 function buildWorldCollisionIndex(){
+ worldCollisionGrid.clear();
  const shopGroups=new Set(shopData.map(d=>scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-d.x)<.01&&Math.abs(o.position.z-d.z)<.01)).filter(Boolean));
  scene.updateMatrixWorld(true);
  scene.traverse(obj=>{
@@ -1477,9 +1482,15 @@ function buildWorldCollisionIndex(){
   if(!obj.geometry.boundingBox)obj.geometry.computeBoundingBox();
   const b=obj.geometry.boundingBox.clone().applyMatrix4(obj.matrixWorld);
   const h=b.max.y-b.min.y,w=b.max.x-b.min.x,d=b.max.z-b.min.z;
-  // Ignore floor slabs, flat decals, huge ground surfaces and invisible helper geometry.
   if(b.max.y<.28||b.min.y>2.65||h<.24||w>18||d>18||w<.08||d<.08)return;
-  worldSolidBoxes.push({minX:b.min.x,maxX:b.max.x,minZ:b.min.z,maxZ:b.max.z,minY:b.min.y,maxY:b.max.y});
+  const item={minX:b.min.x,maxX:b.max.x,minZ:b.min.z,maxZ:b.max.z,minY:b.min.y,maxY:b.max.y};
+  const minX=Math.floor(item.minX/COLLISION_CELL),maxX=Math.floor(item.maxX/COLLISION_CELL);
+  const minZ=Math.floor(item.minZ/COLLISION_CELL),maxZ=Math.floor(item.maxZ/COLLISION_CELL);
+  for(let cx=minX;cx<=maxX;cx++)for(let cz=minZ;cz<=maxZ;cz++){
+   const key=collisionCellKey(cx,cz);let bucket=worldCollisionGrid.get(key);
+   if(!bucket){bucket=[];worldCollisionGrid.set(key,bucket)}
+   bucket.push(item);
+  }
  });
 }
 function circleHitsBox(x,z,b,r=.43){
@@ -1487,7 +1498,13 @@ function circleHitsBox(x,z,b,r=.43){
  return (x-px)*(x-px)+(z-pz)*(z-pz)<r*r;
 }
 function worldObjectBlocked(x,z){
- return worldSolidBoxes.some(b=>b.maxY>.35&&b.minY<2.35&&circleHitsBox(x,z,b));
+ const r=.43,minX=Math.floor((x-r)/COLLISION_CELL),maxX=Math.floor((x+r)/COLLISION_CELL);
+ const minZ=Math.floor((z-r)/COLLISION_CELL),maxZ=Math.floor((z+r)/COLLISION_CELL);
+ for(let cx=minX;cx<=maxX;cx++)for(let cz=minZ;cz<=maxZ;cz++){
+  const bucket=worldCollisionGrid.get(collisionCellKey(cx,cz));if(!bucket)continue;
+  for(const b of bucket)if(b.maxY>.35&&b.minY<2.35&&circleHitsBox(x,z,b,r))return true;
+ }
+ return false;
 }
 function buildInteriorCollisionBoxes(group){
  const boxes=[];
