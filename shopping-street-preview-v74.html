@@ -1335,7 +1335,7 @@ function enterShop(d){
  }
  const toWorld=(x,y,z)=>shopGroup?shopGroup.localToWorld(new THREE.Vector3(x,y,z)):new THREE.Vector3(d.x+x,y,d.z+z);
  // Keep the player's penguin to one side so it does not block the cashier and display shelves.
- player.position.copy(toWorld(2.55,0,2.15));pPrev.copy(player.position);
+ player.position.copy(toWorld(0,0,3.05));pPrev.copy(player.position);shopGroup.userData.interiorCollisionBoxes=buildInteriorCollisionBoxes(shopGroup);
  const cam=toWorld(0,4.25,9.0),look=toWorld(0,1.65,-1.05);
  camera.position.copy(cam);controls.target.copy(look);controls.update();
  controls.enableZoom=true;controls.minDistance=1.2;controls.maxDistance=24;
@@ -1460,7 +1460,50 @@ document.getElementById('playerPlaza').addEventListener('click',()=>{
 });
 
 document.getElementById('playerCenter').addEventListener('click',()=>{const dx=player.position.x-controls.target.x,dz=player.position.z-controls.target.z;camera.position.x+=dx;camera.position.z+=dz;controls.target.set(player.position.x,2.1,player.position.z);controls.update()});
+buildWorldCollisionIndex();
 let pPrev=new THREE.Vector3();pPrev.copy(player.position);const pClock=new THREE.Clock();
+// Static world collision index: collect solid meshes from the finished city, excluding
+// shop shells (handled by shopBlocked), the player, invisible click targets and walkable floors.
+const worldSolidBoxes=[];
+function buildWorldCollisionIndex(){
+ const shopGroups=new Set(shopData.map(d=>scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-d.x)<.01&&Math.abs(o.position.z-d.z)<.01)).filter(Boolean));
+ scene.updateMatrixWorld(true);
+ scene.traverse(obj=>{
+  if(!obj.isMesh||obj===player||obj.userData.shop||obj.userData.plazaAction)return;
+  let p=obj.parent,insideShopGroup=false;
+  while(p){if(shopGroups.has(p)){insideShopGroup=true;break;}p=p.parent;}
+  if(insideShopGroup)return;
+  const mats=Array.isArray(obj.material)?obj.material:[obj.material];
+  if(mats.length&&mats.every(m=>m&&m.transparent&&m.opacity<.08))return;
+  if(!obj.geometry.boundingBox)obj.geometry.computeBoundingBox();
+  const b=obj.geometry.boundingBox.clone().applyMatrix4(obj.matrixWorld);
+  const h=b.max.y-b.min.y,w=b.max.x-b.min.x,d=b.max.z-b.min.z;
+  // Ignore floor slabs, flat decals, huge ground surfaces and invisible helper geometry.
+  if(b.max.y<.28||b.min.y>2.65||h<.24||w>18||d>18||w<.08||d<.08)return;
+  worldSolidBoxes.push({minX:b.min.x,maxX:b.max.x,minZ:b.min.z,maxZ:b.max.z,minY:b.min.y,maxY:b.max.y});
+ });
+}
+function circleHitsBox(x,z,b,r=.43){
+ const px=Math.max(b.minX,Math.min(x,b.maxX)),pz=Math.max(b.minZ,Math.min(z,b.maxZ));
+ return (x-px)*(x-px)+(z-pz)*(z-pz)<r*r;
+}
+function worldObjectBlocked(x,z){
+ return worldSolidBoxes.some(b=>b.maxY>.35&&b.minY<2.35&&circleHitsBox(x,z,b));
+}
+function buildInteriorCollisionBoxes(group){
+ const boxes=[];
+ if(!group)return boxes;
+ group.updateMatrix();
+ for(const child of group.userData.interiorChildren||[]){
+  if(!child.isMesh||!child.geometry)continue;
+  if(!child.geometry.boundingBox)child.geometry.computeBoundingBox();
+  const b=child.geometry.boundingBox.clone().applyMatrix4(child.matrix);
+  const h=b.max.y-b.min.y,w=b.max.x-b.min.x,d=b.max.z-b.min.z;
+  if(b.max.y<.32||b.min.y>2.45||h<.24||w>5.5||d>5.5||w<.08||d<.08)continue;
+  boxes.push({minX:b.min.x,maxX:b.max.x,minZ:b.min.z,maxZ:b.max.z,minY:b.min.y,maxY:b.max.y});
+ }
+ return boxes;
+}
 function shopBlocked(x,z){
  const radius=.48;
  for(const d of shopData){
@@ -1491,15 +1534,14 @@ function updatePlayer(){
   const candidate=player.position.clone().addScaledVector(move,speed*dt);
   const local=sg?sg.worldToLocal(candidate.clone()):candidate.clone().sub(new THREE.Vector3(d.x,0,d.z));
   local.x=THREE.MathUtils.clamp(local.x,-3.85,3.85);local.z=THREE.MathUtils.clamp(local.z,-3.05,3.55);local.y=0;
-  // Solid local-space collision boxes: side shelving, central checkout and shopkeeper.
-  const obstacles=[[-3.25,-1.15,.88,.72],[3.25,-1.15,.88,.72],[0,-.55,2.0,.72],[0,-1.35,.62,.62]];
-  const blocked=obstacles.some(([ox,oz,hx,hz])=>Math.abs(local.x-ox)<hx+.38&&Math.abs(local.z-oz)<hz+.38);
+  const radius=.43,boxes=sg?.userData.interiorCollisionBoxes||[];
+  const blocked=boxes.some(b=>b.maxY>.32&&b.minY<2.35&&circleHitsBox(local.x,local.z,b,radius));
   if(!blocked)player.position.copy(sg?sg.localToWorld(local):local.add(new THREE.Vector3(d.x,0,d.z)));
  }else{
   const nx=THREE.MathUtils.clamp(player.position.x+move.x*speed*dt,-24,24);
   const nz=THREE.MathUtils.clamp(player.position.z+move.z*speed*dt,-99,29.5);
-  if(!shopBlocked(nx,player.position.z))player.position.x=nx;
-  if(!shopBlocked(player.position.x,nz))player.position.z=nz;
+  if(!shopBlocked(nx,player.position.z)&&!worldObjectBlocked(nx,player.position.z))player.position.x=nx;
+  if(!shopBlocked(player.position.x,nz)&&!worldObjectBlocked(player.position.x,nz))player.position.z=nz;
  }
  nearbyShop=null;
  if(!insideShop){
