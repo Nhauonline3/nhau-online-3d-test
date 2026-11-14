@@ -720,6 +720,247 @@ function shop(d,index){
  for(let k=0;k<3;k++)box(-3.5+k*.35,6.5,-2,.16,.45+(k%2)*.3,.16,k%2?M.pink:M.cyan,g);
 }
 shopData.forEach(shop);
+
+function buildLiveStoreModel(target){
+const root=new THREE.Group();target.add(root);root.scale.setScalar(.82);
+const M=(c,r=.48,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
+const black=M(0x080a10,.34,.25),black2=M(0x171a22,.4,.25),tile=M(0xb8bdc8,.65),steel=M(0x515969,.45,.5),red=M(0xe91b32,.3,.12),redHi=M(0xff4b55,.32),gold=M(0xffc45d,.3,.3),white=M(0xf3f3f5),green=M(0x075c43);
+const pink=new THREE.MeshStandardMaterial({color:0xff2bd4,emissive:0xff16c8,emissiveIntensity:2.6,roughness:.28});
+const purple=new THREE.MeshStandardMaterial({color:0xa12cff,emissive:0x741cff,emissiveIntensity:2.2});
+const cyan=new THREE.MeshStandardMaterial({color:0x36eaff,emissive:0x12cfff,emissiveIntensity:2.1});
+const warm=new THREE.MeshStandardMaterial({color:0xffc36a,emissive:0xff8b21,emissiveIntensity:1.7});
+const glass=new THREE.MeshPhysicalMaterial({color:0x6a9db4,metalness:.25,roughness:.1,transparent:true,opacity:.27,side:THREE.DoubleSide});
+function box(parent,x,y,z,w,h,d,mat){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
+function line(parent,a,b,r,mat){const v=new THREE.Vector3(...b).sub(new THREE.Vector3(...a));const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,v.length(),10),mat);o.position.copy(new THREE.Vector3(...a).add(new THREE.Vector3(...b)).multiplyScalar(.5));o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),v.normalize());parent.add(o);return o}
+function plane(parent,x,y,z,w,h,mat,rot=0){const o=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat);o.position.set(x,y,z);o.rotation.y=rot;parent.add(o);return o}
+// Corner L foundation and raised tiled sidewalk
+box(root,0,.12,0,11.4,.24,9.4,black);
+box(root,0,.31,0,11.15,.16,9.15,tile);
+// L-shaped projecting sidewalk front and right return
+box(root,0,.30,5.03,12.9,.48,1.75,black);box(root,0,.57,5.03,12.65,.12,1.55,tile);
+box(root,5.22,.30,.15,1.75,.48,8.85,black);box(root,5.22,.57,.15,1.55,.12,8.6,tile);
+box(root,0,.66,5.80,12.5,.07,.07,pink);box(root,6.03,.66,.2,.07,.07,8.3,pink);box(root,5.22,.66,-4.03,1.55,.07,.07,cyan);
+// front steps
+box(root,-.2,.18,6.05,4.7,.22,.55,black);box(root,-.2,.31,6.05,4.55,.07,.48,steel);box(root,-.2,.08,6.55,4.1,.16,.42,black);
+// Main building footprint with solid black front wall and glass right side
+box(root,0,3.65,-4.05,10.3,6.55,.42,black);
+box(root,-5.02,3.65,.15,.42,6.55,8.25,black);
+box(root,5.02,3.65,.15,.42,6.55,8.25,black);
+box(root,0,6.9,-.05,10.5,.35,8.6,black2);
+// black roof parapet with LEGO-like round studs
+box(root,0,7.23,-.05,11.4,.42,9.4,black);box(root,0,7.48,-.05,11.55,.14,9.55,black2);
+for(let x=-5.4;x<=5.41;x+=.42)for(const z of [-4.75,4.65]){const s=new THREE.Mesh(new THREE.CylinderGeometry(.075,.075,.045,12),black);s.position.set(x,7.57,z);root.add(s)}
+for(let z=-4.55;z<=4.56;z+=.42)for(const x of [-5.62,5.62]){const s=new THREE.Mesh(new THREE.CylinderGeometry(.075,.075,.045,12),black);s.rotation.z=Math.PI/2;s.position.set(x,7.57,z);root.add(s)}
+// Front façade: solid black LEGO wall, no full-width glass grid
+for(let y=1.1;y<6.35;y+=.72)box(root,-.1,y,4.22,9.95,.035,.06,black2);
+for(const x of [-4.95,4.78])box(root,x,3.7,4.24,.08,5.25,.08,black2);
+// front solid left feature wall + entry door and display glass
+box(root,-3.55,3.25,4.36,2.55,5.5,.28,black);
+// Entrance double door centered precisely under the projecting canopy
+box(root,-1.7,1.75,4.54,1.42,2.85,.06,glass);
+box(root,-2.43,1.78,4.62,.06,2.9,.08,steel);
+box(root,-.97,1.78,4.62,.06,2.9,.08,steel);
+box(root,-1.7,3.25,4.56,1.55,.08,.08,black2);
+box(root,-1.7,1.7,4.62,.08,.14,.1,gold);
+// centered double door mullion and paired handles
+box(root,-1.7,1.78,4.67,.045,2.72,.045,black2);
+box(root,-1.83,1.72,4.72,.045,.38,.045,gold);
+box(root,-1.57,1.72,4.72,.045,.38,.045,gold);
+// Rounded half-oval entrance canopy, centered over the double doors
+const awningShape=new THREE.Shape();
+awningShape.moveTo(-1.78,0);
+awningShape.lineTo(1.78,0);
+awningShape.quadraticCurveTo(1.78,1.32,0,1.48);
+awningShape.quadraticCurveTo(-1.78,1.32,-1.78,0);
+const awningGeo=new THREE.ExtrudeGeometry(awningShape,{depth:.20,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.055,bevelThickness:.055});
+awningGeo.rotateX(Math.PI/2);
+const awning=new THREE.Mesh(awningGeo,black2);awning.position.set(-1.7,3.42,4.48);awning.castShadow=true;root.add(awning);
+// Neon follows the visible OUTER front edge of the rounded awning.
+const awningPerimeterPts=[];
+for(let i=0;i<=96;i++){
+ const t=i/96;
+ const x=-1.78+3.56*t;
+ const z=1.48*Math.sin(Math.PI*t);
+ awningPerimeterPts.push(new THREE.Vector3(-1.7+x,3.17,4.48+z+.075));
+}
+const awningPerimeterCurve=new THREE.CatmullRomCurve3(awningPerimeterPts,false,"centripetal");
+const awningPerimeterNeon=new THREE.Mesh(new THREE.TubeGeometry(awningPerimeterCurve,192,.075,14,false),pink);
+awningPerimeterNeon.renderOrder=5;
+root.add(awningPerimeterNeon);
+const awningPerimeterGlow=new THREE.PointLight(0xff20d5,6,3.8);
+awningPerimeterGlow.position.set(-1.7,3.12,5.45);root.add(awningPerimeterGlow);
+
+// Soft pink underside and warm downlights
+box(root,-1.7,3.25,4.9,3.35,.08,.42,pink);
+for(let x=-2.85;x<=-.55;x+=1.15){const down=new THREE.PointLight(0xff55dc,5,2.8);down.position.set(x,3.02,5.0);root.add(down)}
+// glowing XXX sign on solid facade
+box(root,-1.1,4.72,4.48,3.75,1.72,.24,black2);box(root,-1.1,4.72,4.62,3.50,1.48,.07,purple);box(root,-1.1,4.72,4.66,3.36,1.34,.055,black);
+function makeText(text,w,h,size,color,glow){const c=document.createElement('canvas');c.width=1024;c.height=256;const q=c.getContext('2d');q.clearRect(0,0,1024,256);q.font='900 '+size+'px Arial';q.textAlign='center';q.textBaseline='middle';q.shadowColor=glow;q.shadowBlur=28;q.fillStyle=color;q.fillText(text,512,132);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:t,transparent:true,side:THREE.DoubleSide}))}
+const xxx=makeText('XXX',3.12,.94,245,'#ffffff','#ff18d0');xxx.position.set(-1.1,4.72,4.735);root.add(xxx);
+box(root,-1.1,6.55,4.43,2.6,.72,.2,black2);const live=makeText('LIVE',2.25,.48,170,'#ffffff','#ff8bdc');live.position.set(-1.1,6.55,4.56);root.add(live);
+// Raised hot-pink neon light bar mounted immediately below the LIVE sign
+const liveBar=new THREE.Group();liveBar.position.set(-1.1,6.16,4.78);root.add(liveBar);
+box(liveBar,0,0,0,2.35,.13,.24,black2);
+box(liveBar,0,.035,.13,2.18,.075,.12,pink);
+for(const x of [-1.09,1.09]){const cap=new THREE.Mesh(new THREE.SphereGeometry(.075,16,12),pink);cap.position.set(x,.035,.13);liveBar.add(cap)}
+const liveBarGlow=new THREE.PointLight(0xff16cb,5.5,3.2);liveBarGlow.position.set(0,-.12,.34);liveBar.add(liveBarGlow);
+
+// RIGHT-HAND SIDE: long two-storey glass display wall, clearly distinct from front
+// Recessed dark interior wall sits BEHIND the display shelves; keep the window bays open
+// (A full black slab directly behind the glass hid all the merchandise in the previous preview.)
+box(root,3.82,3.82,0,.10,5.35,8.15,black);
+for(let z=-3.55;z<=3.56;z+=1.42){
+  box(root,5.315,3.88,z,.055,4.95,1.25,glass);
+  box(root,5.37,3.88,z-.67,.13,5.18,.13,black2);
+  box(root,5.37,3.88,z+.67,.13,5.18,.13,black2);
+  box(root,5.37,1.32,z,.13,.16,1.42,pink);
+  box(root,5.37,3.35,z,.13,.12,1.42,black2);
+  box(root,5.37,6.42,z,.13,.16,1.42,black2);
+}
+box(root,5.37,1.12,0,.18,.18,8.25,black2);box(root,5.37,6.62,0,.18,.18,8.25,black2);
+// Interior shelves, colorful boxed products and warm lighting, visible through the open glass bays
+for(let z=-3.5;z<3.6;z+=1.4){
+  box(root,4.48,2.12,z,.92,.14,.78,black2);
+  box(root,4.48,2.20,z,.88,.055,.74,pink);
+  box(root,4.48,3.58,z,.92,.14,.78,black2);
+  box(root,4.48,3.66,z,.88,.055,.74,purple);
+  box(root,4.48,5.08,z,.92,.12,.78,black2);
+  for(let j=0;j<4;j++){
+    const mats=[pink,cyan,gold,purple];
+    box(root,4.22+(j%2)*.40,2.62+(j%2)*.08,z-.23+(j>>1)*.46,.25,.68,.27,mats[j]);
+    box(root,4.22+(j%2)*.40,4.08+(j%2)*.08,z-.23+(j>>1)*.46,.25,.68,.27,mats[(j+1)%4]);
+    box(root,4.22+(j%2)*.40,5.48+(j%2)*.06,z-.23+(j>>1)*.46,.25,.58,.27,mats[(j+2)%4]);
+  }
+  const shelfGlow=new THREE.PointLight(0xff36df,1.7,2.2);
+  shelfGlow.position.set(5.0,4.0,z);root.add(shelfGlow);
+}
+for(let x=-4.4;x<=3.8;x+=1.7){const lamp=new THREE.PointLight(0xff8a30,12,4);lamp.position.set(x,6.2,3.6);root.add(lamp);box(root,x,6.45,3.72,.36,.08,.24,warm)}
+// RIGHT SIDE UPGRADE: richer illuminated display frontage, matching the reference
+// Raised black window frames and bright pink/cyan edge strips on the long right facade
+for(const z of [-4.05,-2.68,-1.28,.12,1.52,2.92,4.12]){
+  box(root,5.48,3.88,z,.16,5.12,.105,black2);
+  box(root,5.575,3.88,z,.045,4.92,.035,z===-4.05||z===4.12?pink:steel);
+}
+for(const y of [1.34,3.34,5.18,6.35]){
+  box(root,5.49,y,0,.16,.105,8.1,black2);
+  box(root,5.585,y,0,.045,.035,7.95,y===1.34?pink:steel);
+}
+// Bright display ledges and miniature merchandise silhouettes, visible through glass
+for(let z=-3.35;z<=3.45;z+=1.38){
+  box(root,4.92,2.35,z,.52,.10,1.02,pink);
+  box(root,4.92,4.22,z,.52,.10,1.02,purple);
+  box(root,4.92,5.72,z,.52,.08,1.02,black2);
+  for(let j=0;j<4;j++){
+    const colors=[pink,cyan,gold,purple];
+    box(root,4.96,2.66+j%2*.10,z-.38+j*.24,.22,.48,.18,colors[j]);
+    box(root,4.96,4.55+j%2*.10,z-.38+j*.24,.22,.46,.18,colors[(j+1)%4]);
+    box(root,4.96,5.98+j%2*.08,z-.38+j*.24,.22,.34,.18,colors[(j+2)%4]);
+  }
+}
+// Decorative poster plaques and a glowing wall lamp on the outer side
+function sidePlaque(z,y,color){
+  box(root,5.60,y,z,.10,.92,.58,black2);
+  box(root,5.665,y,z,.035,.78,.46,M(color));
+  for(let k=0;k<3;k++)box(root,5.69,y-.22+k*.22,z,.025,.045,.28,k===1?gold:pink);
+}
+sidePlaque(-3.55,2.75,0x287da5);
+sidePlaque(3.55,2.65,0xe34b9d);
+const sideLamp=new THREE.Group();sideLamp.position.set(5.58,5.45,3.35);root.add(sideLamp);
+box(sideLamp,0,0,0,.16,.32,.28,black2);
+const sideLampGlow=new THREE.Mesh(new THREE.SphereGeometry(.22,16,12),warm);
+sideLampGlow.position.set(.12,-.02,0);sideLamp.add(sideLampGlow);
+const sideLampLight=new THREE.PointLight(0xffb15c,9,3);sideLampLight.position.set(5.85,5.45,3.35);root.add(sideLampLight);
+// Vertical neon corner accents and a compact illuminated side sign
+box(root,5.58,3.85,-4.12,.055,4.95,.07,pink);
+box(root,5.58,3.85,4.18,.055,4.95,.07,cyan);
+box(root,5.60,4.72,-1.95,.10,.78,1.05,black2);
+box(root,5.67,4.72,-1.95,.035,.62,.88,purple);
+for(let k=0;k<3;k++)box(root,5.70,4.52+k*.20,-1.95,.025,.045,.52,k===1?cyan:pink);
+// Heart decorations removed as requested.
+// hanging glitter charm
+line(root,[.15,7.1,4.55],[.15,6.25,4.55],.025,gold);const charm=new THREE.Mesh(new THREE.IcosahedronGeometry(.42,1),purple);charm.position.set(.15,5.8,4.55);root.add(charm);const orb=new THREE.Mesh(new THREE.SphereGeometry(.22,16,12),warm);orb.position.set(.15,5.25,4.55);root.add(orb);
+// Tall left-front corner pillar with a large outward-facing neon speaker
+box(root,-5.12,3.65,4.48,.62,6.75,.72,black);
+box(root,-5.12,3.65,4.88,.68,6.72,.08,black2);
+for(let xx=-5.38;xx<=-4.86;xx+=.18){box(root,xx,3.65,4.94,.045,5.9,.055,pink)}
+box(root,-5.12,6.95,4.9,.76,.18,.18,steel);
+const frontSpeaker=new THREE.Mesh(new THREE.CylinderGeometry(.72,.72,.34,32),black2);
+frontSpeaker.rotation.x=Math.PI/2;frontSpeaker.position.set(-5.12,5.55,5.12);root.add(frontSpeaker);
+const frontSpeakerRing=new THREE.Mesh(new THREE.TorusGeometry(.53,.095,14,48),pink);
+frontSpeakerRing.position.set(-5.12,5.55,5.32);root.add(frontSpeakerRing);
+const frontSpeakerInner=new THREE.Mesh(new THREE.CircleGeometry(.36,32),purple);
+frontSpeakerInner.position.set(-5.12,5.55,5.34);root.add(frontSpeakerInner);
+const frontSpeakerCore=new THREE.Mesh(new THREE.CircleGeometry(.19,32),pink);
+frontSpeakerCore.position.set(-5.12,5.55,5.36);root.add(frontSpeakerCore);
+// Extra LEGO-style detailing on the LEFT FRONT pillar, matching the reference
+// upper curved neon loop tucked below the roof edge
+const topLoop=new THREE.Mesh(new THREE.TorusGeometry(.34,.055,12,36,Math.PI),pink);
+topLoop.rotation.z=Math.PI;topLoop.rotation.y=Math.PI/2;topLoop.position.set(-5.46,6.52,4.72);root.add(topLoop);
+// stacked black brick courses and magenta inset strips
+for(let yy of [6.15,5.92,4.72,4.48,3.28,3.04,1.28,1.04]){
+  box(root,-5.47,yy,4.79,.13,.075,.52,black2);
+}
+for(let xx of [-5.34,-5.12,-4.90]){
+  box(root,xx,3.65,4.98,.055,4.7,.055,pink);
+}
+// silver connector brackets beside speaker
+for(let yy of [4.28,3.92]){
+  box(root,-4.78,yy,5.02,.42,.14,.22,steel);
+  const knob=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.18,16),white);
+  knob.rotation.x=Math.PI/2;knob.position.set(-4.62,yy,5.15);root.add(knob);
+}
+// tall colorful poster panel with raised corner studs and graphic strips
+box(root,-5.48,2.85,4.98,.48,1.12,.10,black2);
+box(root,-5.48,2.85,5.045,.39,.99,.025,cyan);
+for(let yy of [2.52,2.78,3.04,3.30]){
+  box(root,-5.48,yy,5.067,.22,.035,.018,yy===2.78?gold:pink);
+}
+for(let xx of [-5.64,-5.32])for(let yy of [2.38,3.32]){
+  const stud=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.035,12),gold);
+  stud.rotation.x=Math.PI/2;stud.position.set(xx,yy,5.09);root.add(stud);
+}
+// small angled service terminal near the lower pillar
+const terminal=new THREE.Group();terminal.position.set(-5.43,1.85,5.0);terminal.rotation.x=-.22;root.add(terminal);
+box(terminal,0,0,0,.42,.34,.16,black2);box(terminal,0,.02,.095,.30,.18,.025,purple);
+for(let xx of [-.09,0,.09]){const led=new THREE.Mesh(new THREE.SphereGeometry(.025,8,8),warm);led.position.set(xx,.02,.12);terminal.add(led)}
+// exposed conduit cable running down the pillar
+const cablePts=[new THREE.Vector3(-5.42,2.15,5.10),new THREE.Vector3(-5.18,2.12,5.14),new THREE.Vector3(-5.18,1.55,5.14),new THREE.Vector3(-5.32,1.38,5.14)];
+const cableCurve=new THREE.CatmullRomCurve3(cablePts);
+root.add(new THREE.Mesh(new THREE.TubeGeometry(cableCurve,24,.035,8,false),steel));
+// layered neon base trim around the column
+box(root,-5.40,.92,4.88,.16,.10,.56,pink);
+box(root,-5.40,.78,4.88,.18,.08,.60,black2);
+// speaker mounted on left facade
+const speaker=new THREE.Mesh(new THREE.CylinderGeometry(.72,.72,.34,32),black2);speaker.rotation.z=Math.PI/2;speaker.position.set(-5.36,5.45,3.2);root.add(speaker);const spRing=new THREE.Mesh(new THREE.TorusGeometry(.52,.1,12,40),pink);spRing.rotation.y=Math.PI/2;spRing.position.set(-5.56,5.45,3.2);root.add(spRing);const spCore=new THREE.Mesh(new THREE.CircleGeometry(.36,32),purple);spCore.rotation.y=Math.PI/2;spCore.position.set(-5.57,5.45,3.2);root.add(spCore);
+// Wall-mounted poster panels
+function poster(x,y,z,rot,col){const p=new THREE.Group();p.position.set(x,y,z);p.rotation.y=rot;root.add(p);box(p,0,0,0,.58,.9,.09,black2);box(p,0,0,.055,.48,.78,.025,M(col));for(let j=0;j<3;j++)box(p,0,-.22+j*.2,.075,.3,.035,.02,pink)}
+poster(-4.65,2.85,4.55,0,0x287da5);poster(5.4,2.75,2.2,Math.PI/2,0x8e2e9c);poster(5.4,2.1,-2.4,Math.PI/2,0xf08b38);
+// queue bollards on front step
+for(let x=-3.5;x<=2.9;x+=2.0){const pole=new THREE.Mesh(new THREE.CylinderGeometry(.09,.12,.82,12),black2);pole.position.set(x,1.04,5.85);root.add(pole);const cap=new THREE.Mesh(new THREE.CylinderGeometry(.14,.14,.09,12),warm);cap.position.set(x,1.48,5.85);root.add(cap)}
+for(let x=-2.5;x<=2.5;x+=2.5)line(root,[x,1.2,5.85],[x+1.0,1.2,5.85],.045,red);
+// cute blocky penguin character
+function penguin(x,z,coat,hat){const p=new THREE.Group();p.position.set(x,.66,z);p.rotation.y=0;root.add(p); // face forward toward the entrance door
+const body=new THREE.Mesh(new THREE.SphereGeometry(.43,16,14),black);body.scale.set(.78,1.15,.68);body.position.y=.58;p.add(body);const belly=new THREE.Mesh(new THREE.SphereGeometry(.31,16,12),white);belly.scale.set(.82,1.05,.25);belly.position.set(0,.58,.27);p.add(belly);const head=new THREE.Mesh(new THREE.SphereGeometry(.31,16,12),black);head.position.set(0,1.18,.03);p.add(head);for(const ex of [-.11,.11]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.05,10,8),white);eye.position.set(ex,1.22,.30);p.add(eye);const pupil=new THREE.Mesh(new THREE.SphereGeometry(.025,8,8),black);pupil.position.set(ex,1.22,.34);p.add(pupil)}const beak=new THREE.Mesh(new THREE.ConeGeometry(.09,.2,8),gold);beak.rotation.x=Math.PI/2;beak.position.set(0,1.1,.38);p.add(beak);box(p,0,.66,.3,.52,.42,.13,M(coat));for(const fx of [-.18,.18])box(p,fx,.08,.12,.23,.1,.28,gold);for(const side of [-1,1]){const wing=new THREE.Mesh(new THREE.BoxGeometry(.13,.48,.2),black);wing.position.set(side*.34,.6,.02);wing.rotation.z=side*.2;p.add(wing)}if(hat){const h=new THREE.Mesh(new THREE.SphereGeometry(.32,12,8,0,Math.PI*2,0,Math.PI/2),M(hat));h.position.set(0,1.38,0);p.add(h);box(p,0,1.38,.2,.48,.07,.35,M(hat))}return p}
+penguin(-4.0,5.05,0xe52d9c,0x32b64a);penguin(1.2,5.55,0x161922,0x171722);penguin(4.65,4.0,0x18aeea,0x168ee0);penguin(3.45,4.95,0xe52d9c,0x171722);
+// little glowing pavement studs
+for(const [x,z] of [[-4.8,5.25],[-1.9,5.35],[1.8,5.25],[5.5,2.5],[5.5,-2.3]]){const d=new THREE.Mesh(new THREE.CylinderGeometry(.11,.11,.045,16),warm);d.position.set(x,.68,z);root.add(d)}
+
+}
+{
+ const targetData=shopData.find(d=>d.tag==='GIFTS');
+ const targetGroup=targetData&&scene.children.find(o=>o.type==='Group'&&Math.abs(o.position.x-targetData.x)<.01&&Math.abs(o.position.z-targetData.z)<.01);
+ if(targetGroup){
+  const interior=new Set(targetGroup.userData.interiorChildren||[]);
+  const hit=shopMeshes.find(o=>o.userData.shop===targetData);
+  for(const child of [...targetGroup.children]){
+   if(!interior.has(child)&&child!==hit)targetGroup.remove(child);
+  }
+  targetGroup.userData.interiorChildren=[...interior];
+  buildLiveStoreModel(targetGroup);
+  targetGroup.userData.liveStoreReplacement=true;
+ }
+}
+
 // street lamps, lush pixel trees and flower beds keep the avenue green without blocking the shops
 function lamp(x,z){box(x,0,z,.22,4.5,.22,M.dark);box(x,4.45,z,.82,.38,.82,M.gold);box(x,4.85,z,.6,.35,.6,M.cyan);point(x,4.8,z,0xffb83e,.45,7)}
 function planter(x,z){box(x,.18,z,3.8,.48,2.1,M.dark);box(x,.42,z,3.55,.14,1.85,M.leaf);for(let i=0;i<11;i++){const px=x-1.55+(i%6)*.62,pz=z+(i%2?-.42:.42);box(px,.72,pz,.34,.34+(i%3)*.13,.34,i%2?M.pink:M.lime);box(px,.98,pz,.16,.16,.16,M.gold)}}
