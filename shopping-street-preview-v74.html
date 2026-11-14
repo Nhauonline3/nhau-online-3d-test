@@ -723,6 +723,17 @@ shopData.forEach(shop);
 
 function buildLiveStoreModel(target){
 const root=new THREE.Group();target.add(root);root.scale.setScalar(.82);
+// Match the standalone LIVE STORE lighting inside the city scene.
+// The city renderer uses lower exposure and no shadow maps, so add local fill lights.
+root.add(new THREE.HemisphereLight(0xa9caff,0x170b24,1.35));
+const liveKey=new THREE.DirectionalLight(0xffe3d2,2.0);liveKey.position.set(-9,17,12);root.add(liveKey);
+for(const [color,intensity,pos,distance] of [
+ [0xff16cb,22,[-3,4,7],24],
+ [0x792cff,18,[7,5,2],24],
+ [0x25dfff,15,[5,4,-5],20],
+ [0xffa33b,11,[-2,7,-2],18]
+]){const l=new THREE.PointLight(color,intensity,distance);l.position.set(...pos);root.add(l);}
+
 const M=(c,r=.48,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
 const black=M(0x080a10,.34,.25),black2=M(0x171a22,.4,.25),tile=M(0xb8bdc8,.65),steel=M(0x515969,.45,.5),red=M(0xe91b32,.3,.12),redHi=M(0xff4b55,.32),gold=M(0xffc45d,.3,.3),white=M(0xf3f3f5),green=M(0x075c43);
 const pink=new THREE.MeshStandardMaterial({color:0xff2bd4,emissive:0xff16c8,emissiveIntensity:2.6,roughness:.28});
